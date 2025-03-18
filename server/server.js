@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.get('/', (req, res) => {
-  res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend');
+  res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
 });
 
 app.listen(PORT, () => {
