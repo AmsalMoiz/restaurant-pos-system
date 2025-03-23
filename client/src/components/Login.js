@@ -12,7 +12,7 @@ const Login = () => {
     e.preventDefault();
 
     const users = [
-      { email: "@example.com", password: "password123" },
+      { email: "cynthia@example.com", password: "password123" },
       { email: "admin@example.com", password: "adminpass" },
     ];
 
@@ -35,6 +35,7 @@ const Login = () => {
         backgroundAttachment: "fixed",
         minHeight: "100vh",
       }}
+      
     >
       <div className="login-container">
         <h2>Welcome to Sweet Heaven</h2>
@@ -57,7 +58,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit"cynthia>Login</button>
+          <button type="submit">Login</button>
         </form>
 
         <p>
@@ -73,3 +74,5 @@ const Login = () => {
 };
 
 export default Login;
+
+
