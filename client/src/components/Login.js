@@ -8,21 +8,26 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const users = [
-      { email: "cynthia@example.com", password: "password123" },
-      { email: "admin@example.com", password: "adminpass" },
-    ];
-
-    const user = users.find((u) => u.email === email && u.password === password);
-
-    if (user) {
-      alert("Login Successful!");
-      navigate("/home");
-    } else {
-      setError("Invalid email or password");
+  
+    try {
+      const response = await fetch("http://localhost:3001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Login Successful!");
+        navigate("/home");
+      } else {
+        setError(data.error || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      setError("Error connecting to server.");
     }
   };
 
