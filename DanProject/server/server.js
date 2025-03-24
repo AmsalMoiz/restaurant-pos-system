@@ -1,17 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const fs = require('fs');
 const app = express();
-const PORT = 3001;
-
+const PORT = 3002;
+require('dotenv').config();
 const mysql = require('mysql2');
-// Create a connection to MySQL
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'pos_user',
-  password: 'POS_user25',
-  database: 'myRESTAURANT'
+
+var db=mysql.createConnection({
+  host:"restaurant-pos.mysql.database.azure.com", 
+  user:"pos_user", 
+  password:'V32np-v>k#:K"/sd(r2B!WE,^?_"ke', 
+  database:"mydb", 
+  port:3306,
+  ssl: { // Enable SSL
+    rejectUnauthorized: true,
+  },
 });
 
 // Connect to the database
@@ -34,7 +38,7 @@ app.get('/', (req, res) => {
 
 // API route to fetch users from the database (staff users)
 app.get('/users', (req, res) => {
-  db.query('SELECT * FROM Users', (err, results) => {
+  db.query('SELECT * FROM users', (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -46,7 +50,7 @@ app.get('/users', (req, res) => {
 
 // Get all customers (for testing purposes)
 app.get('/customers', (req, res) => {
-  db.query('SELECT customer_id, customer_name, customer_email, customer_phone_num FROM Customers', (err, results) => {
+  db.query('SELECT customer_id, customer_name, customer_email, customer_phone_num FROM customers', (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -59,7 +63,7 @@ app.post('/customers/login', (req, res) => {
   const { email, password } = req.body;
   
   db.query(
-    'SELECT customer_id, customer_name, customer_email, customer_phone_num FROM Customers WHERE customer_email = ? AND customer_password = ?',
+    'SELECT customer_id, customer_name, customer_email, customer_phone_num FROM customers WHERE customer_email = ? AND customer_password = ?',
     [email, password],
     (err, results) => {
       if (err) {
@@ -81,7 +85,7 @@ app.post('/customers/register', (req, res) => {
   
   // First check if email already exists
   db.query(
-    'SELECT customer_id FROM Customers WHERE customer_email = ?',
+    'SELECT customer_id FROM customers WHERE customer_email = ?',
     [email],
     (err, results) => {
       if (err) {
@@ -93,7 +97,7 @@ app.post('/customers/register', (req, res) => {
       }
       
       // Get the next available customer_id
-      db.query('SELECT MAX(customer_id) as max_id FROM Customers', (err, results) => {
+      db.query('SELECT MAX(customer_id) as max_id FROM customers', (err, results) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
@@ -102,7 +106,7 @@ app.post('/customers/register', (req, res) => {
         
         // Insert the new customer
         db.query(
-          'INSERT INTO Customers (customer_id, customer_name, customer_email, customer_phone_num, customer_password, customer_card_num, customer_exp, customer_cvv) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          'INSERT INTO customers (customer_id, customer_name, customer_email, customer_phone_num, customer_password, customer_card_num, customer_exp, customer_cvv) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
           [nextId, name, email, phone, password, cardNumber || null, expiry || null, cvv || null],
           (err, results) => {
             if (err) {
@@ -130,7 +134,7 @@ app.put('/customers/:id', (req, res) => {
   const { id } = req.params;
   const { name, phone, cardNumber, expiry, cvv } = req.body;
   
-  let query = 'UPDATE Customers SET ';
+  let query = 'UPDATE customers SET ';
   const updateValues = [];
   const params = [];
   
@@ -183,7 +187,7 @@ app.put('/customers/:id', (req, res) => {
 
 // Get all menu items
 app.get('/menu', (req, res) => {
-  db.query('SELECT * FROM Items', (err, results) => {
+  db.query('SELECT * FROM items', (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -214,7 +218,7 @@ app.post('/orders', (req, res) => {
     }
     
     // Get the next available online_id
-    db.query('SELECT MAX(online_id) as max_id FROM Online_Transactions', (err, results) => {
+    db.query('SELECT MAX(online_id) as max_id FROM online_transactions', (err, results) => {
       if (err) {
         return db.rollback(() => {
           res.status(500).json({ error: err.message });
@@ -225,7 +229,7 @@ app.post('/orders', (req, res) => {
       
       // Insert the order
       db.query(
-        'INSERT INTO Online_Transactions (online_id, fk_online_customer_id, online_subtotal, fk_discount_id, online_total) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO online_transactions (online_id, fk_online_customer_id, online_subtotal, fk_discount_id, online_total) VALUES (?, ?, ?, ?, ?)',
         [nextOrderId, customerId, subtotal, discountId, total],
         (err, results) => {
           if (err) {
@@ -235,7 +239,7 @@ app.post('/orders', (req, res) => {
           }
           
           // Get the next available online_item_id
-          db.query('SELECT MAX(online_item_id) as max_id FROM Online_Transaction_Items', (err, results) => {
+          db.query('SELECT MAX(online_item_id) as max_id FROM online_transaction_items', (err, results) => {
             if (err) {
               return db.rollback(() => {
                 res.status(500).json({ error: err.message });
@@ -251,7 +255,7 @@ app.post('/orders', (req, res) => {
                 const itemSubtotal = parseFloat(item.price) * item.quantity;
                 
                 db.query(
-                  'INSERT INTO Online_Transaction_Items (online_item_id, ofk_item_id, online_item_quantity, online_item_subtotal, fk_online_id) VALUES (?, ?, ?, ?, ?)',
+                  'INSERT INTO online_transaction_ttems (online_item_id, ofk_item_id, online_item_quantity, online_item_subtotal, fk_online_id) VALUES (?, ?, ?, ?, ?)',
                   [nextItemId, item.id, item.quantity, itemSubtotal, nextOrderId],
                   (err, results) => {
                     if (err) {
@@ -316,8 +320,8 @@ app.get('/customers/:id/orders', (req, res) => {
     `SELECT ot.online_id, ot.online_subtotal, ot.online_total, ot.online_timestamp,
             oti.online_item_id, oti.ofk_item_id, oti.online_item_quantity, oti.online_item_subtotal,
             i.item_name, i.item_category, i.item_cost
-     FROM Online_Transactions ot
-     JOIN Online_Transaction_Items oti ON ot.online_id = oti.fk_online_id
+     FROM online_transactions ot
+     JOIN online_transaction_items oti ON ot.online_id = oti.fk_online_id
      JOIN Items i ON oti.ofk_item_id = i.item_id
      WHERE ot.fk_online_customer_id = ?
      ORDER BY ot.online_timestamp DESC`,
