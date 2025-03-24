@@ -1,0 +1,128 @@
+body{
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* Employee Login Styles */
+#box{
+  background-color: rgb(255, 255, 255);
+  border: 1px solid;
+  text-align: center;
+  width: 400px;
+  height: 400px; 
+  margin: auto;
+  margin-top: 150px; 
+  box-shadow: 15px 15px 5px;
+  border-radius: 25px;
+} 
+#username{
+  width: 75%;
+  height: 25px;
+}
+#password{
+  width: 75%;
+  height: 25px;
+}
+#sign_in{
+  width: 77%;
+  height: 35px;
+  background-color: hsl(200, 92%, 33%);
+  color: white;
+  font-size: 18px;
+}
+
+/* Home Page Styles */
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: hsl(200, 92%, 33%);
+  color: white;
+  border-radius: 10px;
+  margin-bottom: 40px;
+}
+
+.hero-section h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.hero-section p {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.hero-button {
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.hero-button.primary {
+  background-color: white;
+  color: hsl(200, 92%, 33%);
+}
+
+.hero-button.secondary {
+  background-color: transparent;
+  border: 2px solid white;
+  color: white;
+}
+
+.features-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.feature {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.feature h3 {
+  color: hsl(200, 92%, 33%);
+  margin-bottom: 15px;
+}
+
+.cta-section {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: white;
+  border-radius: 10px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: hsl(200, 92%, 33%);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-top: 20px;
+  transition: all 0.3s;
+}
