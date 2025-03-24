@@ -1,23 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500&display=swap');
 
-body, html {
-  background-color: #000;
-  font-family: 'Segoe UI', sans-serif;
-  height: 100%;
+.main-title {
+  font-family: 'SugarMagic', serif;
+  font-size: 52px;
+  color: #e6cfa7;
+}
+
+.working-title {
+  font-family: 'Camellia', serif;
+  font-size: 24px;
+  color: #f5f5f5;
+}
+
+html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #000;
+  background-size: cover;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* Wrapper that will receive background image from JSX */
+/* Page background container */
 .home-background {
   min-height: 100vh;
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
   position: relative;
-  color: white;
 }
 
+/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 20px 40px;
   background-color: rgba(0, 0, 0, 0.9);
   position: sticky;
@@ -43,59 +63,119 @@ body, html {
   color: #e6cfa7;
 }
 
+/* Main section */
 .hero-content {
   text-align: center;
-  padding-top: 120px;
-  padding-bottom: 60px;
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9));
+  padding: 100px 20px 60px;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9));
 }
 
+/* Subtitle */
 .subtitle {
   font-family: 'Great Vibes', cursive;
   font-size: 24px;
-  margin-bottom: 10px;
   color: #d8c49c;
+  margin-bottom: 10px;
 }
 
+/* Main title */
 .main-title {
   font-size: 52px;
   font-weight: bold;
-  margin-bottom: 30px;
   color: #e6cfa7;
+  margin-bottom: 40px;
 }
 
+/* Working hours section */
 .hours-section {
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
-.hours-section h3 {
+.working-title {
   font-size: 24px;
-  margin-bottom: 10px;
+  font-weight: 600;
   color: #f5f5f5;
+  margin-bottom: 30px;
+
+  text-align: right;
+  width: 100%;
+  padding-right: 40px;
 }
 
-.hours-grid {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 8px 30px;
-  justify-content: center;
-  font-size: 16px;
+
+
+
+.day-row span {
+  font-weight: 600;
+  font-size: 15px;
+  color: #e3d3a4;
+  width: 100px;
+  text-align: center;
 }
 
+.time-row span {
+  color: #f5f5f5;
+  width: 110px;
+  text-align: center;
+  font-size: 13px;
+  white-space: nowrap; 
+}
+
+.underline-row span {
+  width: 100px;
+  border-bottom: 1px solid #444;
+}
+
+/* Footer note */
 .note {
   font-size: 14px;
   color: #aaa;
-  margin-top: 15px;
+  margin-top: 25px;
 }
 
+/* Back to login link */
 .back-link {
   display: inline-block;
   margin-top: 30px;
   color: #e6cfa7;
   text-decoration: underline;
   font-size: 16px;
+  transition: 0.3s ease;
 }
 
 .back-link:hover {
   color: white;
+}
+
+
+.hours-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.hours-column {
+  text-align: center;
+  min-width: 120px;
+}
+
+.day {
+  font-weight: 600;
+  font-size: 16px;
+  color: #e3d3a4;
+  margin-bottom: 6px;
+}
+
+.time {
+  font-size: 14px;
+  color: #f5f5f5;
+  white-space: nowrap;
+  margin-bottom: 6px;
+}
+
+.underline {
+  height: 1px;
+  background-color: #444;
+  width: 100%;
 }

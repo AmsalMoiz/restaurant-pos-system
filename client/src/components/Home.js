@@ -7,19 +7,20 @@ const Home = () => {
     <div
       className="home-background"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url(${process.env.PUBLIC_URL}/images/restomainpic.jpg)`,
+        backgroundImage: "url('/images/restomainpic.jpg')",
         backgroundSize: 'cover',
-        backgroundPosition: 'bottom center',
+        backgroundPosition: 'bottom',
         backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed',
+        minHeight: '100vh',
       }}
     >
       <nav className="navbar">
         <div className="logo">Sweet Heaven</div>
         <div className="nav-links">
-          <a href="#">View Menu</a>
-          <a href="#">Book Table</a>
-          <a href="#">Place Order</a>
+          <Link to="/menu">View Menu</Link>
+          <Link to="/book">Book Table</Link>
+          <Link to="/order">Place Order</Link>
         </div>
       </nav>
 
@@ -28,17 +29,28 @@ const Home = () => {
         <h1 className="main-title">Sweet Heaven</h1>
 
         <div className="hours-section">
-          <h3>Working Hours</h3>
+
           <div className="hours-grid">
-            <div><strong>Sunday:</strong> 5:00 PM – 9:00 PM</div>
-            <div><strong>Monday:</strong> 5:00 PM – 10:00 PM</div>
-            <div><strong>Tuesday:</strong> 5:00 PM – 10:00 PM</div>
-            <div><strong>Wednesday:</strong> 5:00 PM – 10:00 PM</div>
-            <div><strong>Thursday:</strong> 5:00 PM – 10:00 PM</div>
-            <div><strong>Friday:</strong> 5:00 PM – 12:00 AM</div>
-            <div><strong>Saturday:</strong> 5:00 PM – 12:00 AM</div>
-          </div>
-          <p className="note">Reservations are limited to 2 hours • No parties over 6</p>
+  {[
+    { day: 'Sunday', time: '5:00 PM – 9:00 PM' },
+    { day: 'Monday', time: '5:00 PM – 10:00 PM' },
+    { day: 'Tuesday', time: '5:00 PM – 10:00 PM' },
+    { day: 'Wednesday', time: '5:00 PM – 10:00 PM' },
+    { day: 'Thursday', time: '5:00 PM – 10:00 PM' },
+    { day: 'Friday', time: '5:00 PM – 12:00 AM' },
+    { day: 'Saturday', time: '5:00 PM – 12:00 AM' },
+  ].map((entry, index) => (
+    <div className="hours-column" key={index}>
+      <div className="day">{entry.day}</div>
+      <div className="time">{entry.time}</div>
+      <div className="underline"></div>
+    </div>
+  ))}
+</div>
+
+          <p className="note">
+            Reservations are limited to <span>2 hours</span> • No parties over <span>6</span>
+          </p>
         </div>
 
         <Link to="/login" className="back-link">Back to Login</Link>
