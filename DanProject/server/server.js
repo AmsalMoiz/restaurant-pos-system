@@ -362,5 +362,5 @@ app.get('/customers/:id/orders', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://${window.location.hostname}:${PORT}`);
+  console.log(`Server running on ${PORT}`);
 });
