@@ -8,11 +8,10 @@ require('dotenv').config();
 const mysql = require('mysql2');
 
 var db=mysql.createConnection({
-  host:"restaurant-pos.mysql.database.azure.com", 
-  user:"pos_user", 
-  password:'V32np-v>k#:K"/sd(r2B!WE,^?_"ke', 
-  database:"mydb", 
-  port:3306,
+  host: process.env.DB_HOST, // Load host from .env
+  user: process.env.DB_USER, // Load user from .env
+  password: process.env.DB_PASSWORD, // Load password from .env
+  database: process.env.DB_DATABASE, // Load database from .env
   ssl: { // Enable SSL
     rejectUnauthorized: true,
   },
