@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:3002';
+//const API_URL = 'http://localhost:3002';
+const API_URL = `http://${window.location.hostname}:3002`;
 
 export const apiService = {
   // Customer Authentication
