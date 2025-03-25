@@ -23,21 +23,27 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: Install dependencies
+      # Install root dependencies
+      - name: Install root dependencies
         run: npm install
+        working-directory: .
 
       # Install backend dependencies
       - name: Install backend dependencies
-        run: |
-          cd server
-          npm install
+        run: npm install
+        working-directory: ./server
+
+      # Install frontend dependencies
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: ./client
 
       - name: Build React app
-        run: |
-          cd client
-          npm install
-          npm run build
-          mv build ../server/public
+        run: npm run build
+        working-directory: ./client
+
+      - name: Move frontend build to backend
+        run: mv ./client/build ./server/public
 
       # - name: npm install, build, and test
       #   run: |
@@ -46,7 +52,7 @@ jobs:
       #     # npm run test --if-present # This is commented out because there are no tests in the sample
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip -r release.zip ./server
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -86,5 +92,5 @@ jobs:
         with:
           app-name: 'sweet-heaven'
           slot-name: 'Production'
-          package: .
+          package: ./server
           
