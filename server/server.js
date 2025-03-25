@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json()); // Middleware for JSON body parsing
 app.use("/api/auth", authRoutes); // Include auth routes
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 80;
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
