@@ -11,10 +11,10 @@ app.use("/api/auth", authRoutes); // Include auth routes
 
 const PORT = process.env.PORT || 80;
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '..' , 'client', 'build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
