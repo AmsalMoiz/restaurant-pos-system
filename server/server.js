@@ -1,6 +1,7 @@
 // Purpose: Server file for backend
 const express = require('express');
 const cors = require("cors");
+const path = require('path');
 const authRoutes = require("./auth");
 
 const app = express();
@@ -10,8 +11,10 @@ app.use("/api/auth", authRoutes); // Include auth routes
 
 const PORT = process.env.PORT || 3001;
 
-app.get('/', (req, res) => {
-  res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
+app.use(express.static(path.join(__dirname, 'client', 'build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
 app.listen(PORT, () => {
