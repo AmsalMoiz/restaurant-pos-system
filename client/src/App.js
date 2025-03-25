@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Home from './components/Home';
 import Login from './components/Login';
 import Menu from './components/Menu';
-import PlaceOrder from './components/PlaceOrder'; // ✅ Confirm file casing!
+import PlaceOrder from './components/PlaceOrder'; 
 
 function App() {
   return (

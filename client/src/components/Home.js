@@ -20,7 +20,7 @@ const Home = () => {
         <div className="nav-links">
           <Link to="/menu">View Menu</Link>
           <Link to="/book">Book Table</Link>
-          <Link to="/order">Place Order</Link>
+          <Link to="/placeorder">Place Order</Link>
         </div>
       </nav>
 
