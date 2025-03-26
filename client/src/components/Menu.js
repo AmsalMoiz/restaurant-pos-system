@@ -112,7 +112,7 @@ const desserts = [
   },
   {
     name: "Knafeh Lebneniyeh",
-    description: "A smooth Lebanese knafeh made with buttery golden semolina and filled with luscious ashta cream, soaked in aromatic rose and orange blossom syrup.",
+    description: "A smooth Lebanese knafeh made with buttery golden semolina and filled with luscious ashta cream or cheese, soaked in aromatic rose and orange blossom syrup.",
     image: "knefe.jpg",
     price: "$11"
   },
