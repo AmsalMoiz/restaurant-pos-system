@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './menu.css';
+import Navbar from './Navbar'; // at the top
 
 const desserts = [
   {
@@ -112,7 +113,7 @@ const desserts = [
   },
   {
     name: "Knafeh Lebneniyeh",
-    description: "A smooth Lebanese knafeh made with buttery golden semolina and filled with luscious ashta cream, soaked in aromatic rose and orange blossom syrup.",
+    description: "A smooth Lebanese knafeh made with buttery golden semolina and filled with luscious ashta cream or cheese, soaked in aromatic rose and orange blossom syrup.",
     image: "knefe.jpg",
     price: "$11"
   },
@@ -136,7 +137,7 @@ const desserts = [
   }
 ];
 
-const Menu = () => {
+const Menu = ({ cartItems, setCartItems }) => {
   const [selectedDessert, setSelectedDessert] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
@@ -157,48 +158,76 @@ const Menu = () => {
       quantity,
       notes,
     };
+  
+    setCartItems([...cartItems, itemToAdd]); 
+    closeModal(); 
     console.log('✅ Added to cart:', itemToAdd);
     closeModal();
+
   };
 
   return (
-    <div
-      className="menu-background"
-      style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
-    >
-      <div className="menu-overlay">
-        <h1 className="menu-title">Our Signature Desserts</h1>
-        <div className="dessert-grid">
-          {desserts.map((item, index) => (
-            <div className="dessert-card" key={index} onClick={() => handleCardClick(item)}>
-              <img src={`/images/${item.image}`} alt={item.name} className="dessert-img" />
-              <h2 className="dessert-name">{item.name}</h2>
-              <p className="dessert-description">{item.description}</p>
-              <p className="dessert-price">{item.price}</p>
-            </div>
-          ))}
+    <>
+      <Navbar />
+      <div
+        className="menu-background"
+        style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
+      >
+        <div className="menu-overlay">
+          <h1 className="menu-title">Our Signature Desserts</h1>
+          <div className="dessert-grid">
+            {desserts.map((item, index) => (
+              <div
+                className="dessert-card"
+                key={index}
+                onClick={() => handleCardClick(item)}
+              >
+                <img
+                  src={`/images/${item.image}`}
+                  alt={item.name}
+                  className="dessert-img"
+                />
+                <h2 className="dessert-name">{item.name}</h2>
+                <p className="dessert-description">{item.description}</p>
+                <p className="dessert-price">{item.price}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
 
-  {selectedDessert && (
-    <div className="modal-overlay" onClick={closeModal}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <img src={`/images/${selectedDessert.image}`} alt={selectedDessert.name} className="modal-img" />
-        <h2>{selectedDessert.name}</h2>
-        <p>{selectedDessert.price}</p>
-        <input type="number" min="1" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
-        <textarea
-          placeholder="Add notes (e.g. allergies, extra toppings)"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
+      {selectedDessert && (
+  <div className="modal-overlay" onClick={closeModal}>
+    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <img
+        src={`/images/${selectedDessert.image}`}
+        alt={selectedDessert.name}
+        className="modal-img"
+      />
+      <h2>{selectedDessert.name}</h2>
+      <p>{selectedDessert.price}</p>
+      <input
+        type="number"
+        min="1"
+        value={quantity}
+        onChange={(e) => setQuantity(e.target.value)}
+      />
+      <textarea
+        placeholder="Add notes (e.g. allergies, extra toppings)"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+      />
+      
+      <div className="modal-buttons">
         <button onClick={handleAddToCart}>Add to Cart</button>
         <button onClick={closeModal} className="close-btn">Cancel</button>
       </div>
     </div>
-  )}
+  </div>
+)}
+
+    </>
+  );
 };
 
 export default Menu;

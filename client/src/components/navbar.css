@@ -1,0 +1,27 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: black;
+    color: #e6cfa7;
+  }
+  
+  .navbar-left h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 30px;
+    color: #e6cfa7;
+  }
+  
+  .navbar-right a {
+    margin-left: 25px;
+    color: #e6cfa7;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .navbar-right a:hover {
+    color: #fff;
+  }
+  
