@@ -136,7 +136,7 @@ const desserts = [
   }
 ];
 
-const Menu = () => {
+const Menu = ({ cartItems, setCartItems }) => {
   const [selectedDessert, setSelectedDessert] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
@@ -157,8 +157,12 @@ const Menu = () => {
       quantity,
       notes,
     };
+  
+    setCartItems([...cartItems, itemToAdd]); 
+    closeModal(); 
     console.log('✅ Added to cart:', itemToAdd);
     closeModal();
+    
   };
 
   return (
