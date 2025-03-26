@@ -162,43 +162,62 @@ const Menu = () => {
   };
 
   return (
-    <div
-      className="menu-background"
-      style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
-    >
-      <div className="menu-overlay">
-        <h1 className="menu-title">Our Signature Desserts</h1>
-        <div className="dessert-grid">
-          {desserts.map((item, index) => (
-            <div className="dessert-card" key={index} onClick={() => handleCardClick(item)}>
-              <img src={`/images/${item.image}`} alt={item.name} className="dessert-img" />
-              <h2 className="dessert-name">{item.name}</h2>
-              <p className="dessert-description">{item.description}</p>
-              <p className="dessert-price">{item.price}</p>
-            </div>
-          ))}
+    <>
+      <div
+        className="menu-background"
+        style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
+      >
+        <div className="menu-overlay">
+          <h1 className="menu-title">Our Signature Desserts</h1>
+          <div className="dessert-grid">
+            {desserts.map((item, index) => (
+              <div
+                className="dessert-card"
+                key={index}
+                onClick={() => handleCardClick(item)}
+              >
+                <img
+                  src={`/images/${item.image}`}
+                  alt={item.name}
+                  className="dessert-img"
+                />
+                <h2 className="dessert-name">{item.name}</h2>
+                <p className="dessert-description">{item.description}</p>
+                <p className="dessert-price">{item.price}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
 
-  {selectedDessert && (
-    <div className="modal-overlay" onClick={closeModal}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <img src={`/images/${selectedDessert.image}`} alt={selectedDessert.name} className="modal-img" />
-        <h2>{selectedDessert.name}</h2>
-        <p>{selectedDessert.price}</p>
-        <input type="number" min="1" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
-        <textarea
-          placeholder="Add notes (e.g. allergies, extra toppings)"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
-        <button onClick={handleAddToCart}>Add to Cart</button>
-        <button onClick={closeModal} className="close-btn">Cancel</button>
-      </div>
-    </div>
-  )}
+      {selectedDessert && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={`/images/${selectedDessert.image}`}
+              alt={selectedDessert.name}
+              className="modal-img"
+            />
+            <h2>{selectedDessert.name}</h2>
+            <p>{selectedDessert.price}</p>
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+            />
+            <textarea
+              placeholder="Add notes (e.g. allergies, extra toppings)"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+            <button onClick={handleAddToCart}>Add to Cart</button>
+            <button onClick={closeModal} className="close-btn">Cancel</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default Menu;
