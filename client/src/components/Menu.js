@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './menu.css';
 
 const desserts = [
@@ -137,17 +137,40 @@ const desserts = [
 ];
 
 const Menu = () => {
-  return (
+  const [selectedDessert, setSelectedDessert] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [notes, setNotes] = useState('');
 
-<div
-  className="menu-background"
-  style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
->
+  const handleCardClick = (dessert) => {
+    setSelectedDessert(dessert);
+    setQuantity(1);
+    setNotes('');
+  };
+
+  const closeModal = () => {
+    setSelectedDessert(null);
+  };
+
+  const handleAddToCart = () => {
+    const itemToAdd = {
+      ...selectedDessert,
+      quantity,
+      notes,
+    };
+    console.log('✅ Added to cart:', itemToAdd);
+    closeModal();
+  };
+
+  return (
+    <div
+      className="menu-background"
+      style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
+    >
       <div className="menu-overlay">
         <h1 className="menu-title">Our Signature Desserts</h1>
         <div className="dessert-grid">
           {desserts.map((item, index) => (
-            <div className="dessert-card" key={index}>
+            <div className="dessert-card" key={index} onClick={() => handleCardClick(item)}>
               <img src={`/images/${item.image}`} alt={item.name} className="dessert-img" />
               <h2 className="dessert-name">{item.name}</h2>
               <p className="dessert-description">{item.description}</p>
