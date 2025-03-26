@@ -181,6 +181,24 @@ const Menu = () => {
       </div>
     </div>
   );
+
+  {selectedDessert && (
+    <div className="modal-overlay" onClick={closeModal}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <img src={`/images/${selectedDessert.image}`} alt={selectedDessert.name} className="modal-img" />
+        <h2>{selectedDessert.name}</h2>
+        <p>{selectedDessert.price}</p>
+        <input type="number" min="1" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+        <textarea
+          placeholder="Add notes (e.g. allergies, extra toppings)"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+        <button onClick={handleAddToCart}>Add to Cart</button>
+        <button onClick={closeModal} className="close-btn">Cancel</button>
+      </div>
+    </div>
+  )}
 };
 
 export default Menu;
