@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './menu.css';
+import Navbar from './Navbar'; // at the top
 
 const desserts = [
   {
@@ -162,11 +163,12 @@ const Menu = ({ cartItems, setCartItems }) => {
     closeModal(); 
     console.log('✅ Added to cart:', itemToAdd);
     closeModal();
-    
+
   };
 
   return (
     <>
+      <Navbar />
       <div
         className="menu-background"
         style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
