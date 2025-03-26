@@ -11,8 +11,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    try {
-      const response = await fetch("https://sweet-heaven.azurewebsites.net/api/auth/login", {
+    try {  
+      const response = await fetch("https://sweet-heaven-atduagede6hpdxeg.eastus-01.azurewebsites.net/api/auth/login", { // hardcoded url better to use env variable but portability and security aren't important considerations for this project currently
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
