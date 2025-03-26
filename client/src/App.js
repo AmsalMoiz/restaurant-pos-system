@@ -1,4 +1,3 @@
-// Step 1: Update App.js to add the Cart page route and remove the old PlaceOrder page
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -17,7 +16,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/menu" element={<Menu cartItems={cartItems} setCartItems={setCartItems} />} />
-        <Route path="/cart" element={<Cart cartItems={cartItems} />} /> 
+        <Route path="/cart" element={<Cart cartItems={cartItems} />} />
+
       </Routes>
     </Router>
   );
