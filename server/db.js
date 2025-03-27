@@ -6,15 +6,12 @@ async function connect() { // Function to connect to the database
   if (global.connection && global.connection.state !== 'disconnected') { //check if connection is already established
     return global.connection; // If so, return the connection
   }
-
-  const connection = await mysql.createConnection({
+  
+  const connection = await mysql.createConnection({ //if issures with connection, will try create pool
     host: process.env.DB_HOST, // Load host from .env
     user: process.env.DB_USER, // Load user from .env
     password: process.env.DB_PASSWORD, // Load password from .env
     database: process.env.DB_DATABASE, // Load database from .env
-    ssl: { // Enable SSL
-      rejectUnauthorized: true,
-    },
   });
 
   global.connection = connection;
