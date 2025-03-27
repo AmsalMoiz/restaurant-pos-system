@@ -1,95 +1,77 @@
-.order-wrapper {
-  background-color: #000;
-  color: #fff;
-  padding: 50px 30px;
-  min-height: 100vh;
-}
-
-.order-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 42px;
-  color: #e6cfa7;
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.order-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 40px;
-  justify-items: center;
-  padding: 0 20px;
-}
-
-.order-card {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 20px;
-  width: 100%;
-  max-width: 320px;
+/* Cart Wrapper */
+.cart-list {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.03);
+  gap: 20px;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
-.order-card:hover {
-  transform: scale(1.015);
-  box-shadow: 0 0 20px rgba(230, 207, 167, 0.15);
-}
-
-.order-card img {
+/* Individual Cart Item */
+.cart-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 16px;
+  border-radius: 12px;
   width: 100%;
-  height: 220px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+}
+
+/* Dessert Image (Left) */
+.cart-item-img {
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 10px;
-  margin-bottom: 15px;
+  margin-right: 16px;
 }
 
-.order-details {
-  width: 100%;
+/* Details (Right Side) */
+.cart-item-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  flex: 1;
 }
 
-.order-details h2 {
+.cart-item-details h2 {
   font-size: 18px;
-  color: #fefefe;
-  margin-bottom: 6px;
+  margin: 0 0 6px 0;
+  color: #fff;
 }
 
-.order-details p {
-  font-size: 15px;
-  color: #d2d2d2;
-  margin-bottom: 10px;
-}
-
-.order-details input,
-.order-details textarea {
-  background-color: #fff;
-  color: #000;
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 8px;
-  border-radius: 6px;
-  border: none;
+.cart-item-details p {
   font-size: 14px;
+  color: #ccc;
+  margin: 2px 0;
 }
 
-.confirm-btn {
-  background: linear-gradient(to right, #e6cfa7, #f0dcb8);
-  color: #000;
-  padding: 14px 36px;
+/* Price Style */
+.cart-price {
+  color: #e6cfa7;
   font-weight: bold;
-  font-size: 16px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  margin: 60px auto 0;
-  display: block;
-  transition: background 0.3s ease;
+  margin-top: 4px;
 }
 
-.confirm-btn:hover {
-  background: #fff2da;
+/* Remove Button */
+.remove-btn {
+  align-self: flex-start;
+  margin-top: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+  background-color: #c62828;
 }
