@@ -1,77 +1,64 @@
-/* Cart Wrapper */
 .cart-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 20px;
-  max-width: 650px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding-top: 20px;
 }
 
-/* Individual Cart Item */
 .cart-item {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 16px;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 20px;
   border-radius: 12px;
-  width: 100%;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(6px);
+  gap: 20px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
-/* Dessert Image (Left) */
-.cart-item-img {
+.cart-img-small {
   width: 80px;
   height: 80px;
   object-fit: cover;
-  border-radius: 10px;
-  margin-right: 16px;
+  border-radius: 8px;
 }
 
-/* Details (Right Side) */
-.cart-item-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  color: #fff;
+.cart-details {
   flex: 1;
-}
-
-.cart-item-details h2 {
-  font-size: 18px;
-  margin: 0 0 6px 0;
-  color: #fff;
-}
-
-.cart-item-details p {
-  font-size: 14px;
-  color: #ccc;
-  margin: 2px 0;
-}
-
-/* Price Style */
-.cart-price {
-  color: #e6cfa7;
-  font-weight: bold;
-  margin-top: 4px;
-}
-
-/* Remove Button */
-.remove-btn {
-  align-self: flex-start;
-  margin-top: 10px;
-  background-color: #f44336;
   color: white;
-  border: none;
-  padding: 6px 12px;
-  font-size: 13px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.remove-btn:hover {
-  background-color: #c62828;
+.cart-details h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.cart-details p {
+  margin: 2px 0;
+  color: #ddd;
+  font-size: 14px;
+}
+
+.cart-price-small {
+  font-weight: bold;
+  color: #e6cfa7;
+  margin-top: 6px;
+}
+
+.remove-button {
+  background: #f25c4e;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+}
+
+.remove-button:hover {
+  background: #ff7e6c;
 }
