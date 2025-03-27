@@ -16,10 +16,10 @@ const Cart = ({ cartItems, setCartItems }) => {
         style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
       >
         <div className="menu-overlay">
-          <h1 className="menu-title">Your Cart</h1>
+          <h1 className="menu-title">Your Bag</h1>
           {cartItems.length === 0 ? (
             <p style={{ color: '#eee', textAlign: 'center' }}>
-              Your cart is currently empty.
+              Your bag is currently empty.
             </p>
           ) : (
             <div className="cart-list">

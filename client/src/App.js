@@ -7,7 +7,7 @@ import Menu from './components/Menu';
 import Cart from './components/Cart'; 
 
 function App() {
-  const [cartItems, setCartItems] = useState([]); 
+  const [cartItems, setCartItems] = useState([]);
 
   return (
     <Router>
@@ -16,8 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/menu" element={<Menu cartItems={cartItems} setCartItems={setCartItems} />} />
-        <Route path="/cart" element={<Cart cartItems={cartItems} />} />
-
+        <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
       </Routes>
     </Router>
   );

@@ -6,12 +6,12 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <h1 className="navbar-logo">Sweet Heaven</h1>
+      <h1 className="navbar-logo" onClick={() => window.location.href = '/home'} style={{ cursor: 'pointer' }}>Sweet Heaven</h1>
       </div>
       <div className="navbar-right">
         <Link to="/menu">View Menu</Link>
         <Link to="/booktable">Book Table</Link>
-        <Link to="/cart">Cart</Link>
+        <Link to="/cart">Bag</Link>
       </div>
     </nav>
   );
