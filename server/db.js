@@ -12,9 +12,6 @@ async function connect() { // Function to connect to the database
     user: process.env.DB_USER, // Load user from .env
     password: process.env.DB_PASSWORD, // Load password from .env
     database: process.env.DB_DATABASE, // Load database from .env
-    ssl: { // Enable SSL
-      rejectUnauthorized: true,
-    },
   });
 
   global.connection = connection;

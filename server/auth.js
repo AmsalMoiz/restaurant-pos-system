@@ -13,6 +13,9 @@ router.post("/login", async (req, res) => { // POST /api/auth/login
 
   try {
     const connection = await connect(); // Connect to the database
+    if (!connection) {
+      return res.status(500).json({ error: 'Database connection error' });
+    }
     const [rows] = await connection.execute( // Query the database
       "SELECT user_id, password FROM users WHERE email = ?",
       [email]
