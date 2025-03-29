@@ -30,3 +30,9 @@
 .navbar-right a:hover {
   color: #e6cfa7;
 }
+
+.logo-text {
+  font-family: 'Great Vibes', cursive;
+  font-size: 32px;
+  color: #f8eacc;
+}
