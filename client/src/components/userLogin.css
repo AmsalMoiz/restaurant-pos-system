@@ -1,0 +1,22 @@
+#user_login {
+    background-color: white;
+    color: black; /* Adjust text color for readability */
+    min-height: 100vh; /* Ensure it covers the full screen */
+}
+#username {
+    background-color: white;
+    color: black; 
+    border: 1px solid #ccc;
+}   
+#password {
+    background-color: white;
+    color: black; 
+    border: 1px solid #ccc;
+}   
+.error-message{
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+}
