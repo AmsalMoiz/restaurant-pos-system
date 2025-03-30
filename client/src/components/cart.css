@@ -124,3 +124,43 @@
 .checkout-btn:hover {
   background: #fff2da;
 }
+
+.cart-checkout-box-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px auto 0;
+  padding: 25px 35px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #fff;
+  max-width: 600px;
+  font-size: 18px;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  gap: 20px;
+
+  /* 👇 Add these 2 lines */
+  text-align: left;
+  width: 100%;
+}
+
+
+.checkout-total {
+  font-size: 24px;
+  color: #e6cfa7;
+  margin: 0;
+  white-space: nowrap; /* prevents wrapping on narrow screens */
+}
+
+@media (max-width: 480px) {
+  .cart-checkout-box-row {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .checkout-btn {
+    width: 100%;
+    margin-top: 15px;
+  }
+}

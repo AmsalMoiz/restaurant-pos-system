@@ -63,10 +63,12 @@ const Cart = ({ cartItems, setCartItems }) => {
                 ))}
               </div>
 
-              <div className="cart-checkout-box">
-                <p className="checkout-total">Total: ${calculateTotal()}</p>
+              <div className="cart-checkout-box-row">
+                <span className="checkout-total">Total: ${calculateTotal()}</span>
                 <button className="checkout-btn">Proceed to Checkout</button>
               </div>
+
+
             </>
           )}
         </div>
