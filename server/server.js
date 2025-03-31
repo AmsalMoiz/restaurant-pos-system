@@ -27,7 +27,7 @@ const dbErrorHandler = async (req, res, next) => {
 };
 
 // Apply the database middleware to all routes that need DB access
-app.use(['/menu', '/users/login'], dbErrorHandler);
+app.use(['/menu', '/users/login', '/admin-dashboard'], dbErrorHandler);
 
 app.get('/', (req, res) => {
   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
@@ -88,7 +88,26 @@ app.post('/users/login', async (req, res) => {
   }
 });
 
-
+app.get('/admin-dashboard', async (req, res) => {
+  try {
+    // Connection is now available as req.dbConnection
+    const [results] = await req.dbConnection.query('SELECT items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
+    const inventory = results.map(item => ({
+      dessert: item.item_name,
+      price: parseFloat(item.price),
+      quantity: item.quantity,
+      limit: item.reorder_threshold,
+      supplier: item.supplier_name
+    }));
+    res.json(inventory);
+  } catch (err) {
+    console.error('Error fetching inventory:', err);
+    return res.status(500).json({ 
+      error: 'Database query error', 
+      message: 'Failed to fetch inventory.' 
+    });
+  }
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

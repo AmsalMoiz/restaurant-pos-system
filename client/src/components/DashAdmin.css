@@ -2,14 +2,14 @@
 .admin-dashboard-body{
     background-color: rgb(255, 255, 255);
     width:100%;
-    height:100%;
+    height:200%;
     position: absolute;
 }
+
 .admin-dashboard {
     font-family: Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
 }
 
 .admin-header {
@@ -65,34 +65,42 @@
     display: flex;
     flex-direction: column;
     gap: 25px;
-    
 }
 
 .admin-section {
-    background-color: #f8f9fa;
+    background-color: white;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-section h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.admin-cards {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
 }
 
-.admin-section h2 {
-    width: 100%;
-    margin-top: 0;
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 10px;
-}
-
 .admin-card {
-    background-color: white;
+    background-color: #f8f9fa;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     width: calc(33.333% - 20px);
     min-width: 250px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .admin-card h3 {
@@ -108,6 +116,7 @@
     border-radius: 4px;
     cursor: pointer;
     margin-top: 10px;
+    transition: background-color 0.2s ease;
 }
 
 .admin-card button:hover {
@@ -131,6 +140,74 @@
     max-width: 500px;
 }
 
+/* Inventory Table Styles */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+.inventory-container {
+    overflow-x: auto;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-table th, 
+.inventory-table td {
+    border: 1px solid #e1e1e1;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.inventory-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+}
+
+.inventory-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.inventory-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.inventory-table .low-stock {
+    background-color: #fff3cd;
+}
+
+.status-low {
+    color: #856404;
+    background-color: #fff3cd;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-ok {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .admin-header {
@@ -145,5 +222,14 @@
     
     .admin-card {
         width: 100%;
+    }
+    
+    .inventory-table {
+        font-size: 14px;
+    }
+    
+    .inventory-table th, 
+    .inventory-table td {
+        padding: 8px 10px;
     }
 }

@@ -39,7 +39,7 @@ function UserLogin({ onLogin }) {
             localStorage.setItem('user', JSON.stringify(data.user));
             onLogin(data.user);
             // Check user role and redirect accordingly
-            if (data.user.role === 'Admin' || data.user.role === 'DBA') {
+            if (data.user.role === 'Admin') {
                 navigate('/admin-dashboard'); // Redirect to admin dashboard
             } 
             else if (data.user.role === 'Manager') {

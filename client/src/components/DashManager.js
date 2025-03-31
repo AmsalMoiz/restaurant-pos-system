@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./DashAdmin.css"; // You'll need to create this CSS file
 const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
 
-function DashWaiter() {
-    const [waiterData, setWaiterData] = useState(null);
+function DashManager() {
+    const [adminData, setManagerData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -23,21 +23,21 @@ function DashWaiter() {
             const user = JSON.parse(userData);
             
             // Check if user has manager role
-            if (user.role !== 'Waiter') {
+            if (user.role !== 'Manager') {
                 setError("Unauthorized access");
                 navigate('/users/login'); // Redirect to regular dashboard
                 return;
             }
             
-            setWaiterData(user);
+            setManagerData(user);
             setLoading(false);
             
             // You can also fetch additional manager-specific data here if needed
             // fetchManagerData(user.id);
             
         } catch (err) {
-            console.error("Error loading waiter data:", err);
-            setError("Error loading waiter data");
+            console.error("Error loading manager data:", err);
+            setError("Error loading manager data");
             setLoading(false);
         }
     }, [navigate]);
@@ -59,10 +59,10 @@ function DashWaiter() {
         <div className="admin-dashboard-body">
         <div className="admin-dashboard">
             <header className="admin-header">
-                <h1>Waiter Dashboard</h1>
+                <h1>Admin Dashboard</h1>
                 <div className="admin-info">
-                    <p>Welcome, <span className="admin-name">{waiterData.name}</span></p>
-                    <p className="admin-role">Role: {waiterData.role}</p>
+                    <p>Welcome, <span className="admin-name">{adminData.name}</span></p>
+                    <p className="admin-role">Role: {adminData.role}</p>
                     <button onClick={handleLogout} className="logout-btn">Logout</button>
                 </div>
             </header>
@@ -116,4 +116,4 @@ function DashWaiter() {
     );
 }
 
-export default DashWaiter;
+export default DashManager;
