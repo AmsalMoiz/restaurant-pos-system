@@ -6,6 +6,10 @@ import Login from './components/Login';
 import Menu from './components/MenuTest';
 import Cart from './components/Cart'; 
 import UserLogin from './components/UserLogin';
+import DashAdmin from './components/DashAdmin';
+import DashManager from './components/DashManager';
+import DashWaiter from './components/DashWaiter';
+import DashCook from './components/DashCook'; 
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -22,6 +26,11 @@ function App() {
         <Route path="/menu" element={<Menu cartItems={cartItems} setCartItems={setCartItems} />} />
         <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
         <Route path="/users/login" element={<UserLogin onLogin={handleUserLogin} />} />
+        <Route path="/admin-dashboard" element={<DashAdmin />} />
+        <Route path="/manager-dashboard" element={<DashManager />} />
+        <Route path="/waiter-dashboard" element={<DashWaiter />} />
+        <Route path="/cook-dashboard" element={<DashCook />} />
+          
       </Routes>
     </Router>
   );

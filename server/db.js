@@ -2,21 +2,56 @@ require('dotenv').config(); // Load environment variables from .env
 
 const mysql = require('mysql2/promise');
 
-async function connect() { // Function to connect to the database   
-  if (global.connection && global.connection.state !== 'disconnected') { //check if connection is already established
-    return global.connection; // If so, return the connection
+// Create a connection pool instead of a single connection
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  ssl: {
+    rejectUnauthorized: true,
+  },
+  // Connection pool settings
+  waitForConnections: true,
+  connectionLimit: 10, // Maximum number of connections in the pool
+  queueLimit: 0, // Unlimited queue
+  // Correct timeout setting
+  connectTimeout: 60000, // Connection timeout in milliseconds
+});
+
+// Handle pool errors
+pool.on('error', (err) => {
+  console.error('Database pool error:', err);
+  if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+    console.error('Database connection was closed. Will be re-established on next query.');
   }
+});
 
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST, // Load host from .env
-    user: process.env.DB_USER, // Load user from .env
-    password: process.env.DB_PASSWORD, // Load password from .env
-    database: process.env.DB_DATABASE, // Load database from .env
-  });
+// Ping database to check for connection status periodically
+setInterval(async () => {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    console.log('Database connection is healthy');
+  } catch (error) {
+    console.error('Error pinging database:', error);
+  }
+}, 300000); // Check every 5 minutes
 
-  global.connection = connection;
-  return connection;
+async function connect() {
+  try {
+    // Get a connection from the pool
+    return pool;
+  } catch (error) {
+    console.error('Error getting connection from pool:', error);
+    throw error;
+  }
 }
+
+
+
+module.exports = connect;
 
 // async function testConnection() {
 //     try {
@@ -29,6 +64,3 @@ async function connect() { // Function to connect to the database
 //   }
   
 // testConnection(); // Test the database connection
-  
-
-module.exports = connect;
