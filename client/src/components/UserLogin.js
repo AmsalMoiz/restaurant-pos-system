@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./userLogin.css";
-const API_URL = 'http://localhost:3001';
+const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
 
 function UserLogin({ onLogin }) {
     const [error, setError] = useState("");
@@ -38,7 +38,19 @@ function UserLogin({ onLogin }) {
             // If login successful, store user info and notify parent component
             localStorage.setItem('user', JSON.stringify(data.user));
             onLogin(data.user);
-            navigate('/dashboard'); // Or wherever you want to redirect after login
+            // Check user role and redirect accordingly
+            if (data.user.role === 'Admin' || data.user.role === 'DBA') {
+                navigate('/admin-dashboard'); // Redirect to admin dashboard
+            } 
+            else if (data.user.role === 'Manager') {
+                navigate('/manager-dashboard'); // Redirect to manager dashboard
+            }
+            else if (data.user.role === 'Waiter') {
+                navigate('/waiter-dashboard'); // Regular dashboard for other roles
+            }
+            else if (data.user.role === 'Cook'){
+                navigate('/cook-dashboard'); // Regular dashboard for other roles
+            }
             
         } catch (error) {
             console.error('Login error:', error);
@@ -48,6 +60,7 @@ function UserLogin({ onLogin }) {
     
     return (
         <>
+        <div id="user_login_body">
         <div id="user_login"> 
             <h1>Employee Login</h1> 
             
@@ -65,6 +78,7 @@ function UserLogin({ onLogin }) {
                 <br />
                 <button type="submit" id="sign_in">Sign In</button>
             </form>
+        </div>
         </div>
         </>
     );
