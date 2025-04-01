@@ -13,8 +13,18 @@ function DashAdmin() {
     const [activeSection, setActiveSection] = useState(null);
     const [users, setUsers] = useState([]);
     const [showUsers, setShowUsers] = useState(false);
-
-    // Fetch the inventory
+    // Add these state variables at the top of your component with the other state declarations
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        role: '',
+        hourly_pay_rate: ''
+        });
+    const [formError, setFormError] = useState('');
+    const [formSuccess, setFormSuccess] = useState('');
+    const [submitLoading, setSubmitLoading] = useState(false);
+    // FETCH INVENTORY
     useEffect(() => {
         const fetchInventory = async () => {
           try {
@@ -34,25 +44,70 @@ function DashAdmin() {
     
         fetchInventory();
     }, []);
-    useEffect(() => {
-        const fetchUsers = async () => {
-          try {
+    // FETCH USERS
+    const fetchUsers = async () => {
+        try {
             const response = await fetch(`${API_URL}/dashboard/users`);
             
             if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             
             const data = await response.json();
             setUsers(data);
-          } catch (err) {
-            console.error("Error fetching users items:", err);
-            setError("Failed to load users items. Please try again later.");
-          } 
-        };
-    
+        } catch (err) {
+            console.error("Error fetching users:", err);
+            setError("Failed to load employee data. Please try again later.");
+        } 
+    };
+    useEffect(() => {
         fetchUsers();
     }, []);
+    // ADD USER
+    // Add this function to handle form submission
+    const handleAddEmployee = async (e) => {
+        e.preventDefault();
+        setFormError('');
+        setFormSuccess('');
+        setSubmitLoading(true);
+        
+        try {
+            const response = await fetch(`${API_URL}/dashboard/users/update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to add employee');
+            }
+            
+            // Success! Clear form and show success message
+            setFormSuccess('Employee added successfully!');
+            setFormData({
+                name: '',
+                email: '',
+                password: '',
+                role: '',
+                hourly_pay_rate: ''
+            });
+            
+            // Refresh the users list
+            fetchUsers();
+            
+        } catch (error) {
+            console.error('Error adding employee:', error);
+            setFormError(error.message || 'Failed to add employee. Please try again.');
+        } finally {
+            setSubmitLoading(false);
+        }
+    };
+
+    
 
     useEffect(() => {
         // Get user data from localStorage
@@ -161,7 +216,7 @@ function DashAdmin() {
                         </div>
                     )}
 
-                    {/* Inventory Section */}
+                    {/* Show Inventory */}
                     {activeSection === 'inventory' && (
                         <div className="admin-section">
                             <div className="section-header">
@@ -205,7 +260,7 @@ function DashAdmin() {
                         </div>
                     )}
 
-                    {/* Placeholder for other sections */}
+                    {/* Show users/employees */}
                     {activeSection === 'employees' && (
                     <div className="admin-section">
                     <div className="section-header">
@@ -251,6 +306,93 @@ function DashAdmin() {
                     </div>
                     )}
 
+                    {/* Add user */}
+                    {activeSection === 'add-employee' && (
+                        <div className="admin-section">
+                            <div className="section-header">
+                                <h2>Add New Employee</h2>
+                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            </div>
+                            
+                            <div className="employee-form-container">
+                                <form className="employee-form" onSubmit={handleAddEmployee}>
+                                    <div className="form-group">
+                                        <label htmlFor="name">Full Name</label>
+                                        <input 
+                                            type="text" 
+                                            id="name" 
+                                            value={formData.name} 
+                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                            required 
+                                        />
+                                    </div>
+                                    
+                                    <div className="form-group">
+                                        <label htmlFor="email">Email</label>
+                                        <input 
+                                            type="email" 
+                                            id="email" 
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                            required 
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="password">Password</label>
+                                        <input 
+                                            type="password" 
+                                            id="password" 
+                                            value={formData.password}
+                                            onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                            required 
+                                        />
+                                    </div>
+                                    
+                                    <div className="form-group">
+                                        <label htmlFor="role">Role</label>
+                                        <select 
+                                            id="role" 
+                                            value={formData.role}
+                                            onChange={(e) => setFormData({...formData, role: e.target.value})}
+                                            required
+                                        >
+                                            <option value="">Select a role</option>
+                                            <option value="DBA">DBA</option>
+                                            <option value="Admin">Admin</option>
+                                            <option value="Manager">Manager</option>
+                                            <option value="Waiter">Waiter</option>
+                                            <option value="Cook">Cook</option>
+                                            
+                                        </select>
+                                    </div>
+                                    
+                                    <div className="form-group">
+                                        <label htmlFor="hourly_pay_rate">Hourly Pay Rate ($)</label>
+                                        <input 
+                                            type="number" 
+                                            id="hourly_pay_rate" 
+                                            min="10" 
+                                            step="0.10"
+                                            value={formData.hourly_pay_rate}
+                                            onChange={(e) => setFormData({...formData, hourly_pay_rate: e.target.value})}
+                                            required 
+                                        />
+                                    </div>
+                                    
+                                    <div className="form-buttons">
+                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
+                                        <button type="submit" className="submit-btn" disabled={submitLoading}>
+                                            {submitLoading ? 'Adding...' : 'Add Employee'}
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                {formError && <div className="form-error">{formError}</div>}
+                                {formSuccess && <div className="form-success">{formSuccess}</div>}
+                            </div>
+                        </div>
+                    )}
                     {activeSection === 'reports' && (
                         <div className="admin-section">
                             <div className="section-header">
