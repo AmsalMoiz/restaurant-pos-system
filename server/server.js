@@ -89,6 +89,7 @@ app.post('/users/login', async (req, res) => {
   }
 });
 
+/* USER DASHBOARD */
 app.get('/dashboard/inventory', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
@@ -132,6 +133,42 @@ app.get('/dashboard/users', async (req, res) => {
   }
 });
 
+app.post('/dashboard/users/update', async (req, res) => {
+  const { role, name, email, password, hourly_pay_rate } = req.body;
+  if (!role || !name || !email || !password || !hourly_pay_rate) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+  
+  try {
+    // Connection is now available as req.dbConnection
+    const [results] = await req.dbConnection.query(
+      'SELECT email FROM users WHERE email = ? ', 
+      [email]
+    );
+    
+    if (results.length > 0) {
+      return res.status(409).json({ error: 'Email already in use!' });
+    } else {
+      const [insertResult] = await req.dbConnection.query(
+        'INSERT INTO users (role, name, email, password, hours_worked, hourly_pay_rate) VALUES (?, ?, ?, ?, ?, ?)', 
+        [role, name, email, password, 0, hourly_pay_rate]
+      );
+      if (insertResult.affectedRows > 0) {
+        res.json({ success: true, message: 'User added successfully!' });
+      }
+      else {
+        return res.status(500).json({ error: 'Failed to add user.' });
+      }
+    }
+    
+  } catch (err) {
+    console.error('Insert user error:', err);
+    return res.status(500).json({ 
+      error: 'Database insert error', 
+      message: 'An error occurred during inserting user.' 
+    });
+  }
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
