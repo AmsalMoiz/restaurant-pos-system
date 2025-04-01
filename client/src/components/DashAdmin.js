@@ -11,12 +11,14 @@ function DashAdmin() {
     const [inventory, setInventory] = useState([]);
     const [showInventory, setShowInventory] = useState(false);
     const [activeSection, setActiveSection] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [showUsers, setShowUsers] = useState(false);
 
     // Fetch the inventory
     useEffect(() => {
         const fetchInventory = async () => {
           try {
-            const response = await fetch(`${API_URL}/admin-dashboard`);
+            const response = await fetch(`${API_URL}/dashboard/inventory`);
             
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
@@ -31,6 +33,25 @@ function DashAdmin() {
         };
     
         fetchInventory();
+    }, []);
+    useEffect(() => {
+        const fetchUsers = async () => {
+          try {
+            const response = await fetch(`${API_URL}/dashboard/users`);
+            
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            setUsers(data);
+          } catch (err) {
+            console.error("Error fetching users items:", err);
+            setError("Failed to load users items. Please try again later.");
+          } 
+        };
+    
+        fetchUsers();
     }, []);
 
     useEffect(() => {
@@ -186,13 +207,48 @@ function DashAdmin() {
 
                     {/* Placeholder for other sections */}
                     {activeSection === 'employees' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Employee Management</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            <p>Employee management interface would go here</p>
-                        </div>
+                    <div className="admin-section">
+                    <div className="section-header">
+                    <h2>Employee Management</h2>
+                    <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                    </div>
+        
+                    <div className="employees-container">
+                        {users.length === 0 ? (
+                        <p>Loading employee data...</p>
+                        ) : (
+                        <table className="employees-table">
+                        <thead>
+                            <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Hours Worked</th>
+                            <th>Hourly Rate</th>
+                            <th>Email</th>
+                            
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {users.map((user, index) => (
+                            <tr key={index}>
+                                <td>{user.name}</td>
+                                <td>
+                                    <span className={`role-badge role-${user.role.toLowerCase()}`}>
+                                        {user.role}
+                                    </span>
+                                </td>
+                                <td>{user.hours.toFixed(1)}</td>
+                                <td>${user.pay.toFixed(2)}</td>
+                                <td>{user.email}</td>
+                                
+                                
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                        )}
+                    </div>
+                    </div>
                     )}
 
                     {activeSection === 'reports' && (
