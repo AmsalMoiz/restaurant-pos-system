@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Import Link
 import "./userLogin.css";
+
 const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
 
 function UserLogin({ onLogin }) {
@@ -46,10 +47,10 @@ function UserLogin({ onLogin }) {
                 navigate('/manager-dashboard'); // Redirect to manager dashboard
             }
             else if (data.user.role === 'Waiter') {
-                navigate('/waiter-dashboard'); // Regular dashboard for other roles
+                navigate('/waiter-dashboard'); // Redirect to waiter dashboard
             }
-            else if (data.user.role === 'Cook'){
-                navigate('/cook-dashboard'); // Regular dashboard for other roles
+            else if (data.user.role === 'Cook') {
+                navigate('/cook-dashboard'); // Redirect to cook dashboard
             }
             
         } catch (error) {
@@ -78,6 +79,11 @@ function UserLogin({ onLogin }) {
                 <br />
                 <button type="submit" id="sign_in">Sign In</button>
             </form>
+
+            {/* Add Back to Customer Login Link */}
+            <p style={{ marginTop: "1rem" }}>
+                <Link to="/login">Back to Customer Login</Link>
+            </p>
         </div>
         </div>
         </>

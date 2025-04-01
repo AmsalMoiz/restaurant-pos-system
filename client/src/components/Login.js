@@ -40,7 +40,6 @@ const Login = () => {
         backgroundAttachment: "fixed",
         minHeight: "100vh",
       }}
-      
     >
       <div className="login-container">
         <h2>Welcome to Sweet Heaven</h2>
@@ -72,6 +71,11 @@ const Login = () => {
 
         <p style={{ marginTop: "1rem" }}>
           Or <Link to="/home">Go to Home Page</Link>
+        </p>
+
+        {/* Employee Login Link */}
+        <p style={{ marginTop: "1rem" }}>
+          <Link to="/users/login">Go to Employee Login</Link>
         </p>
       </div>
     </div>

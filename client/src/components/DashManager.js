@@ -59,10 +59,10 @@ function DashManager() {
         <div className="admin-dashboard-body">
         <div className="admin-dashboard">
             <header className="admin-header">
-                <h1>Admin Dashboard</h1>
+                <h1>Manager Dashboard</h1>
                 <div className="admin-info">
                     <p>Welcome, <span className="admin-name">{adminData.name}</span></p>
-                    <p className="admin-role">Role: {adminData.role}</p>
+                    <p className="admin-role">Title: {adminData.role}</p>
                     <button onClick={handleLogout} className="logout-btn">Logout</button>
                 </div>
             </header>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./DashAdmin.css"; // You'll need to create this CSS file
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+import "./DashWaiter.css";
 
 function DashWaiter() {
     const [waiterData, setWaiterData] = useState(null);
@@ -11,30 +10,26 @@ function DashWaiter() {
 
     useEffect(() => {
         // Get user data from localStorage
-        const userData = localStorage.getItem('user');
-        
+        const userData = localStorage.getItem("user");
+
         if (!userData) {
             setError("Not logged in");
-            navigate('/users/login'); 
+            navigate("/users/login");
             return;
         }
 
         try {
             const user = JSON.parse(userData);
-            
-            // Check if user has manager role
-            if (user.role !== 'Waiter') {
+
+            // Check if user has Waiter role
+            if (user.role !== "Waiter") {
                 setError("Unauthorized access");
-                navigate('/users/login'); // Redirect to regular dashboard
+                navigate("/users/login");
                 return;
             }
-            
+
             setWaiterData(user);
             setLoading(false);
-            
-            // You can also fetch additional manager-specific data here if needed
-            // fetchManagerData(user.id);
-            
         } catch (err) {
             console.error("Error loading waiter data:", err);
             setError("Error loading waiter data");
@@ -43,8 +38,16 @@ function DashWaiter() {
     }, [navigate]);
 
     const handleLogout = () => {
-        localStorage.removeItem('user');
-        navigate('/users/login');
+        localStorage.removeItem("user");
+        navigate("/users/login");
+    };
+
+    const handleClockIn = () => {
+        alert("You have clocked in!");
+    };
+
+    const handleClockOut = () => {
+        alert("You have clocked out!");
     };
 
     if (loading) {
@@ -56,62 +59,41 @@ function DashWaiter() {
     }
 
     return (
-        <div className="admin-dashboard-body">
-        <div className="admin-dashboard">
-            <header className="admin-header">
-                <h1>Waiter Dashboard</h1>
-                <div className="admin-info">
-                    <p>Welcome, <span className="admin-name">{waiterData.name}</span></p>
-                    <p className="admin-role">Role: {waiterData.role}</p>
-                    <button onClick={handleLogout} className="logout-btn">Logout</button>
-                </div>
-            </header>
-            
-            <main className="admin-content">
-                <div className="admin-section">
-                    <h2>Restaurant Management</h2>
-                    {/* Add your admin-specific content here */}
-                    <div className="admin-card">
-                        <h3>Employee Management</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>View Employees</button>
+        <div className="waiter-dashboard-body">
+            <div className="waiter-dashboard">
+                <header className="waiter-header">
+                    <h1>Waiter Dashboard</h1>
+                    <div className="waiter-info">
+                        <p>
+                            Welcome, <span className="waiter-name">{waiterData.name}</span>
+                        </p>
+                        <p className="waiter-role">Title: {waiterData.role}</p>
+                        <button onClick={handleLogout} className="logout-btn">
+                            Logout
+                        </button>
                     </div>
-                    
-                    <div className="admin-card">
-                        <h3>Inventory</h3>
-                        <p>Manage restaurant inventory</p>
-                        <button>View Inventory</button>
-                    </div>
-                    
-                    <div className="admin-card">
-                        <h3>Sales Reports</h3>
-                        <p>View daily, weekly, and monthly sales</p>
-                        <button>View Reports</button>
-                    </div>
+                </header>
 
-                    <div className="admin-card">
-                        <h3>Remove Employee</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>Remove Employee</button>
+                <main className="waiter-content">
+                    <div className="waiter-section">
+                        <h2>Actions</h2>
+                        <div className="waiter-buttons">
+                            <button className="waiter-btn">
+                                Make Transaction
+                            </button>
+                            <button className="waiter-btn">
+                                Show Transactions
+                            </button>
+                            <button onClick={handleClockIn} className="waiter-btn">
+                                Clock In
+                            </button>
+                            <button onClick={handleClockOut} className="waiter-btn">
+                                Clock Out
+                            </button>
+                        </div>
                     </div>
-
-                    <div className="admin-card">
-                        <h3>Add Employee</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>Add Employee</button>
-                    </div>
-
-                    <div className="admin-card">
-                        <h3>Update Employee</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>Update Employee</button>
-                    </div>
-
-                    
-
-                </div>
-            </main>
-        </div>
+                </main>
+            </div>
         </div>
     );
 }

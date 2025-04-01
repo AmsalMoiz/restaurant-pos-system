@@ -1,40 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./DashAdmin.css"; // You'll need to create this CSS file
-//const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+import "./DashCook.css";
 
 function DashCook() {
-    const [adminData, setCookData] = useState(null);
+    const [cookData, setCookData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [isClockedIn, setIsClockedIn] = useState(false); // State to track clock-in status
     const navigate = useNavigate();
 
     useEffect(() => {
         // Get user data from localStorage
-        const userData = localStorage.getItem('user');
-        
+        const userData = localStorage.getItem("user");
+
         if (!userData) {
             setError("Not logged in");
-            navigate('/users/login'); 
+            navigate("/users/login");
             return;
         }
 
         try {
             const user = JSON.parse(userData);
-            
+
             // Check if user has Cook role
-            if (user.role !== 'Cook') {
+            if (user.role !== "Cook") {
                 setError("Unauthorized access");
-                navigate('/users/login'); // Redirect to regular dashboard
+                navigate("/users/login");
                 return;
             }
-            
+
             setCookData(user);
+
+            // Retrieve clock-in status from localStorage
+            const savedClockStatus = localStorage.getItem(`isClockedIn_${user.email}`);
+            setIsClockedIn(savedClockStatus === "true"); // Convert string to boolean
+
             setLoading(false);
-            
-            // You can also fetch additional cook-specific data here if needed
-            // fetchCookData(user.id);
-            
         } catch (err) {
             console.error("Error loading cook data:", err);
             setError("Error loading Cook data");
@@ -43,8 +44,33 @@ function DashCook() {
     }, [navigate]);
 
     const handleLogout = () => {
-        localStorage.removeItem('user');
-        navigate('/users/login');
+        if (cookData) {
+            localStorage.removeItem(`isClockedIn_${cookData.email}`); // Clear clock-in status for this user
+        }
+        localStorage.removeItem("user"); // Remove user data
+        navigate("/users/login");
+    };
+
+    const handleClockIn = () => {
+        if (!cookData) {
+            alert("User data not loaded. Please try again.");
+            return;
+        }
+
+        setIsClockedIn(true); // Set clock-in status to true
+        localStorage.setItem(`isClockedIn_${cookData.email}`, true); // Save to localStorage
+        alert("You have clocked in.");
+    };
+
+    const handleClockOut = () => {
+        if (!cookData) {
+            alert("User data not loaded. Please try again.");
+            return;
+        }
+
+        setIsClockedIn(false); // Set clock-in status to false
+        localStorage.setItem(`isClockedIn_${cookData.email}`, false); // Save to localStorage
+        alert("You have clocked out.");
     };
 
     if (loading) {
@@ -56,62 +82,35 @@ function DashCook() {
     }
 
     return (
-        <div className="admin-dashboard-body">
-        <div className="admin-dashboard">
-            <header className="admin-header">
-                <h1>Admin Dashboard</h1>
-                <div className="admin-info">
-                    <p>Welcome, <span className="admin-name">{adminData.name}</span></p>
-                    <p className="admin-role">Role: {adminData.role}</p>
-                    <button onClick={handleLogout} className="logout-btn">Logout</button>
-                </div>
-            </header>
-            
-            <main className="admin-content">
-                <div className="admin-section">
-                    <h2>Restaurant Management</h2>
-                    {/* Add your admin-specific content here */}
-                    <div className="admin-card">
-                        <h3>Employee Management</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>View Employees</button>
+        <div className="cook-dashboard-body">
+            <div className="cook-dashboard">
+                <header className="cook-header">
+                    <h1>Cook Dashboard</h1>
+                    <div className="cook-info">
+                        <p>
+                            Welcome, <span className="cook-name">{cookData.name}</span>
+                        </p>
+                        <p className="cook-role">Title: {cookData.role}</p>
+                        <button onClick={handleLogout} className="logout-btn">
+                            Logout
+                        </button>
                     </div>
-                    
-                    <div className="admin-card">
-                        <h3>Inventory</h3>
-                        <p>Manage restaurant inventory</p>
-                        <button>View Inventory</button>
-                    </div>
-                    
-                    <div className="admin-card">
-                        <h3>Sales Reports</h3>
-                        <p>View daily, weekly, and monthly sales</p>
-                        <button>View Reports</button>
-                    </div>
+                </header>
 
-                    <div className="admin-card">
-                        <h3>Remove Employee</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>Remove Employee</button>
+                <main className="cook-content">
+                    <div className="cook-section">
+                        <h2>Clock In/Clock Out</h2>
+                        <div className="clock-buttons">
+                            <button onClick={handleClockIn} className="clock-btn">
+                                Clock In
+                            </button>
+                            <button onClick={handleClockOut} className="clock-btn">
+                                Clock Out
+                            </button>
+                        </div>
                     </div>
-
-                    <div className="admin-card">
-                        <h3>Add Employee</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>Add Employee</button>
-                    </div>
-
-                    <div className="admin-card">
-                        <h3>Update Employee</h3>
-                        <p>Manage restaurant staff</p>
-                        <button>Update Employee</button>
-                    </div>
-
-                    
-
-                </div>
-            </main>
-        </div>
+                </main>
+            </div>
         </div>
     );
 }
