@@ -9,10 +9,10 @@ function DashAdmin() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [inventory, setInventory] = useState([]);
-    const [showInventory, setShowInventory] = useState(false);
+    //const [showInventory, setShowInventory] = useState(false);
     const [activeSection, setActiveSection] = useState(null);
     const [users, setUsers] = useState([]);
-    const [showUsers, setShowUsers] = useState(false);
+    //const [showUsers, setShowUsers] = useState(false);
     // Add these state variables at the top of your component with the other state declarations
     const [formData, setFormData] = useState({
         name: '',
@@ -24,6 +24,17 @@ function DashAdmin() {
     const [formError, setFormError] = useState('');
     const [formSuccess, setFormSuccess] = useState('');
     const [submitLoading, setSubmitLoading] = useState(false);
+    const [removeEmail, setRemoveEmail] = useState('');
+    const [updateFormData, setUpdateFormData] = useState({
+        name: '',
+        email: '',
+        role: '',
+        hourly_pay_rate: ''
+    });
+    const [updateFormError, setUpdateFormError] = useState('');
+    const [updateFormSuccess, setUpdateFormSuccess] = useState('');
+    const [updateSubmitLoading, setUpdateSubmitLoading] = useState(false);
+
     // FETCH INVENTORY
     useEffect(() => {
         const fetchInventory = async () => {
@@ -72,7 +83,7 @@ function DashAdmin() {
         setSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/users/update`, {
+            const response = await fetch(`${API_URL}/dashboard/users/insert`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,9 +117,106 @@ function DashAdmin() {
             setSubmitLoading(false);
         }
     };
+        
+    // Handler for selecting an employee to update
+    const handleEmployeeSelect = (e) => {
+        const selectedEmail = e.target.value;
+        if (!selectedEmail) {
+            setUpdateFormData({
+                name: '',
+                email: '',
+                role: '',
+                hourly_pay_rate: ''
+            });
+            return;
+        }
+        
+        const selectedUser = users.find(user => user.email === selectedEmail);
+        if (selectedUser) {
+            setUpdateFormData({
+                name: selectedUser.name,
+                email: selectedUser.email,
+                role: selectedUser.role,
+                hourly_pay_rate: selectedUser.pay.toString()
+            });
+        }
+    };
+
+    // Handler for removing an employee
+    const handleRemoveEmployee = async (e) => {
+        e.preventDefault();
+        setFormError('');
+        setFormSuccess('');
+        setSubmitLoading(true);
+        
+        try {
+            const response = await fetch(`${API_URL}/dashboard/users/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: removeEmail }),
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to remove employee');
+            }
+            
+            // Success! Clear form and show success message
+            setFormSuccess('Employee removed successfully!');
+            setRemoveEmail('');
+            
+            // Refresh the users list
+            fetchUsers();
+            
+        } catch (error) {
+            console.error('Error removing employee:', error);
+            setFormError(error.message || 'Failed to remove employee. Please try again.');
+        } finally {
+            setSubmitLoading(false);
+        }
+    };
+
+    // Handler for updating an employee
+    const handleUpdateEmployee = async (e) => {
+        e.preventDefault();
+        setUpdateFormError('');
+        setUpdateFormSuccess('');
+        setUpdateSubmitLoading(true);
+        
+        try {
+            const response = await fetch(`${API_URL}/dashboard/users/update`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateFormData),
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to update employee');
+            }
+            
+            // Success! Show success message
+            setUpdateFormSuccess('Employee updated successfully!');
+            
+            // Refresh the users list
+            fetchUsers();
+            
+        } catch (error) {
+            console.error('Error updating employee:', error);
+            setUpdateFormError(error.message || 'Failed to update employee. Please try again.');
+        } finally {
+            setUpdateSubmitLoading(false);
+        }
+    };
 
     
-
+    //Login additional features, returns to login page if not properly logged in
     useEffect(() => {
         // Get user data from localStorage
         const userData = localStorage.getItem('user');
@@ -177,22 +285,37 @@ function DashAdmin() {
                         <div className="admin-section">
                             <h2>Restaurant Management</h2>
                             <div className="admin-cards">
-                                <div className="admin-card">
-                                    <h3>Employee Management</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('employees')}>View Employees</button>
-                                </div>
                                 
+                                {/* Inventory side */}
                                 <div className="admin-card">
                                     <h3>Inventory</h3>
                                     <p>Manage restaurant inventory</p>
                                     <button onClick={handleShowInventory}>View Inventory</button>
                                 </div>
-                                
+
                                 <div className="admin-card">
-                                    <h3>Sales Reports</h3>
-                                    <p>View daily, weekly, and monthly sales</p>
-                                    <button onClick={() => handleSectionClick('reports')}>View Reports</button>
+                                    <h3>Remove Inventory</h3>
+                                    <p>Manage restaurant inventory</p>
+                                    <button onClick={() => handleSectionClick('remove-inventory')}>Remove Inventory</button>
+                                </div>
+
+                                <div className="admin-card">
+                                    <h3>Add Inventory</h3>
+                                    <p>Manage restaurant inventory</p>
+                                    <button onClick={() => handleSectionClick('add-inventory')}>Add Inventory</button>
+                                </div>
+
+                                <div className="admin-card">
+                                    <h3>Update Inventory</h3>
+                                    <p>Manage restaurant inventory</p>
+                                    <button onClick={() => handleSectionClick('update-inventory')}>Update Inventory</button>
+                                </div>
+
+                                {/* Users side */}
+                                <div className="admin-card">
+                                    <h3>Employee Management</h3>
+                                    <p>Manage restaurant staff</p>
+                                    <button onClick={() => handleSectionClick('employees')}>View Employees</button>
                                 </div>
 
                                 <div className="admin-card">
@@ -211,6 +334,37 @@ function DashAdmin() {
                                     <h3>Update Employee</h3>
                                     <p>Manage restaurant staff</p>
                                     <button onClick={() => handleSectionClick('update-employee')}>Update Employee</button>
+                                </div>
+
+                                {/* Suppliers side */}
+                                <div className="admin-card">
+                                    <h3>Suppliers</h3>
+                                    <p>Manage restaurant suppliers</p>
+                                    <button onClick={() => handleSectionClick('suppliers')}>View Suppliers</button>
+                                </div>
+
+                                <div className="admin-card">
+                                    <h3>Remove Supplier</h3>
+                                    <p>Manage restaurant suppliers</p>
+                                    <button onClick={() => handleSectionClick('remove-suppliers')}>Remove Supplier</button>
+                                </div>
+
+                                <div className="admin-card">
+                                    <h3>Add Supplier</h3>
+                                    <p>Manage restaurant suppliers</p>
+                                    <button onClick={() => handleSectionClick('add-supplier')}>Add Supplier</button>
+                                </div>
+
+                                <div className="admin-card">
+                                    <h3>Update Supplier</h3>
+                                    <p>Manage restaurant supplier</p>
+                                    <button onClick={() => handleSectionClick('update-supplier')}>Update Supplier</button>
+                                </div>
+
+                                <div className="admin-card">
+                                    <h3>Sales Reports</h3>
+                                    <p>View daily, weekly, and monthly sales</p>
+                                    <button onClick={() => handleSectionClick('reports')}>View Reports</button>
                                 </div>
                             </div>
                         </div>
@@ -393,6 +547,148 @@ function DashAdmin() {
                             </div>
                         </div>
                     )}
+                    {/* Remove user */}
+                    {activeSection === 'remove-employee' && (
+                        <div className="admin-section">
+                            <div className="section-header">
+                                <h2>Remove Employee</h2>
+                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            </div>
+                            
+                            <div className="employee-form-container">
+                                <form className="employee-form" onSubmit={handleRemoveEmployee}>
+                                    <div className="form-group">
+                                        <label htmlFor="remove-email">Employee Email</label>
+                                        <select 
+                                            id="remove-email" 
+                                            value={removeEmail}
+                                            onChange={(e) => setRemoveEmail(e.target.value)}
+                                            required
+                                        >
+                                            <option value="">Select an employee</option>
+                                            {users.map((user, index) => (
+                                                <option key={index} value={user.email}>
+                                                    {user.name} ({user.email}) - {user.role}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    
+                                    {removeEmail && (
+                                        <div className="confirmation-box">
+                                            <p className="warning-text">Are you sure you want to remove this employee?</p>
+                                            <p>This action cannot be undone.</p>
+                                            
+                                            <div className="selected-employee">
+                                                <p><strong>Name:</strong> {users.find(u => u.email === removeEmail)?.name}</p>
+                                                <p><strong>Email:</strong> {removeEmail}</p>
+                                                <p><strong>Role:</strong> {users.find(u => u.email === removeEmail)?.role}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="form-buttons">
+                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
+                                        <button type="submit" className="delete-confirm-btn" disabled={!removeEmail || submitLoading}>
+                                            {submitLoading ? 'Removing...' : 'Confirm Removal'}
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                {formError && <div className="form-error">{formError}</div>}
+                                {formSuccess && <div className="form-success">{formSuccess}</div>}
+                            </div>
+                        </div>
+                    )}
+                    {/* Update user */}
+                    {activeSection === 'update-employee' && (
+                        <div className="admin-section">
+                            <div className="section-header">
+                                <h2>Update Employee</h2>
+                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            </div>
+                            
+                            <div className="employee-form-container">
+                                <div className="employee-selection">
+                                    <label htmlFor="update-email">Select Employee to Update:</label>
+                                    <select 
+                                        id="update-email" 
+                                        value={updateFormData.email}
+                                        onChange={handleEmployeeSelect}
+                                        required
+                                    >
+                                        <option value="">Select an employee</option>
+                                        {users.map((user, index) => (
+                                            <option key={index} value={user.email}>
+                                                {user.name} ({user.email}) - {user.role}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                
+                                {updateFormData.email && (
+                                    <form className="employee-form" onSubmit={handleUpdateEmployee}>
+                                        <div className="form-group">
+                                            <label htmlFor="update-name">Full Name</label>
+                                            <input 
+                                                type="text" 
+                                                id="update-name" 
+                                                value={updateFormData.name} 
+                                                onChange={(e) => setUpdateFormData({...updateFormData, name: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        
+                                        <div className="form-group">
+                                            <label htmlFor="update-role">Role</label>
+                                            <select 
+                                                id="update-role" 
+                                                value={updateFormData.role}
+                                                onChange={(e) => setUpdateFormData({...updateFormData, role: e.target.value})}
+                                                required
+                                            >
+                                                <option value="">Select a role</option>
+                                                <option value="DBA">DBA</option>
+                                                <option value="Admin">Admin</option>
+                                                <option value="Manager">Manager</option>
+                                                <option value="Waiter">Waiter</option>
+                                                <option value="Cook">Cook</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div className="form-group">
+                                            <label htmlFor="update-hourly_pay_rate">Hourly Pay Rate ($)</label>
+                                            <input 
+                                                type="number" 
+                                                id="update-hourly_pay_rate" 
+                                                min="10" 
+                                                step="0.10"
+                                                value={updateFormData.hourly_pay_rate}
+                                                onChange={(e) => setUpdateFormData({...updateFormData, hourly_pay_rate: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        
+                                        <div className="form-group">
+                                            <p className="email-note"><strong>Note:</strong> Email cannot be updated as it is used as the unique identifier.</p>
+                                            <p className="email-display">{updateFormData.email}</p>
+                                        </div>
+                                        
+                                        <div className="form-buttons">
+                                            <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
+                                            <button type="submit" className="submit-btn" disabled={updateSubmitLoading}>
+                                                {updateSubmitLoading ? 'Updating...' : 'Update Employee'}
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                                
+                                {updateFormError && <div className="form-error">{updateFormError}</div>}
+                                {updateFormSuccess && <div className="form-success">{updateFormSuccess}</div>}
+                            </div>
+                        </div>
+                    )}
+                    {/* Sales Reports */}
                     {activeSection === 'reports' && (
                         <div className="admin-section">
                             <div className="section-header">

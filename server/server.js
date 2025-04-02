@@ -28,7 +28,7 @@ const dbErrorHandler = async (req, res, next) => {
 };
 
 // Apply the database middleware to all routes that need DB access
-app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users'], dbErrorHandler);
+app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users', '/dashboard/users/delete', '/dashboard/users/update', '/dashboard/users/insert'], dbErrorHandler);
 
 app.get('/', (req, res) => {
   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
@@ -133,7 +133,7 @@ app.get('/dashboard/users', async (req, res) => {
   }
 });
 
-app.post('/dashboard/users/update', async (req, res) => {
+app.post('/dashboard/users/insert', async (req, res) => {
   const { role, name, email, password, hourly_pay_rate } = req.body;
   if (!role || !name || !email || !password || !hourly_pay_rate) {
     return res.status(400).json({ error: 'All fields are required.' });
@@ -166,6 +166,64 @@ app.post('/dashboard/users/update', async (req, res) => {
     return res.status(500).json({ 
       error: 'Database insert error', 
       message: 'An error occurred during inserting user.' 
+    });
+  }
+});
+
+app.delete('/dashboard/users/delete', async (req, res) => {
+  const { email } = req.body;
+  
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required.' });
+  }
+  
+  try {
+    // Connection is now available as req.dbConnection
+    const [deleteResult] = await req.dbConnection.query(
+      'DELETE FROM users WHERE email = ?', 
+      [email]
+    );
+    
+    if (deleteResult.affectedRows > 0) {
+      res.json({ success: true, message: 'User deleted successfully!' });
+    } else {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    
+  } catch (err) {
+    console.error('Delete user error:', err);
+    return res.status(500).json({ 
+      error: 'Database delete error', 
+      message: 'An error occurred during deleting user.' 
+    });
+  }
+});
+
+app.patch('/dashboard/users/update', async (req, res) => {
+  const { role, name, email, hourly_pay_rate } = req.body;
+  if (!role || !name || !email || !hourly_pay_rate) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+  
+  try {
+    // Connection is now available as req.dbConnection
+    const [updateResult] = await req.dbConnection.query(
+      'UPDATE users SET role = ?, name = ?, hourly_pay_rate = ? WHERE email = ?', 
+      [role, name, hourly_pay_rate, email]
+    );
+    
+    if (updateResult.affectedRows > 0) {
+      res.json({ success: true, message: 'User updated successfully!' });
+    } else {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    
+  } catch (err) {
+    console.error('Update user error:', err);
+    return res.status(500).json({ 
+      error: 'Database update error', 
+      message: 'An error occurred during updating user.' 
     });
   }
 });
