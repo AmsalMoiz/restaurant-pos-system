@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./login.css";
+import UserSignupModal from "./UserSignupModal"; 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showSignupModal, setShowSignupModal] = useState(false); 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch("http://localhost:3001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         alert("Login Successful!");
         navigate("/home");
@@ -66,7 +68,8 @@ const Login = () => {
         </form>
 
         <p>
-          New to Sweet Heaven? <a href="#">Create an account</a>
+          New to Sweet Heaven?{" "}
+          <a href="#" onClick={() => setShowSignupModal(true)}>Create an account</a> {/* ✅ show modal */}
         </p>
 
         <p style={{ marginTop: "1rem" }}>
@@ -78,10 +81,13 @@ const Login = () => {
           <Link to="/users/login">Go to Employee Login</Link>
         </p>
       </div>
+
+      {/* Modal component visible only if toggled on */}
+      {showSignupModal && (
+        <UserSignupModal onClose={() => setShowSignupModal(false)} />
+      )}
     </div>
   );
 };
 
 export default Login;
-
-
