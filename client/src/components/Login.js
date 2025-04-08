@@ -65,7 +65,7 @@ const Login = () => {
         </form>
 
         <p>
-          New to Sweet Heaven? <a href="#">Create an account</a>
+          New to Sweet Heaven? <Link to="/register">Create an account</Link>
         </p>
 
         <p style={{ marginTop: "1rem" }}>

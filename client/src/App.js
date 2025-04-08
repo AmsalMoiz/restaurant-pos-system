@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 import Home from './components/Home';
 import Login from './components/Login';
+import Register from './components/Register';
 import Menu from './components/MenuTest';
 import Cart from './components/Cart'; 
 import UserLogin from './components/UserLogin';
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
         <Route path="/menu" element={<Menu cartItems={cartItems} setCartItems={setCartItems} />} />
         <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
