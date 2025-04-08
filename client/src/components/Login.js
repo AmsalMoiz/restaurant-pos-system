@@ -64,10 +64,6 @@ const Login = () => {
           <button type="submit">Login</button>
         </form>
 
-        <p>
-          New to Sweet Heaven? <Link to="/register">Create an account</Link>
-        </p>
-
         <p style={{ marginTop: "1rem" }}>
           Or <Link to="/home">Go to Home Page</Link>
         </p>
