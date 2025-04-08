@@ -1,49 +1,89 @@
-#user_login_body{
-    background-color: rgb(11, 11, 121);
-    width:100%;
-    height:100%;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .login-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.25);
+    color: #ffffff;
+  
+    /* Centering the card */
     position: absolute;
-}
-#user_login {
-    background-color: white;
-    color: black; /* Adjust text color for readability */
-    /*min-height: 100vh; Ensure it covers the full screen */
-    border: 1px solid;
-    text-align: center;
-    width: 500px;
-    height: 500px; 
-    margin: auto;
-    margin-top: 100px;
-    border-radius: 25px;
-}
-#username {
-    background-color: white;
-    color: black; 
-    border: 1px solid #ccc;
-    width: 75%;
-    height: 25px;
-}   
-#password {
-    background-color: white;
-    color: black; 
-    border: 1px solid #ccc;
-    width: 75%;
-    height: 25px;
-}   
-.error-message{
-    color: red;
-    font-size: 18px;
-    margin-top: 10px;
-    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .login-container h2 {
+    color: #ffd700;
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .login-container p {
+    margin: 10px 0;
+    font-size: 15px;
+    color: #d1d1d1;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: none;
+    background-color: #1f1f1f;
+    color: #fff;
+    font-size: 15px;
+  }
+  
+  input::placeholder {
+    color: #aaa;
+  }
+  
+  button {
+    background-color: #ffd700;
+    color: #1b1b1b;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
     font-weight: bold;
-}
-
-#user_login a {
-    color: black; 
-    text-decoration: none; 
-}
-
-#user_login a:hover {
-    color: #e6c200; 
-    text-decoration: underline; 
-}
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #ffcc00;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  }
+  
+  a {
+    color: #e6c200;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+  
+  .error {
+    color: #ff4d4d;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  

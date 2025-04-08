@@ -11,6 +11,8 @@ import DashAdmin from './components/DashAdmin';
 import DashManager from './components/DashManager';
 import DashWaiter from './components/DashWaiter';
 import DashCook from './components/DashCook'; 
+import BookTable from './components/BookTable';
+
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -32,7 +34,8 @@ function App() {
         <Route path="/manager-dashboard" element={<DashManager />} />
         <Route path="/waiter-dashboard" element={<DashWaiter />} />
         <Route path="/cook-dashboard" element={<DashCook />} />
-          
+        <Route path="/book-table" element={<BookTable />} />
+
       </Routes>
     </Router>
   );
