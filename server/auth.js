@@ -37,4 +37,38 @@ router.post("/login", async (req, res) => { // POST /api/auth/login
   }
 });
 
+// Register Route
+router.post("/register", async (req, res) => {
+  console.log("Register route hit");
+  const { name, address, phone, email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
+  try {
+    const connection = await connect();
+
+    const [existing] = await connection.execute(
+      "SELECT customer_id FROM customers WHERE email = ?",
+      [email]
+    );
+
+    if (existing.length > 0) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
+
+    await connection.execute(
+      "INSERT INTO customers (name, address, phone_number, email, password) VALUES (?, ?, ?, ?, ?)",
+      [name, address, phone, email, password]
+    );
+
+    res.status(201).json({ message: "Customer registered successfully" });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 module.exports = router;
