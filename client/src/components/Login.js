@@ -32,6 +32,28 @@ const Login = () => {
     }
   };
 
+  const handleSignup = async (formData) => {
+    try {
+      const response = await fetch("http://localhost:3001/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Account created successfully!");
+        setShowSignupModal(false);
+      } else {
+        alert(data.error || "Signup failed.");
+      }
+    } catch (error) {
+      alert("Server error during signup.");
+      console.error(error);
+    }
+  };  
+
   return (
     <div
       style={{
@@ -83,7 +105,9 @@ const Login = () => {
 
       {/* Modal component visible only if toggled on */}
       {showSignupModal && (
-        <UserSignupModal onClose={() => setShowSignupModal(false)} />
+        <UserSignupModal onClose={() => setShowSignupModal(false)} 
+        onSignup={handleSignup}
+        />
       )}
     </div>
   );
