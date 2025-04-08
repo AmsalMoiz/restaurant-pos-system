@@ -23,7 +23,6 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Login Successful!");
         navigate("/home");
       } else {
         setError(data.error || "Login failed. Please try again.");
@@ -71,7 +70,7 @@ const Login = () => {
           New to Sweet Heaven?{" "}
           <a href="#" onClick={() => setShowSignupModal(true)}>Create an account</a> {/* ✅ show modal */}
         </p>
-
+        
         <p style={{ marginTop: "1rem" }}>
           Or <Link to="/home">Go to Home Page</Link>
         </p>
