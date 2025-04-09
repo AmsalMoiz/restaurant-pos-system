@@ -61,6 +61,10 @@ function DashAdmin() {
     const [updateSupplierSubmitLoading, setUpdateSupplierSubmitLoading] = useState(false);
     //Reorder Alerts
     const [reorderAlerts, setReorderAlerts] = useState([]);
+
+    //Inventory update, insert, remove
+    const [editMode, setEditMode] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
     
 
 
@@ -75,6 +79,7 @@ function DashAdmin() {
             }
             
             const data = await response.json();
+            console.log("Fetched inventory:", data);
             setInventory(data);
           } catch (err) {
             console.error("Error fetching inventory items:", err);
@@ -460,6 +465,20 @@ function DashAdmin() {
         setActiveSection(section);
     };
 
+    const handleDeleteItem = async (id) => {
+        console.log("Attempting to delete item ID:", id);
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items/${id}`, {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error("Delete failed");
+          setInventory(prev => prev.filter(item => item.item_id !== id));
+          setItemToDelete(null);
+        } catch (err) {
+          alert("Failed to delete item.");
+        }
+      };
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -498,24 +517,6 @@ function DashAdmin() {
                                     <h3>Inventory</h3>
                                     <p>Manage restaurant inventory</p>
                                     <button onClick={handleShowInventory}>View Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Remove Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('remove-inventory')}>Remove Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('add-inventory')}>Add Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('update-inventory')}>Update Inventory</button>
                                 </div>
 
                                 {/* Users side */}
@@ -618,6 +619,7 @@ function DashAdmin() {
                         <div className="admin-section">
                             <div className="section-header">
                                 <h2>Inventory Management</h2>
+                                <button className="edit-btn" onClick={() => setEditMode(!editMode)}>{editMode ? 'Done' : 'Edit'}</button>
                                 <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
                             </div>
                             
@@ -648,12 +650,25 @@ function DashAdmin() {
                                                         <span className="status-low">Low Stock</span> : 
                                                         <span className="status-ok">In Stock</span>}
                                                     </td>
+                                                    {editMode && (
+                                                    <td>
+                                                        <button className="delete-btn" onClick={() => setItemToDelete(item)}> - </button>
+                                                    </td>
+                                                    )}
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 )}
                             </div>
+                            {itemToDelete && (
+                            <div className="confirmation-box">
+                                <p>Are you sure you want to delete this item?</p>
+                                <pre>{JSON.stringify(itemToDelete, null, 2)}</pre>
+                                <button onClick={() => setItemToDelete(null)}>Cancel</button>
+                                <button className="delete-confirm-btn" onClick={() => handleDeleteItem(itemToDelete.item_id)}>Delete</button>
+                            </div>
+                            )}
                         </div>
                     )}
 

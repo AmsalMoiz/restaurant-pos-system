@@ -94,8 +94,9 @@ app.post('/users/login', async (req, res) => {
 app.get('/dashboard/inventory', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
+    const [results] = await req.dbConnection.query('SELECT item_id, items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
     const inventory = results.map(item => ({
+      item_id: item.item_id,
       dessert: item.item_name,
       price: parseFloat(item.price),
       quantity: item.quantity,
@@ -393,3 +394,19 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
+app.delete('/dashboard/items/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const connection = await db();
+    const [result] = await connection.execute('DELETE FROM items WHERE item_id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json({ message: 'Item deleted successfully' });
+  } catch (err) {
+    console.error("Delete item error:", err);
+    res.status(500).json({ error: 'Failed to delete item' });
+  }
+});
