@@ -3,122 +3,126 @@ import './bookTable.css';
 import ReservationModal from './ReservationModal';
 import Navbar from './Navbar';
 
+const tables = [
+  ['A1', 'A2', 'A3', 'A4', 'A5'],
+  ['B1', 'B2', 'B3', 'B4', 'B5'],
+  ['C1', 'C2', 'C3', 'C4', 'C5'],
+  ['D1', 'D2', 'D3', 'D4', 'D5'],
+  ['E1', 'E2', 'E3', 'E4', 'E5'],
+  ['F1', 'F2', 'F3', 'F4', 'F5'],
+  ['G1', 'G2', 'G3', 'G4', 'G5'],
+  ['H1', 'H2', 'H3', 'H4', 'H5'],
+];
+
+const barChairs = ['Bar1', 'Bar2', 'Bar3', 'Bar4', 'Bar5', 'Bar6', 'Bar7', 'Bar8'];
+
 const BookTable = () => {
-  const tableLabels = [
-    ['A1', 'A2', 'A3', 'A4', 'A5'],
-    ['B1', 'B2', 'B3', 'B4', 'B5'],
-    ['C1', 'C2', 'C3', 'C4', 'C5'],
-    ['D1', 'D2', 'D3', 'D4', 'D5'],
-    ['E1', 'E2', 'E3', 'E4', 'E5'],
-    ['F1', 'F2', 'F3', 'F4', 'F5'],
-    ['G1', 'G2', 'G3', 'G4', 'G5'],
-    ['H1', 'H2', 'H3', 'H4', 'H5']
-  ];
-
-  const barChairs = Array.from({ length: 10 }, (_, i) => `Bar${i + 1}`);
-
   const [modalData, setModalData] = useState(null);
   const [reservations, setReservations] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const openModal = (label, type) => {
-    setModalData({ label, type });
+  const openModal = (item) => {
+    setModalData({ label: item });
   };
 
   const closeModal = () => {
     setModalData(null);
   };
 
-  const handleReserve = (guests, time) => {
-    if (!guests || !time) return;
-    const newEntry = `${modalData.label} (${guests} at ${time}) reserved`;
-    setReservations(prev => [...prev, newEntry]);
+  const handleReserve = (item, guests, time, day) => {
+    const reservation = {
+      label: item.label,
+      guests,
+      time,
+      day,
+    };
+    setReservations([...reservations, reservation]);
     closeModal();
   };
 
-  const finalizeReservations = () => {
+  const handleDone = () => {
     setShowConfirmation(true);
-    setTimeout(() => setShowConfirmation(false), 5000);
   };
 
   return (
     <>
       <Navbar />
       <div className="layout-wrapper">
-        {/* LEFT IMAGE */}
+
+        {/* Left Image */}
         <div className="layout-photo">
           <img src={`${process.env.PUBLIC_URL}/images/tablerestocloseup.jpg`} alt="Restaurant" />
         </div>
 
-        {/* RIGHT LAYOUT */}
-        <div className="layout-sketch">
-          <span className="left-label">View</span>
-
+        {/* Layout Zone */}
+        <div className="layout-sketch center-align">
           <h2 className="sketch-title">Reserve a Table</h2>
 
-          <div className="table-grid">
-            {tableLabels.map((row, rowIndex) => (
-              <div className="table-row" key={rowIndex}>
-                {row.map((label) => (
-                  <button
-                    className="square-table"
-                    key={label}
-                    onClick={() => openModal(label, 'table')}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            ))}
+          <div className="reservation-zone">
+            {/* View label */}
+            <div className="side-label left-label">View</div>
+
+            {/* Table Grid */}
+            <div className="table-grid">
+              {tables.map((row, rowIndex) => (
+                <div className="table-row" key={rowIndex}>
+                  {row.map((label, colIndex) => (
+                    <button className="square-table" key={`${rowIndex}-${colIndex}`} onClick={() => openModal(label)}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              ))}
+
+              <div className="restroom-label">Restroom</div>
+            </div>
+
+            {/* Bar Chairs */}
+            <div className="bar-chair-column">
+              {barChairs.map((chair, index) => (
+                <button key={index} className="circle-chair" onClick={() => openModal(chair)} />
+              ))}
+              <div className="bar-label">Bar</div>
+            </div>
           </div>
 
-          <span className="restroom-label">Restroom</span>
-
-          {/* BAR */}
-          <div className="bar-area">
-            {barChairs.map((label) => (
-              <button
-                className="circle-chair"
-                key={label}
-                onClick={() => openModal(label, 'chair')}
-              />
-            ))}
-            <span className="bar-label">Bar</span>
-          </div>
-
-          {/* LEGEND */}
+          {/* Legend */}
           <div className="legend">
-            <div><input type="checkbox" disabled /> Table</div>
-            <div><input type="checkbox" disabled /> Bar Chair</div>
+            <div><span className="legend-icon square"></span> Table</div>
+            <div><span className="legend-icon circle"></span> Bar Chair</div>
+            <div><span className="legend-icon occupied"></span> Occupied</div>
           </div>
 
-          {/* RESERVATION TOOLBAR */}
-          {reservations.length > 0 && (
-            <div className="reservation-toolbar">
-              <strong>Current Reservations:</strong>
+          {/* Reservation List */}
+          {reservations.length > 0 && !showConfirmation && (
+            <div className="reservation-summary">
+              <h4>Current Reservations:</h4>
               <ul>
-                {reservations.map((r, i) => <li key={i}>{r}</li>)}
+                {reservations.map((r, i) => (
+                  <li key={i}>{`${r.label} at ${r.day} ${r.time}`}</li>
+                ))}
               </ul>
-              <button className="done-btn" onClick={finalizeReservations}>Done</button>
+              <button className="done-btn" onClick={handleDone}>Done</button>
             </div>
           )}
 
-          {/* CONFIRMATION */}
           {showConfirmation && (
-            <div className="confirmation-popup">
-              You are reserved for: {reservations.join(', ')} 🎉
+            <div className="confirmation-message">
+              <h3>You’re reserved at Sweet Heaven!</h3>
+              <p>Confirmation sent. Please enter an email or phone for updates:</p>
+              <input type="text" placeholder="example@email.com or 555-1234" />
             </div>
-          )}
-
-          {/* MODAL */}
-          {modalData && (
-            <ReservationModal
-              item={modalData}
-              onClose={closeModal}
-              onReserve={handleReserve}
-            />
           )}
         </div>
+
+        {/* Modal */}
+        {modalData && (
+          <ReservationModal
+            item={modalData}
+            onClose={closeModal}
+            onReserve={handleReserve}
+          />
+        )}
       </div>
     </>
   );
