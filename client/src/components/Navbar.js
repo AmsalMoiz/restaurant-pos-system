@@ -10,7 +10,7 @@ const Navbar = () => {
       </div>
       <div className="navbar-right">
         <Link to="/menu">View Menu</Link>
-        <Link to="/booktable">Book Table</Link>
+        <Link to="/book-table">Book Table</Link> {/* ← PUT IT HERE */}
         <Link to="/cart">Bag</Link>
       </div>
     </nav>

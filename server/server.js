@@ -28,7 +28,8 @@ const dbErrorHandler = async (req, res, next) => {
 };
 
 // Apply the database middleware to all routes that need DB access
-app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users', '/dashboard/users/delete', '/dashboard/users/update', '/dashboard/users/insert'], dbErrorHandler);
+//app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users', '/dashboard/users/delete', '/dashboard/users/update', '/dashboard/users/insert', '/dashboard/suppliers', '/dashboard/suppliers/insert', '/dashboard/suppliers/delete', '/dashboard/suppliers/update', '/dashboard/reorder_alerts'], dbErrorHandler);
+app.use(dbErrorHandler);
 
 app.get('/', (req, res) => {
   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
@@ -93,8 +94,9 @@ app.post('/users/login', async (req, res) => {
 app.get('/dashboard/inventory', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
+    const [results] = await req.dbConnection.query('SELECT item_id, items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
     const inventory = results.map(item => ({
+      item_id: item.item_id,
       dessert: item.item_name,
       price: parseFloat(item.price),
       quantity: item.quantity,
@@ -228,6 +230,143 @@ app.patch('/dashboard/users/update', async (req, res) => {
   }
 });
 
+app.get('/dashboard/suppliers', async (req, res) => {
+  try {
+    // Connection is now available as req.dbConnection
+    const [results] = await req.dbConnection.query('SELECT name, email, phone_number, rating FROM suppliers');
+    const suppliers = results.map(supplier => ({
+      name: supplier.name,
+      email: supplier.email,
+      phone_number: supplier.phone_number,
+      rating: parseFloat(supplier.rating)
+    }));
+    res.json(suppliers);
+      
+  } catch (err) {
+    console.error('Error fetching inventory:', err);
+    return res.status(500).json({ 
+      error: 'Database query error', 
+      message: 'Failed to fetch inventory.' 
+    });
+  }
+}
+);
+
+app.post('/dashboard/suppliers/insert', async (req, res) => {
+  const { name, email, phone_number, rating } = req.body;
+  if (!name || !email || !phone_number || !rating) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+  
+  try {
+    // Connection is now available as req.dbConnection
+    const [results] = await req.dbConnection.query(
+      'SELECT email, phone_number FROM suppliers WHERE email = ? OR phone_number = ?',
+      [email, phone_number] 
+    );
+    
+    if (results.length > 0) {
+      return res.status(409).json({ error: 'Email or phone number already in use!' });
+    } else {
+      const [insertResult] = await req.dbConnection.query(
+        'INSERT INTO suppliers (name, email, phone_number, rating) VALUES (?, ?, ?, ?)', 
+        [name, email, phone_number, rating]
+      );
+      if (insertResult.affectedRows > 0) {
+        res.json({ success: true, message: 'Supplier added successfully!' });
+      }
+      else {
+        return res.status(500).json({ error: 'Failed to add supplier.' });
+      }
+    }
+    
+  } catch (err) {
+    console.error('Insert supplier error:', err);
+    return res.status(500).json({ 
+      error: 'Database insert error', 
+      message: 'An error occurred during inserting supplier.' 
+    });
+  }
+});
+
+app.delete('/dashboard/suppliers/delete', async (req, res) => {
+  const { email } = req.body;
+  
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required.' });
+  }
+  
+  try {
+    // Connection is now available as req.dbConnection
+    const [deleteResult] = await req.dbConnection.query(
+      'DELETE FROM suppliers WHERE email = ?', 
+      [email]
+    );
+    
+    if (deleteResult.affectedRows > 0) {
+      res.json({ success: true, message: 'Supplier deleted successfully!' });
+    } else {
+      return res.status(404).json({ error: 'Supplier not found.' });
+    }
+    
+  } catch (err) {
+    console.error('Delete supplier error:', err);
+    return res.status(500).json({ 
+      error: 'Database delete error', 
+      message: 'An error occurred during deleting supplier.' 
+    });
+  }
+});
+
+app.patch('/dashboard/suppliers/update', async (req, res) => {
+  const { name, email, phone_number, rating } = req.body;
+  if (!name || !email || !phone_number || !rating) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+  
+  try {
+    // Connection is now available as req.dbConnection
+    const [updateResult] = await req.dbConnection.query(
+      'UPDATE suppliers SET name = ?, phone_number = ?, rating = ? WHERE email = ?', 
+      [name, phone_number, rating, email]
+    );
+    
+    if (updateResult.affectedRows > 0) {
+      res.json({ success: true, message: 'Supplier updated successfully!' });
+    } else {
+      return res.status(404).json({ error: 'Supplier not found.' });
+    }
+    
+  } catch (err) {
+    console.error('Update supplier error:', err);
+    return res.status(500).json({ 
+      error: 'Database update error', 
+      message: 'An error occurred during updating supplier.' 
+    });
+  }
+}
+);
+
+app.get('/dashboard/reorder_alerts', async (req, res) => {
+  try {
+    const [results] = await req.dbConnection.query('SELECT items.name as item_name, alert_date, resolved FROM reorder_alerts, items WHERE afk_item_id = item_id');
+    const alerts = results.map(alert => ({
+      item: alert.item_name,
+      timestamp: alert.alert_date,
+      resolved: alert.resolved
+    }));
+    res.json(alerts);
+  } catch (err) {
+    console.error('Error fetching alerts:', err);
+    return res.status(500).json({
+      error: 'Database query error',
+      message : 'Failed to fetch alerts.'
+    });
+  }
+});
+
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
@@ -254,74 +393,20 @@ process.on('uncaughtException', (error) => {
   // Log to monitoring service or file
   process.exit(1);
 });
-/*
-// Purpose: Server file for backend
-const express = require('express');
-const cors = require("cors");
-const authRoutes = require("./auth");
-const db = require("./db");
 
-const app = express();
-app.use(cors());
-
-app.use(express.json()); // Middleware for JSON body parsing
-app.use("/api/auth", authRoutes); // Include auth routes
-
-const PORT = process.env.PORT || 3001;
-
-app.get('/', (req, res) => {
-  res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
-});
-
-app.get('/menu', async (req, res) => {
+app.delete('/dashboard/items/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const connection = await db(); // Await the connection
-    const [results] = await connection.query('SELECT name, description, image_name, price FROM items');
-    const menuItems = results.map(item => ({
-      //id: item.item_id,
-      name: item.name,
-      description: item.description,
-      price: parseFloat(item.price),
-      image: item.image_name
-    }));
-    res.json(menuItems);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
+    const connection = await db();
+    const [result] = await connection.execute('DELETE FROM items WHERE item_id = ?', [id]);
 
-
-app.post('/users/login', async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
-  }
-  try{
-    const connection = await db(); // Get the connection
-    const [results] = await connection.query('SELECT role, name, email, password FROM users WHERE email = ? AND password = ?', [email, password]);
-    if (results.length > 0) {
-      const user = results[0];
-            
-      // Don't send password back to client
-      const userWithoutPassword = {
-      role: user.role,
-      name: user.name,
-      email: user.email
-      };
-      res.json({ success: true, user: userWithoutPassword });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Item not found' });
     }
-    else {
-      return res.status(401).json({ error: 'Invalid email or password!' });
-    }
+
+    res.json({ message: 'Item deleted successfully' });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error("Delete item error:", err);
+    res.status(500).json({ error: 'Failed to delete item' });
   }
-  
 });
-
-
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-*/

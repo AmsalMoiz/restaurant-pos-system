@@ -231,6 +231,8 @@
     .inventory-table td {
         padding: 8px 10px;
     }
+
+    
 }
 .employees-container {
     overflow-x: auto;
@@ -278,21 +280,6 @@
 
 
 
-/*
-.back-btn {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-}
-
-.back-btn:hover {
-    background-color: #5a6268;
-}*/
 
 /* Employee Form Styles */
 .employee-form-container {
@@ -475,3 +462,37 @@
     border: 1px solid #ddd;
 }
 
+/*employees-container*/
+.suppliers-container {
+    overflow-x: auto;
+}
+
+.suppliers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.suppliers-table th, 
+.suppliers-table td {
+    border: 1px solid #e1e1e1;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.suppliers-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+}
+
+.suppliers-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.suppliers-table tr:hover {
+    background-color: #f1f1f1;
+}

@@ -34,6 +34,39 @@ function DashAdmin() {
     const [updateFormError, setUpdateFormError] = useState('');
     const [updateFormSuccess, setUpdateFormSuccess] = useState('');
     const [updateSubmitLoading, setUpdateSubmitLoading] = useState(false);
+    //Supplier variables
+    //Supplier Data Query
+    const [suppliers, setSuppliers] = useState([]);
+    //Supplier Insert
+    const [supplierFormData, setSupplierFormData] = useState({
+        name: '',
+        email: '',
+        phone_number: '',
+        rating: ''
+    });
+    const [supplierFormError, setSupplierFormError] = useState('');
+    const [supplierFormSuccess, setSupplierFormSuccess] = useState('');
+    const [supplierSubmitLoading, setSupplierSubmitLoading] = useState(false);
+    //Supplier Remove
+    const [removeSupplierEmail, setRemoveSupplierEmail] = useState('');
+    //Supplier Update
+    const [updateSupplierFormData, setUpdateSupplierFormData] = useState({
+        name: '',
+        email: '',
+        phone_number: '',
+        rating: ''
+    });
+    const [updateSupplierFormError, setUpdateSupplierFormError] = useState('');
+    const [updateSupplierFormSuccess, setUpdateSupplierFormSuccess] = useState('');
+    const [updateSupplierSubmitLoading, setUpdateSupplierSubmitLoading] = useState(false);
+    //Reorder Alerts
+    const [reorderAlerts, setReorderAlerts] = useState([]);
+
+    //Inventory update, insert, remove
+    const [editMode, setEditMode] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    
+
 
     // FETCH INVENTORY
     useEffect(() => {
@@ -46,6 +79,7 @@ function DashAdmin() {
             }
             
             const data = await response.json();
+            console.log("Fetched inventory:", data);
             setInventory(data);
           } catch (err) {
             console.error("Error fetching inventory items:", err);
@@ -74,7 +108,7 @@ function DashAdmin() {
     useEffect(() => {
         fetchUsers();
     }, []);
-    // ADD USER
+    // INSERT USER
     // Add this function to handle form submission
     const handleAddEmployee = async (e) => {
         e.preventDefault();
@@ -117,7 +151,7 @@ function DashAdmin() {
             setSubmitLoading(false);
         }
     };
-        
+    //UPDATE USER
     // Handler for selecting an employee to update
     const handleEmployeeSelect = (e) => {
         const selectedEmail = e.target.value;
@@ -141,7 +175,7 @@ function DashAdmin() {
             });
         }
     };
-
+    //REMOVE USER
     // Handler for removing an employee
     const handleRemoveEmployee = async (e) => {
         e.preventDefault();
@@ -215,6 +249,178 @@ function DashAdmin() {
         }
     };
 
+    // FETCH SUPPLIERS
+    const fetchSuppliers = async () => {
+        try {
+            const response = await fetch(`${API_URL}/dashboard/suppliers`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setSuppliers(data);
+        } catch(err){
+            console.error("Error fetching suppliers:", err);
+            setError("Failed to load suppliers. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchSuppliers();
+    }, []);
+    // INSERT SUPPLIER
+    const handleAddSupplier = async (e) => {
+        e.preventDefault();
+        setSupplierFormError('');
+        setSupplierFormSuccess('');
+        setSupplierSubmitLoading(true);
+        
+        try {
+            const response = await fetch(`${API_URL}/dashboard/suppliers/insert`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(supplierFormData),
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to add supplier');
+            }
+            
+            // Success! Clear form and show success message
+            setSupplierFormSuccess('Supplier added successfully!');
+            setSupplierFormData({
+                name: '',
+                email: '',
+                phone_number: '',
+                rating: ''
+            });
+            
+            // Refresh the users list
+            fetchSuppliers();
+            
+        } catch (error) {
+            console.error('Error adding supplier:', error);
+            setSupplierFormError(error.message || 'Failed to add supplier. Please try again.');
+        } finally {
+            setSupplierSubmitLoading(false);
+        }
+    };
+    // REMOVE SUPPLIER
+    // Handler for removing a supplier
+    const handleRemoveSupplier = async (e) => {
+        e.preventDefault();
+        setSupplierFormError('');
+        setSupplierFormSuccess('');
+        setSupplierSubmitLoading(true);
+        
+        try {
+            const response = await fetch(`${API_URL}/dashboard/suppliers/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: removeSupplierEmail }),
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to remove supplier');
+            }
+            
+            // Success! Clear form and show success message
+            setSupplierFormSuccess('Supplier removed successfully!');
+            setRemoveSupplierEmail('');
+            
+            // Refresh the users list
+            fetchSuppliers();
+            
+        } catch (error) {
+            console.error('Error removing supplier:', error);
+            setSupplierFormError(error.message || 'Failed to remove supplier. Please try again.');
+        } finally {
+            setSupplierSubmitLoading(false);
+        }
+    };
+    // UPDATE SUPPLIER
+    // Handler for selecting an employee to update
+    const handleSupplierSelect = (e) => {
+        const selectedEmail = e.target.value;
+        if (!selectedEmail) {
+            setUpdateSupplierFormData({
+                name: '',
+                email: '',
+                phone_number: '',
+                rating: ''
+            });
+            return;
+        }
+        
+        const selectedSupplier = suppliers.find(supplier => supplier.email === selectedEmail);
+        if (selectedSupplier) {
+            setUpdateSupplierFormData({
+                name: selectedSupplier.name,
+                email: selectedSupplier.email,
+                phone_number: selectedSupplier.phone_number,
+                rating: selectedSupplier.rating
+            });
+        }
+    };
+    // Handler for updating an employee
+    const handleUpdateSupplier = async (e) => {
+        e.preventDefault();
+        setUpdateSupplierFormError('');
+        setUpdateSupplierFormSuccess('');
+        setUpdateSupplierSubmitLoading(true);
+        
+        try {
+            const response = await fetch(`${API_URL}/dashboard/suppliers/update`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updateSupplierFormData),
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to update supplier');
+            }
+            
+            // Success! Show success message
+            setUpdateSupplierFormSuccess('Supplier updated successfully!');
+            
+            // Refresh the suppliers list
+            fetchSuppliers();
+            
+        } catch (error) {
+            console.error('Error updating supplier:', error);
+            setUpdateSupplierFormError(error.message || 'Failed to update supplier. Please try again.');
+        } finally {
+            setUpdateSupplierSubmitLoading(false);
+        }
+    };
+    // FETCH REORDER ALERTS
+    const fetchReorderAlerts = async () => {
+        try {
+            const response = await fetch(`${API_URL}/dashboard/reorder_alerts`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setReorderAlerts(data);
+        } catch(err){
+            console.error("Error fetching reorder alerts:", err);
+            setError("Failed to load reorder alerts. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchReorderAlerts();
+    }, []);
+
     
     //Login additional features, returns to login page if not properly logged in
     useEffect(() => {
@@ -259,6 +465,20 @@ function DashAdmin() {
         setActiveSection(section);
     };
 
+    const handleDeleteItem = async (id) => {
+        console.log("Attempting to delete item ID:", id);
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items/${id}`, {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error("Delete failed");
+          setInventory(prev => prev.filter(item => item.item_id !== id));
+          setItemToDelete(null);
+        } catch (err) {
+          alert("Failed to delete item.");
+        }
+      };
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -286,29 +506,17 @@ function DashAdmin() {
                             <h2>Restaurant Management</h2>
                             <div className="admin-cards">
                                 
+                                {/* Reorder Alerts side */}
+                                <div className="admin-card">
+                                    <h3>Reoder Alert</h3>
+                                    
+                                    <button onClick={() => handleSectionClick('reorder_alerts')}>View Reorder Alerts</button>
+                                </div>
                                 {/* Inventory side */}
                                 <div className="admin-card">
                                     <h3>Inventory</h3>
                                     <p>Manage restaurant inventory</p>
                                     <button onClick={handleShowInventory}>View Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Remove Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('remove-inventory')}>Remove Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('add-inventory')}>Add Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('update-inventory')}>Update Inventory</button>
                                 </div>
 
                                 {/* Users side */}
@@ -346,7 +554,7 @@ function DashAdmin() {
                                 <div className="admin-card">
                                     <h3>Remove Supplier</h3>
                                     <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('remove-suppliers')}>Remove Supplier</button>
+                                    <button onClick={() => handleSectionClick('remove-supplier')}>Remove Supplier</button>
                                 </div>
 
                                 <div className="admin-card">
@@ -357,7 +565,7 @@ function DashAdmin() {
 
                                 <div className="admin-card">
                                     <h3>Update Supplier</h3>
-                                    <p>Manage restaurant supplier</p>
+                                    <p>Manage restaurant suppliers</p>
                                     <button onClick={() => handleSectionClick('update-supplier')}>Update Supplier</button>
                                 </div>
 
@@ -370,11 +578,48 @@ function DashAdmin() {
                         </div>
                     )}
 
+                    {/* Show reorder alerts */}
+                    {activeSection === 'reorder_alerts' && (
+                    <div className="admin-section">
+                    <div className="section-header">
+                    <h2>Reorder Alerts</h2>
+                    <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                    </div>
+        
+                    <div className="employees-container">
+                        {reorderAlerts.length === 0 ? (
+                        <p>Loading alerts data...</p>
+                        ) : (
+                        <table className="employees-table">
+                        <thead>
+                            <tr>
+                            <th>Item Name</th>
+                            <th>timestamp</th>
+                            <th>Resolved Status</th>
+                            
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {reorderAlerts.map((alert, index) => (
+                            <tr key={index}>
+                                <td>{alert.item}</td>
+                                <td>{alert.timestamp}</td>
+                                <td>{alert.resolved}</td>
+
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                        )}
+                    </div>
+                    </div>
+                    )}
                     {/* Show Inventory */}
                     {activeSection === 'inventory' && (
                         <div className="admin-section">
                             <div className="section-header">
                                 <h2>Inventory Management</h2>
+                                <button className="edit-btn" onClick={() => setEditMode(!editMode)}>{editMode ? 'Done' : 'Edit'}</button>
                                 <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
                             </div>
                             
@@ -405,12 +650,25 @@ function DashAdmin() {
                                                         <span className="status-low">Low Stock</span> : 
                                                         <span className="status-ok">In Stock</span>}
                                                     </td>
+                                                    {editMode && (
+                                                    <td>
+                                                        <button className="delete-btn" onClick={() => setItemToDelete(item)}> - </button>
+                                                    </td>
+                                                    )}
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 )}
                             </div>
+                            {itemToDelete && (
+                            <div className="confirmation-box">
+                                <p>Are you sure you want to delete this item?</p>
+                                <pre>{JSON.stringify(itemToDelete, null, 2)}</pre>
+                                <button onClick={() => setItemToDelete(null)}>Cancel</button>
+                                <button className="delete-confirm-btn" onClick={() => handleDeleteItem(itemToDelete.item_id)}>Delete</button>
+                            </div>
+                            )}
                         </div>
                     )}
 
@@ -688,6 +946,266 @@ function DashAdmin() {
                             </div>
                         </div>
                     )}
+                    {/* Show suppliers */}
+                    {activeSection === 'suppliers' && (
+                    <div className="admin-section">
+                    <div className="section-header">
+                    <h2>Suppliers</h2>
+                    <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                    </div>
+        
+                    <div className="suppliers-container">
+                        {suppliers.length === 0 ? (
+                        <p>Loading supplier data...</p>
+                        ) : (
+                        <table className="suppliers-table">
+                        <thead>
+                            <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Rating</th>
+                            
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {suppliers.map((supplier, index) => (
+                            <tr key={index}>
+                                <td>{supplier.name}</td>
+                                <td>{supplier.email}</td>
+                                <td>{supplier.phone_number}</td>
+                                <td>{supplier.rating}</td>
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                        )}
+                    </div>
+                    </div>
+                    )}
+                    {/* Add Supplier */}
+                    {activeSection === 'add-supplier' && (
+                        <div className="admin-section">
+                            <div className="section-header">
+                                <h2>Add New Supplier</h2>
+                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            </div>
+                            
+                            <div className="employee-form-container">
+                                <form className="employee-form" onSubmit={handleAddSupplier}>
+                                    <div className="form-group">
+                                        <label htmlFor="name">Full Name</label>
+                                        <input 
+                                            type="text" 
+                                            id="name" 
+                                            value={supplierFormData.name} 
+                                            onChange={(e) => setSupplierFormData({...supplierFormData, name: e.target.value})}
+                                            required 
+                                        />
+                                    </div>
+                                    
+                                    <div className="form-group">
+                                        <label htmlFor="email">Email</label>
+                                        <input 
+                                            type="email" 
+                                            id="email" 
+                                            value={supplierFormData.email}
+                                            onChange={(e) => setSupplierFormData({...supplierFormData, email: e.target.value})}
+                                            required 
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="phone">Phone Number</label>
+                                        <input 
+                                            type="tel" 
+                                            id="phone" 
+                                            pattern="[0-9]{7,15}" 
+                                            minLength="7"
+                                            maxLength="15"
+                                            placeholder="1234567890"
+                                            value={supplierFormData.phone_number}
+                                            onChange={(e) => setSupplierFormData({...supplierFormData, phone_number: e.target.value})}
+                                            required 
+                                        />
+                                    </div>
+                                    
+                                    <div className="form-group">
+                                        <label htmlFor="rating">Rating</label>
+                                        <select 
+                                            id="rating" 
+                                            value={supplierFormData.rating}
+                                            onChange={(e) => setSupplierFormData({...supplierFormData, rating: e.target.value})}
+                                            required
+                                        >
+                                            <option value="">Set Supplier Rating</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="3">4</option>
+                                            <option value="5">5</option>
+                                            
+                                        </select>
+                                    </div>
+                                    
+                                    
+                                    <div className="form-buttons">
+                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
+                                        <button type="submit" className="submit-btn" disabled={supplierSubmitLoading}>
+                                            {supplierSubmitLoading ? 'Adding...' : 'Add Supplier'}
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                {supplierFormError && <div className="form-error">{supplierFormError}</div>}
+                                {supplierFormSuccess && <div className="form-success">{supplierFormSuccess}</div>}
+                            </div>
+                        </div>
+                    )}
+                    {/* Remove user */}
+                    {activeSection === 'remove-supplier' && (
+                        <div className="admin-section">
+                            <div className="section-header">
+                                <h2>Remove Supplier</h2>
+                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            </div>
+                            
+                            <div className="employee-form-container">
+                                <form className="employee-form" onSubmit={handleRemoveSupplier}>
+                                    <div className="form-group">
+                                        <label htmlFor="remove-email">Supplier Email</label>
+                                        <select 
+                                            id="remove-email" 
+                                            value={removeSupplierEmail}
+                                            onChange={(e) => setRemoveSupplierEmail(e.target.value)}
+                                            required
+                                        >
+                                            <option value="">Select a supplier</option>
+                                            {suppliers.map((supplier, index) => (
+                                                <option key={index} value={supplier.email}>
+                                                    {supplier.name} ({supplier.email})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    
+                                    {removeSupplierEmail && (
+                                        <div className="confirmation-box">
+                                            <p className="warning-text">Are you sure you want to remove this supplier?</p>
+                                            <p>This action cannot be undone.</p>
+                                            
+                                            <div className="selected-employee">
+                                                <p><strong>Name:</strong> {suppliers.find(u => u.email === removeSupplierEmail)?.name}</p>
+                                                <p><strong>Email:</strong> {removeSupplierEmail}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="form-buttons">
+                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
+                                        <button type="submit" className="delete-confirm-btn" disabled={!removeSupplierEmail || supplierSubmitLoading}>
+                                            {supplierSubmitLoading ? 'Removing...' : 'Confirm Removal'}
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                {supplierFormError && <div className="form-error">{supplierFormError}</div>}
+                                {supplierFormSuccess && <div className="form-success">{supplierFormSuccess}</div>}
+                            </div>
+                        </div>
+                    )}
+                    {/* Update user */}
+                    {activeSection === 'update-supplier' && (
+                        <div className="admin-section">
+                            <div className="section-header">
+                                <h2>Update Supplier</h2>
+                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            </div>
+                            
+                            <div className="employee-form-container">
+                                <div className="employee-selection">
+                                    <label htmlFor="update-email">Select Supplier to Update:</label>
+                                    <select 
+                                        id="update-email" 
+                                        value={updateSupplierFormData.email}
+                                        onChange={handleSupplierSelect}
+                                        required
+                                    >
+                                        <option value="">Select a suppplier</option>
+                                        {suppliers.map((supplier, index) => (
+                                            <option key={index} value={supplier.email}>
+                                                {supplier.name} ({supplier.email})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                
+                                {updateSupplierFormData.email && (
+                                    <form className="employee-form" onSubmit={handleUpdateSupplier}>
+                                        <div className="form-group">
+                                            <label htmlFor="update-name">Full Name</label>
+                                            <input 
+                                                type="text" 
+                                                id="update-name" 
+                                                value={updateSupplierFormData.name} 
+                                                onChange={(e) => setUpdateFormData({...updateSupplierFormData, name: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        
+                                        <div className="form-group">
+                                            <label htmlFor="update-phone">Phone Number</label>
+                                            <input 
+                                                id="update-phone" 
+                                                type="tel"
+                                                pattern="[0-9]{7,15}"
+                                                minLength="7"
+                                                maxLength="15"
+                                                placeholder="1234567890"
+                                                value={updateSupplierFormData.phone_number}
+                                                onChange={(e) => setUpdateSupplierFormData({...updateSupplierFormData, phone_number: e.target.value})}
+                                                required
+                                            />
+                                           
+                                        </div>
+                                        
+                                        <div className="form-group">
+                                            <label htmlFor="update-rating">Rating</label>
+                                            <select 
+                                                id="update-rating" 
+                                                value={updateSupplierFormData.rating}
+                                                onChange={(e) => setUpdateSupplierFormData({...updateSupplierFormData, rating: e.target.value})}
+                                                required
+                                            >
+                                                <option value="">Select a rating</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div className="form-group">
+                                            <p className="email-note"><strong>Note:</strong> Email cannot be updated as it is used as the unique identifier.</p>
+                                            <p className="email-display">{updateSupplierFormData.email}</p>
+                                        </div>
+                                        
+                                        <div className="form-buttons">
+                                            <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
+                                            <button type="submit" className="submit-btn" disabled={updateSupplierSubmitLoading}>
+                                                {updateSubmitLoading ? 'Updating...' : 'Update Employee'}
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                                
+                                {updateSupplierFormError && <div className="form-error">{updateSupplierFormError}</div>}
+                                {updateSupplierFormSuccess && <div className="form-success">{updateSupplierFormSuccess}</div>}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Sales Reports */}
                     {activeSection === 'reports' && (
                         <div className="admin-section">
