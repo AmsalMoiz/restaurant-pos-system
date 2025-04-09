@@ -522,8 +522,7 @@ function DashAdmin() {
           });
       
           if (!response.ok) throw new Error("Update failed");
-      
-          const data = await response.json();
+
       
           setInventory(prev =>
             prev.map(item =>
@@ -687,7 +686,30 @@ function DashAdmin() {
                         <div className="admin-section">
                             <div className="section-header">
                                 <h2>Inventory Management</h2>
-                                <button className="edit-btn" onClick={() => setEditMode(!editMode)}>{editMode ? 'Done' : 'Edit'}</button>
+                                <div className="inventory-controls">
+                                <button className="edit-btn" onClick={() => setEditMode(!editMode)}>
+                                    {editMode ? 'Done' : 'Edit'}
+                                </button>
+                                {editMode && (
+                                    <button
+                                    className="add-item-btn"
+                                    onClick={() => {
+                                        setNewItem({
+                                        dessert: '',
+                                        price: '',
+                                        quantity: '',
+                                        limit: '',
+                                        supplier: ''
+                                        });
+                                        setTimeout(() => {
+                                        document.getElementById('add-item-row')?.scrollIntoView({ behavior: 'smooth' });
+                                        }, 100);
+                                    }}
+                                    >
+                                    + Add New Item
+                                    </button>
+                                )}
+                                </div>
                                 <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
                             </div>
                             
@@ -733,7 +755,9 @@ function DashAdmin() {
                                                     {editMode && (
                                                     <>
                                                         <td>
-                                                        <button className="delete-btn" onClick={() => setItemToDelete(item)}> - </button>
+                                                        <button className="delete-btn" onClick={() => setItemToDelete(item)}>
+                                                        <span className="minus-line"></span>
+                                                        </button>
                                                         </td>
                                                         <td>
                                                         {editingItemId === item.item_id ? (
@@ -765,9 +789,8 @@ function DashAdmin() {
                                                 </td>
                                             </tr>
                                             )}
-
                                             {editMode && newItem && (
-                                            <tr>
+                                            <tr id="add-item-row">
                                                 <td><input placeholder="Item" value={newItem.dessert} onChange={(e) => setNewItem({ ...newItem, dessert: e.target.value })} /></td>
                                                 <td><input type="number" placeholder="$" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} /></td>
                                                 <td><input type="number" placeholder="Qty" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} /></td>
@@ -779,17 +802,27 @@ function DashAdmin() {
                                                 </td>
                                             </tr>
                                             )}
+                                            
                                         </tbody>
                                     </table>
                                 )}
                             </div>
                             {itemToDelete && (
-                            <div className="confirmation-box">
+                            <>
+                                <div className="modal-overlay" onClick={() => setItemToDelete(null)} />
+                                <div className="confirmation-box">
                                 <p>Are you sure you want to delete this item?</p>
-                                <pre>{JSON.stringify(itemToDelete, null, 2)}</pre>
+                                <div className="delete-item-details">
+                                    <p><strong>Item:</strong> {itemToDelete.dessert}</p>
+                                    <p><strong>Price:</strong> ${itemToDelete.price}</p>
+                                    <p><strong>Quantity:</strong> {itemToDelete.quantity}</p>
+                                    <p><strong>Reorder Threshold:</strong> {itemToDelete.limit}</p>
+                                    <p><strong>Supplier:</strong> {itemToDelete.supplier}</p>
+                                </div>
                                 <button onClick={() => setItemToDelete(null)}>Cancel</button>
                                 <button className="delete-confirm-btn" onClick={() => handleDeleteItem(itemToDelete.item_id)}>Delete</button>
-                            </div>
+                                </div>
+                            </>
                             )}
                         </div>
                     )}
