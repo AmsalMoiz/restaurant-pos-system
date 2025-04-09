@@ -1,140 +1,167 @@
-.reservation-screen {
+.layout-wrapper {
     display: flex;
+    height: 100vh;
+    background-color: #111;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    overflow: hidden;
+  }
+  
+  .layout-photo {
+    width: 50%;
+  }
+  
+  .layout-photo img {
     width: 100%;
     height: 100vh;
-    overflow: hidden;
-    background-color: #111;
-  }
-  
-  .reservation-left {
-    width: 50%;
-    height: 100%;
-  }
-  
-  .reservation-image {
-    width: 100%;
-    height: 100%;
     object-fit: cover;
   }
   
-  .reservation-right {
+  .layout-sketch {
     width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    padding: 20px;
-  }
-  
-  .layout-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 90%;
-    position: relative;
-  }
-  
-  .layout-center {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    position: relative;
   }
   
   .sketch-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
+    font-size: 2rem;
     color: #fff8c9;
     margin-bottom: 20px;
   }
   
-  .table-grid {
-    display: grid;
-    grid-template-rows: repeat(8, auto);
+  .table-sketch-zone {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
   }
   
   .table-row {
-    display: grid;
-    grid-template-columns: repeat(5, auto);
-    gap: 10px;
+    display: flex;
+    gap: 12px;
     justify-content: center;
   }
   
   .square-table {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border: 2px solid white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    border-radius: 4px;
-  }
-  
-  .bar-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .bar-chair {
-    width: 20px;
-    height: 20px;
-    border: 2px solid white;
-    border-radius: 50%;
-    background: transparent;
+    background: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
     cursor: pointer;
   }
   
-  .bar-chair.selected {
-    background: white;
+  .bar-section {
+    position: absolute;
+    top: 90px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
   
   .bar-label {
-    margin-top: 5px;
     font-size: 12px;
-    color: #aaa;
+    margin-bottom: 5px;
   }
   
-  .restroom-label {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #ccc;
+  .circle-chair {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: none;
+    cursor: pointer;
   }
   
   .view-label {
     position: absolute;
-    left: -40px;
+    left: 20px;
+    top: 100px;
     transform: rotate(-90deg);
+    font-size: 14px;
     font-weight: bold;
-    color: #ccc;
+    color: white;
+  }
+  
+  .restroom-label {
+    margin-top: 20px;
+    font-size: 14px;
+    color: white;
   }
   
   .legend {
     display: flex;
     gap: 20px;
     margin-top: 20px;
-    font-size: 12px;
-  }
-  
-  .legend-box,
-  .legend-circle {
-    display: inline-block;
-    margin-right: 5px;
   }
   
   .legend-box {
     width: 16px;
     height: 16px;
+    display: inline-block;
     border: 2px solid white;
+    margin-right: 6px;
   }
   
-  .legend-circle {
-    width: 14px;
-    height: 14px;
-    border: 2px solid white;
+  .table-legend {
+    border-radius: 4px;
+  }
+  
+  .chair-legend {
     border-radius: 50%;
+  }
+  
+  /* Modal Styling */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modal {
+    background: #222;
+    padding: 30px 40px;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+  }
+  
+  .modal-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+  }
+  
+  .modal-options button {
+    padding: 10px 16px;
+    background-color: #fff8c9;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .close-button {
+    margin-top: 15px;
+    padding: 6px 12px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid #fff8c9;
+    cursor: pointer;
+    border-radius: 5px;
   }
   
