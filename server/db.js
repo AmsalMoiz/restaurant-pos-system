@@ -14,7 +14,6 @@ const pool = mysql.createPool({
   queueLimit: 0, // Unlimited queue
   // Correct timeout setting
   connectTimeout: 60000, // Connection timeout in milliseconds
-  ssl: { rejectUnauthorized: false }
 });
 
 // Handle pool errors

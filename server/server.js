@@ -391,8 +391,6 @@ app.patch('/dashboard/items/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-<<<<<<< HEAD
-=======
 
 // Handle application shutdown
 process.on('SIGINT', () => {
@@ -454,4 +452,3 @@ app.post('/dashboard/items', async (req, res) => {
     res.status(500).json({ error: "Failed to add item." });
   }
 });
->>>>>>> develop
