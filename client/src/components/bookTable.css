@@ -166,3 +166,10 @@
     border: none;
   }
   
+  .square-table.occupied,
+  .circle-chair.occupied {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+  
