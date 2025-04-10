@@ -1,0 +1,166 @@
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 12px;
+  gap: 20px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.cart-img-small {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.cart-details {
+  flex: 1;
+  color: white;
+}
+
+.cart-details h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.cart-details p {
+  margin: 2px 0;
+  color: #ddd;
+  font-size: 14px;
+}
+
+.cart-price-small {
+  font-weight: bold;
+  color: #e6cfa7;
+  margin-top: 6px;
+}
+
+.remove-button {
+  background: #f25c4e;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+}
+
+.remove-button:hover {
+  background: #ff7e6c;
+}
+
+.cart-total-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff8f0;
+  border-top: 2px solid #d9d9d9;
+  padding: 1rem 2rem;
+  text-align: right;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.cart-summary-box {
+  margin: 40px auto 0;
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #fff;
+  max-width: 600px;
+  text-align: right;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+}
+.cart-checkout-box {
+  margin: 40px auto 0;
+  padding: 25px 35px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #fff;
+  max-width: 600px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+}
+
+.checkout-total {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #e6cfa7;
+}
+
+.checkout-btn {
+  background: linear-gradient(to right, #e6cfa7, #f0dcb8);
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 30px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background: #fff2da;
+}
+
+.cart-checkout-box-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px auto 0;
+  padding: 25px 35px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #fff;
+  max-width: 600px;
+  font-size: 18px;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  gap: 20px;
+
+  /* 👇 Add these 2 lines */
+  text-align: left;
+  width: 100%;
+}
+
+
+.checkout-total {
+  font-size: 24px;
+  color: #e6cfa7;
+  margin: 0;
+  white-space: nowrap; /* prevents wrapping on narrow screens */
+}
+
+@media (max-width: 480px) {
+  .cart-checkout-box-row {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .checkout-btn {
+    width: 100%;
+    margin-top: 15px;
+  }
+}

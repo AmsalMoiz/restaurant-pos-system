@@ -33,35 +33,6 @@ html, body {
   position: relative;
 }
 
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  background-color: rgba(0, 0, 0, 0.9);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.logo {
-  font-family: 'Great Vibes', cursive;
-  font-size: 32px;
-  color: #e6cfa7;
-}
-
-.nav-links a {
-  color: #ffffff;
-  text-decoration: none;
-  margin-left: 30px;
-  font-size: 16px;
-  transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-  color: #e6cfa7;
-}
 
 /* Main section */
 .hero-content {

@@ -17,16 +17,16 @@ router.post("/login", async (req, res) => { // POST /api/auth/login
       return res.status(500).json({ error: 'Database connection error' });
     }
     const [rows] = await connection.execute( // Query the database
-      "SELECT user_id, password FROM users WHERE email = ?",
+      "SELECT customer_id, password FROM customers WHERE email = ?",
       [email]
     );
 
-    if (rows.length === 0) { // Check if user with email exists
+    if (rows.length === 0) { // Check if customer with email exists
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const user = rows[0]; // Get user from the result
-    if (password !== user.password) {
+    const customer = rows[0]; // Get customer from the result
+    if (password !== customer.password) {
         return res.status(401).json({ error: "Invalid email or password" });
     }
 
@@ -36,5 +36,39 @@ router.post("/login", async (req, res) => { // POST /api/auth/login
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// Register Route
+router.post("/register", async (req, res) => {
+  console.log("Register route hit");
+  const { name, address, phone, email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
+  try {
+    const connection = await connect();
+
+    const [existing] = await connection.execute(
+      "SELECT customer_id FROM customers WHERE email = ?",
+      [email]
+    );
+
+    if (existing.length > 0) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
+
+    await connection.execute(
+      "INSERT INTO customers (name, address, phone_number, email, password) VALUES (?, ?, ?, ?, ?)",
+      [name, address, phone, email, password]
+    );
+
+    res.status(201).json({ message: "Customer registered successfully" });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 module.exports = router;
