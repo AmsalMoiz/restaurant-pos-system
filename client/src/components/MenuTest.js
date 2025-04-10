@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './menu.css';
 import Navbar from './Navbar';
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : ``;
+const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `https://sweet-heaven-atduagede6hpdxeg.eastus-01.azurewebsites.net`;
 
 const MenuTest = ({ cartItems, setCartItems }) => {
   const [desserts, setDesserts] = useState([]);
