@@ -77,9 +77,10 @@ app.post('/users/login', async (req, res) => {
 app.get('/dashboard/inventory', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
+    const [results] = await req.dbConnection.query('SELECT item_id, items.name as dessert, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
     const inventory = results.map(item => ({
-      dessert: item.item_name,
+      item_id: item.item_id,
+      dessert: item.dessert,
       price: parseFloat(item.price),
       quantity: item.quantity,
       limit: item.reorder_threshold,
@@ -358,7 +359,99 @@ app.use((err, req, res, next) => {
   });
 });
 
+app.patch('/dashboard/items/:id', async (req, res) => {
+  const { id } = req.params;
+  const { dessert, price, quantity, limit, supplier } = req.body;
+
+  if (!dessert || !price || !quantity || !limit || !supplier) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const connection = await db();
+
+    const [result] = await connection.execute(
+      `UPDATE items SET name = ?, price = ?, quantity = ?, reorder_threshold = ?, supplier_id = ?
+       WHERE item_id = ?`,
+      [dessert, price, quantity, limit, supplier, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Item not found." });
+    }
+
+    res.json({ message: "Item updated successfully" });
+  } catch (error) {
+    console.error("Update item error:", error);
+    res.status(500).json({ error: "Failed to update item." });
+  }
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+<<<<<<< HEAD
+=======
+
+// Handle application shutdown
+process.on('SIGINT', () => {
+  console.log('Application shutting down...');
+  // Close database connections or perform cleanup if needed
+  process.exit(0);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  // Log to monitoring service or file
+  process.exit(1);
+});
+
+app.delete('/dashboard/items/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const connection = await db();
+    const [result] = await connection.execute('DELETE FROM items WHERE item_id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json({ message: 'Item deleted successfully' });
+  } catch (err) {
+    console.error("Delete item error:", err);
+    res.status(500).json({ error: 'Failed to delete item' });
+  }
+});
+
+app.post('/dashboard/items', async (req, res) => {
+  const { dessert, price, quantity, limit, supplier } = req.body;
+
+  if (!dessert || !price || !quantity || !limit || !supplier) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const connection = await db(); // or however you connect
+    const [result] = await connection.execute(
+      `INSERT INTO items (name, price, quantity, reorder_threshold, supplier_id)
+       VALUES (?, ?, ?, ?, ?)`,
+      [dessert, price, quantity, limit, supplier]
+    );
+
+    const newItem = {
+      item_id: result.insertId,
+      dessert,
+      price: parseFloat(price),
+      quantity,
+      limit,
+      supplier
+    };
+
+    res.status(201).json(newItem);
+  } catch (error) {
+    console.error("Add item error:", error);
+    res.status(500).json({ error: "Failed to add item." });
+  }
+});
+>>>>>>> develop

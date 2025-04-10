@@ -61,8 +61,16 @@ function DashAdmin() {
     const [updateSupplierSubmitLoading, setUpdateSupplierSubmitLoading] = useState(false);
     //Reorder Alerts
     const [reorderAlerts, setReorderAlerts] = useState([]);
-    
 
+    //Inventory update, insert, remove
+    const [editMode, setEditMode] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [newItem, setNewItem] = useState(null);
+    const [editingItemId, setEditingItemId] = useState(null);
+    const [editedItemData, setEditedItemData] = useState({});
+
+    
+    // #region Inventory Management
 
     // FETCH INVENTORY
     useEffect(() => {
@@ -75,6 +83,7 @@ function DashAdmin() {
             }
             
             const data = await response.json();
+            console.log("Fetched inventory:", data);
             setInventory(data);
           } catch (err) {
             console.error("Error fetching inventory items:", err);
@@ -84,6 +93,87 @@ function DashAdmin() {
     
         fetchInventory();
     }, []);
+
+    //DELETE INVENTORY ITEM
+    const handleDeleteItem = async (id) => {
+        console.log("Attempting to delete item ID:", id);
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items/${id}`, {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error("Delete failed");
+          setInventory(prev => prev.filter(item => item.item_id !== id));
+          setItemToDelete(null);
+        } catch (err) {
+          alert("Failed to delete item.");
+        }
+    };
+
+    //ADD INVENTORY ITEM
+    const handleAddItem = async () => {
+        const { dessert, price, quantity, limit, supplier } = newItem;
+      
+        if (!dessert || !price || !quantity || !limit || !supplier) {
+          alert("All fields must be filled out.");
+          return;
+        }
+      
+        if (!window.confirm(`Please review item details before submission:\n${JSON.stringify(newItem, null, 2)}`)) return;
+      
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newItem)
+          });
+      
+          if (!response.ok) throw new Error("Failed to add item.");
+      
+          const addedItem = await response.json();
+          setInventory(prev => [...prev, addedItem]);
+          setNewItem(null);
+        } catch (err) {
+          alert("Error adding item.");
+          console.error("Add item error:", err);
+        }
+    };
+
+    //UPDATE INVENTORY ITEM
+    const handleUpdateItem = async (itemId) => {
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items/${itemId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(editedItemData)
+          });
+      
+          if (!response.ok) throw new Error("Update failed");
+
+      
+          setInventory(prev =>
+            prev.map(item =>
+              item.item_id === itemId
+                ? {
+                    ...item,
+                    ...editedItemData,
+                    price: parseFloat(editedItemData.price)
+                  }
+                : item
+            )
+          );
+          
+      
+          setEditingItemId(null);
+          setEditedItemData({});
+        } catch (err) {
+          console.error("Update item error:", err);
+          alert("Failed to update item.");
+        }
+      };
+
+      // #endregion
+
+    
     // FETCH USERS
     const fetchUsers = async () => {
         try {
@@ -103,6 +193,10 @@ function DashAdmin() {
     useEffect(() => {
         fetchUsers();
     }, []);
+
+
+
+
     // INSERT USER
     // Add this function to handle form submission
     const handleAddEmployee = async (e) => {
@@ -459,7 +553,9 @@ function DashAdmin() {
     const handleSectionClick = (section) => {
         setActiveSection(section);
     };
+      
 
+    // HTML
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -500,24 +596,6 @@ function DashAdmin() {
                                     <button onClick={handleShowInventory}>View Inventory</button>
                                 </div>
 
-                                <div className="admin-card">
-                                    <h3>Remove Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('remove-inventory')}>Remove Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('add-inventory')}>Add Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => handleSectionClick('update-inventory')}>Update Inventory</button>
-                                </div>
-
                                 {/* Users side */}
                                 <div className="admin-card">
                                     <h3>Employee Management</h3>
@@ -525,47 +603,11 @@ function DashAdmin() {
                                     <button onClick={() => handleSectionClick('employees')}>View Employees</button>
                                 </div>
 
-                                <div className="admin-card">
-                                    <h3>Remove Employee</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('remove-employee')}>Remove Employee</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Employee</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('add-employee')}>Add Employee</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Employee</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('update-employee')}>Update Employee</button>
-                                </div>
-
                                 {/* Suppliers side */}
                                 <div className="admin-card">
                                     <h3>Suppliers</h3>
                                     <p>Manage restaurant suppliers</p>
                                     <button onClick={() => handleSectionClick('suppliers')}>View Suppliers</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Remove Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('remove-supplier')}>Remove Supplier</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('add-supplier')}>Add Supplier</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('update-supplier')}>Update Supplier</button>
                                 </div>
 
                                 <div className="admin-card">
@@ -618,6 +660,30 @@ function DashAdmin() {
                         <div className="admin-section">
                             <div className="section-header">
                                 <h2>Inventory Management</h2>
+                                <div className="inventory-controls">
+                                <button className="edit-btn" onClick={() => setEditMode(!editMode)}>
+                                    {editMode ? 'Done' : 'Edit'}
+                                </button>
+                                {editMode && (
+                                    <button
+                                    className="add-item-btn"
+                                    onClick={() => {
+                                        setNewItem({
+                                        dessert: '',
+                                        price: '',
+                                        quantity: '',
+                                        limit: '',
+                                        supplier: ''
+                                        });
+                                        setTimeout(() => {
+                                        document.getElementById('add-item-row')?.scrollIntoView({ behavior: 'smooth' });
+                                        }, 100);
+                                    }}
+                                    >
+                                    + Add New Item
+                                    </button>
+                                )}
+                                </div>
                                 <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
                             </div>
                             
@@ -639,21 +705,99 @@ function DashAdmin() {
                                         <tbody>
                                             {inventory.map((item, index) => (
                                                 <tr key={index} className={item.quantity <= item.limit ? "low-stock" : ""}>
-                                                    <td>{item.dessert}</td>
-                                                    <td>${item.price.toFixed(2)}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{item.limit}</td>
-                                                    <td>{item.supplier}</td>
+                                                    {editingItemId === item.item_id ? (
+                                                    <>
+                                                        <td><input value={editedItemData.dessert || ''} onChange={(e) => setEditedItemData({ ...editedItemData, dessert: e.target.value })} /></td>
+                                                        <td><input type="number" value={editedItemData.price || ''} onChange={(e) => setEditedItemData({ ...editedItemData, price: e.target.value })} /></td>
+                                                        <td><input type="number" value={editedItemData.quantity || ''} onChange={(e) => setEditedItemData({ ...editedItemData, quantity: e.target.value })} /></td>
+                                                        <td><input type="number" value={editedItemData.limit || ''} onChange={(e) => setEditedItemData({ ...editedItemData, limit: e.target.value })} /></td>
+                                                        <td><input value={editedItemData.supplier || ''} onChange={(e) => setEditedItemData({ ...editedItemData, supplier: e.target.value })} /></td>
+                                                    </>
+                                                    ) : (
+                                                    <>
+                                                        <td>{item.dessert}</td>
+                                                        <td>${item.price.toFixed(2)}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.limit}</td>
+                                                        <td>{item.supplier}</td>
+                                                    </>
+                                                    )}
                                                     <td>{item.quantity <= item.limit ? 
                                                         <span className="status-low">Low Stock</span> : 
                                                         <span className="status-ok">In Stock</span>}
                                                     </td>
+                                                    {editMode && (
+                                                    <>
+                                                        <td>
+                                                        <button className="delete-btn" onClick={() => setItemToDelete(item)}>
+                                                        <span className="minus-line"></span>
+                                                        </button>
+                                                        </td>
+                                                        <td>
+                                                        {editingItemId === item.item_id ? (
+                                                            <>
+                                                            <button onClick={() => setEditingItemId(null)}>Cancel</button>
+                                                            <button onClick={() => handleUpdateItem(item.item_id)}>Save</button>
+                                                            </>
+                                                        ) : (
+                                                            <button onClick={() => {
+                                                            setEditingItemId(item.item_id);
+                                                            setEditedItemData(item);
+                                                            }}>Update</button>
+                                                        )}
+                                                        </td>
+                                                    </>
+                                                    )}
                                                 </tr>
                                             ))}
+                                            {editMode && !newItem && (
+                                            <tr>
+                                                <td colSpan="7" style={{ textAlign: "center" }}>
+                                                <button onClick={() => setNewItem({
+                                                    dessert: '',
+                                                    price: '',
+                                                    quantity: '',
+                                                    limit: '',
+                                                    supplier: ''
+                                                })}>+ Add New Item</button>
+                                                </td>
+                                            </tr>
+                                            )}
+                                            {editMode && newItem && (
+                                            <tr id="add-item-row">
+                                                <td><input placeholder="Item" value={newItem.dessert} onChange={(e) => setNewItem({ ...newItem, dessert: e.target.value })} /></td>
+                                                <td><input type="number" placeholder="$" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} /></td>
+                                                <td><input type="number" placeholder="Qty" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} /></td>
+                                                <td><input type="number" placeholder="Limit" value={newItem.limit} onChange={(e) => setNewItem({ ...newItem, limit: e.target.value })} /></td>
+                                                <td><input placeholder="Supplier" value={newItem.supplier} onChange={(e) => setNewItem({ ...newItem, supplier: e.target.value })} /></td>
+                                                <td colSpan="2">
+                                                <button onClick={() => setNewItem(null)}>Cancel</button>
+                                                <button onClick={handleAddItem}>Submit</button>
+                                                </td>
+                                            </tr>
+                                            )}
+                                            
                                         </tbody>
                                     </table>
                                 )}
                             </div>
+                            {itemToDelete && (
+                            <>
+                                <div className="modal-overlay" onClick={() => setItemToDelete(null)} />
+                                <div className="confirmation-box">
+                                <p>Are you sure you want to delete this item?</p>
+                                <div className="delete-item-details">
+                                    <p><strong>Item:</strong> {itemToDelete.dessert}</p>
+                                    <p><strong>Price:</strong> ${itemToDelete.price}</p>
+                                    <p><strong>Quantity:</strong> {itemToDelete.quantity}</p>
+                                    <p><strong>Reorder Threshold:</strong> {itemToDelete.limit}</p>
+                                    <p><strong>Supplier:</strong> {itemToDelete.supplier}</p>
+                                </div>
+                                <button onClick={() => setItemToDelete(null)}>Cancel</button>
+                                <button className="delete-confirm-btn" onClick={() => handleDeleteItem(itemToDelete.item_id)}>Delete</button>
+                                </div>
+                            </>
+                            )}
                         </div>
                     )}
 
