@@ -90,7 +90,7 @@ const Login = () => {
 
         <p>
           New to Sweet Heaven?{" "}
-          <a href="#" onClick={() => setShowSignupModal(true)}>Create an account</a> {/* ✅ show modal */}
+          <button onClick={() => setShowSignupModal(true)} className="link-button">Create an account</button>
         </p>
         
         <p style={{ marginTop: "1rem" }}>
