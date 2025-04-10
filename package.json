@@ -22,6 +22,7 @@
   "homepage": "https://github.com/AmsalMoiz/restaurant-pos-system#readme",
   "dependencies": {
     "concurrently": "^8.2.2",
+    "dotenv": "^16.4.7",
     "react-router-dom": "^7.4.0",
     "react-scripts": "^5.0.1"
   }
