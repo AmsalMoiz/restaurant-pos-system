@@ -24,14 +24,16 @@ const ReservationModal = ({ item, onClose, onReserve }) => {
   };
 
   const getDayFromDate = (dateStr) => {
-    const date = new Date(dateStr);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     return date.toLocaleDateString('en-US', { weekday: 'long' });
   };
+  
 
   const getTimeOptions = (day) => {
     switch (day) {
       case 'Sunday':
-        return ['5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM'];
+        return ['5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM','9:00 PM'];
       case 'Monday':
       case 'Tuesday':
       case 'Wednesday':
@@ -43,7 +45,7 @@ const ReservationModal = ({ item, onClose, onReserve }) => {
       default:
         return [];
     }
-  };
+  };  
 
   const todayStr = new Date().toISOString().split('T')[0];
   const maxDate = new Date();

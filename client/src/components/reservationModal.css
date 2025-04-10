@@ -49,11 +49,12 @@
   }
   
   .guest-options button.active {
-    background-color: #ffd700;
+    background-color: white;
     color: #111;
     font-weight: bold;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
   }
+  
   
   .date-time-section p {
     margin: 10px 0 5px;
@@ -109,3 +110,16 @@
     background-color: #ffcc00;
   }
   
+input[type="date"] {
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); 
+  cursor: pointer;
+}
