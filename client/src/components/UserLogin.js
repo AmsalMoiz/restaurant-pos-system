@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./userLogin.css";
 
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+//const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
 
 function UserLogin({ onLogin }) {
   const [error, setError] = useState("");
@@ -21,7 +21,7 @@ function UserLogin({ onLogin }) {
     }
 
     try {
-      const response = await fetch(`${API_URL}/users/login`, {
+      const response = await fetch("https://sweet-heaven-atduagede6hpdxeg.eastus-01.azurewebsites.net/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
