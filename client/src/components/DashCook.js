@@ -6,7 +6,7 @@ function DashCook() {
     const [cookData, setCookData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    //const [isClockedIn, setIsClockedIn] = useState(false); // State to track clock-in status, not being used commented out
+    const [isClockedIn, setIsClockedIn] = useState(false); // State to track clock-in status, not being used commented out
     const navigate = useNavigate();
 
     useEffect(() => {
