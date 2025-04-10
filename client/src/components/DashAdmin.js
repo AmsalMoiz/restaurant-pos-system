@@ -70,7 +70,7 @@ function DashAdmin() {
     const [editedItemData, setEditedItemData] = useState({});
 
     
-
+    // #region Inventory Management
 
     // FETCH INVENTORY
     useEffect(() => {
@@ -93,6 +93,87 @@ function DashAdmin() {
     
         fetchInventory();
     }, []);
+
+    //DELETE INVENTORY ITEM
+    const handleDeleteItem = async (id) => {
+        console.log("Attempting to delete item ID:", id);
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items/${id}`, {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error("Delete failed");
+          setInventory(prev => prev.filter(item => item.item_id !== id));
+          setItemToDelete(null);
+        } catch (err) {
+          alert("Failed to delete item.");
+        }
+    };
+
+    //ADD INVENTORY ITEM
+    const handleAddItem = async () => {
+        const { dessert, price, quantity, limit, supplier } = newItem;
+      
+        if (!dessert || !price || !quantity || !limit || !supplier) {
+          alert("All fields must be filled out.");
+          return;
+        }
+      
+        if (!window.confirm(`Please review item details before submission:\n${JSON.stringify(newItem, null, 2)}`)) return;
+      
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newItem)
+          });
+      
+          if (!response.ok) throw new Error("Failed to add item.");
+      
+          const addedItem = await response.json();
+          setInventory(prev => [...prev, addedItem]);
+          setNewItem(null);
+        } catch (err) {
+          alert("Error adding item.");
+          console.error("Add item error:", err);
+        }
+    };
+
+    //UPDATE INVENTORY ITEM
+    const handleUpdateItem = async (itemId) => {
+        try {
+          const response = await fetch(`${API_URL}/dashboard/items/${itemId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(editedItemData)
+          });
+      
+          if (!response.ok) throw new Error("Update failed");
+
+      
+          setInventory(prev =>
+            prev.map(item =>
+              item.item_id === itemId
+                ? {
+                    ...item,
+                    ...editedItemData,
+                    price: parseFloat(editedItemData.price)
+                  }
+                : item
+            )
+          );
+          
+      
+          setEditingItemId(null);
+          setEditedItemData({});
+        } catch (err) {
+          console.error("Update item error:", err);
+          alert("Failed to update item.");
+        }
+      };
+
+      // #endregion
+
+    
     // FETCH USERS
     const fetchUsers = async () => {
         try {
@@ -112,6 +193,10 @@ function DashAdmin() {
     useEffect(() => {
         fetchUsers();
     }, []);
+
+
+
+
     // INSERT USER
     // Add this function to handle form submission
     const handleAddEmployee = async (e) => {
@@ -468,84 +553,9 @@ function DashAdmin() {
     const handleSectionClick = (section) => {
         setActiveSection(section);
     };
-
-    //DELETE INVENTORY ITEM
-    const handleDeleteItem = async (id) => {
-        console.log("Attempting to delete item ID:", id);
-        try {
-          const response = await fetch(`${API_URL}/dashboard/items/${id}`, {
-            method: 'DELETE'
-          });
-          if (!response.ok) throw new Error("Delete failed");
-          setInventory(prev => prev.filter(item => item.item_id !== id));
-          setItemToDelete(null);
-        } catch (err) {
-          alert("Failed to delete item.");
-        }
-    };
-
-    //ADD INVENTORY ITEM
-    const handleAddItem = async () => {
-        const { dessert, price, quantity, limit, supplier } = newItem;
-      
-        if (!dessert || !price || !quantity || !limit || !supplier) {
-          alert("All fields must be filled out.");
-          return;
-        }
-      
-        if (!window.confirm(`Please review item details before submission:\n${JSON.stringify(newItem, null, 2)}`)) return;
-      
-        try {
-          const response = await fetch(`${API_URL}/dashboard/items`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newItem)
-          });
-      
-          if (!response.ok) throw new Error("Failed to add item.");
-      
-          const addedItem = await response.json();
-          setInventory(prev => [...prev, addedItem]);
-          setNewItem(null);
-        } catch (err) {
-          alert("Error adding item.");
-          console.error("Add item error:", err);
-        }
-    };
-
-    const handleUpdateItem = async (itemId) => {
-        try {
-          const response = await fetch(`${API_URL}/dashboard/items/${itemId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(editedItemData)
-          });
-      
-          if (!response.ok) throw new Error("Update failed");
-
-      
-          setInventory(prev =>
-            prev.map(item =>
-              item.item_id === itemId
-                ? {
-                    ...item,
-                    ...editedItemData,
-                    price: parseFloat(editedItemData.price)
-                  }
-                : item
-            )
-          );
-          
-      
-          setEditingItemId(null);
-          setEditedItemData({});
-        } catch (err) {
-          console.error("Update item error:", err);
-          alert("Failed to update item.");
-        }
-      };
       
 
+    // HTML
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -593,47 +603,11 @@ function DashAdmin() {
                                     <button onClick={() => handleSectionClick('employees')}>View Employees</button>
                                 </div>
 
-                                <div className="admin-card">
-                                    <h3>Remove Employee</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('remove-employee')}>Remove Employee</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Employee</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('add-employee')}>Add Employee</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Employee</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('update-employee')}>Update Employee</button>
-                                </div>
-
                                 {/* Suppliers side */}
                                 <div className="admin-card">
                                     <h3>Suppliers</h3>
                                     <p>Manage restaurant suppliers</p>
                                     <button onClick={() => handleSectionClick('suppliers')}>View Suppliers</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Remove Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('remove-supplier')}>Remove Supplier</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('add-supplier')}>Add Supplier</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('update-supplier')}>Update Supplier</button>
                                 </div>
 
                                 <div className="admin-card">
