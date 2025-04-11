@@ -113,11 +113,15 @@ app.get('/dashboard/inventory', async (req, res) => {
   }
 });
 
+
+//USERS
+
 app.get('/dashboard/users', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT name, role, hours_worked, hourly_pay_rate, email FROM users');
+    const [results] = await req.dbConnection.query('SELECT user_id, name, role, hours_worked, hourly_pay_rate, email FROM users');
     const users = results.map(user => ({
+      user_id: user.user_id,
       name: user.name,
       role: user.role,
       hours: parseFloat(user.hours_worked),
@@ -172,63 +176,70 @@ app.post('/dashboard/users/insert', async (req, res) => {
   }
 });
 
-app.delete('/dashboard/users/delete', async (req, res) => {
-  const { email } = req.body;
-  
 
-  if (!email) {
-    return res.status(400).json({ error: 'Email is required.' });
+app.patch('/dashboard/users/update/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, role, hourly_pay_rate, password } = req.body;
+
+  if (!name || !role || !hourly_pay_rate) {
+    return res.status(400).json({ error: 'All fields except password are required.' });
   }
-  
+
   try {
-    // Connection is now available as req.dbConnection
-    const [deleteResult] = await req.dbConnection.query(
-      'DELETE FROM users WHERE email = ?', 
-      [email]
+    const baseQuery = 'UPDATE users SET name = ?, role = ?, hourly_pay_rate = ?';
+    const values = [name, role, hourly_pay_rate];
+
+    if (password) {
+      // Update password as well
+      const [result] = await req.dbConnection.query(
+        baseQuery + ', password = ? WHERE user_id = ?',
+        [...values, password, id]
+      );
+      return res.json({ success: true, message: 'User and password updated successfully!' });
+    } else {
+      // Skip updating password
+      const [result] = await req.dbConnection.query(
+        baseQuery + ' WHERE user_id = ?',
+        [...values, id]
+      );
+      return res.json({ success: true, message: 'User updated successfully!' });
+    }
+
+  } catch (err) {
+    console.error('Update user error:', err);
+    return res.status(500).json({
+      error: 'Database update error',
+      message: 'An error occurred during updating user.'
+    });
+  }
+});
+
+app.delete('/dashboard/users/delete/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [result] = await req.dbConnection.query(
+      'DELETE FROM users WHERE user_id = ?',
+      [id]
     );
-    
-    if (deleteResult.affectedRows > 0) {
+
+    if (result.affectedRows > 0) {
       res.json({ success: true, message: 'User deleted successfully!' });
     } else {
       return res.status(404).json({ error: 'User not found.' });
     }
-    
   } catch (err) {
     console.error('Delete user error:', err);
-    return res.status(500).json({ 
-      error: 'Database delete error', 
-      message: 'An error occurred during deleting user.' 
+    return res.status(500).json({
+      error: 'Database delete error',
+      message: 'An error occurred during deleting user.'
     });
   }
 });
 
-app.patch('/dashboard/users/update', async (req, res) => {
-  const { role, name, email, hourly_pay_rate } = req.body;
-  if (!role || !name || !email || !hourly_pay_rate) {
-    return res.status(400).json({ error: 'All fields are required.' });
-  }
-  
-  try {
-    // Connection is now available as req.dbConnection
-    const [updateResult] = await req.dbConnection.query(
-      'UPDATE users SET role = ?, name = ?, hourly_pay_rate = ? WHERE email = ?', 
-      [role, name, hourly_pay_rate, email]
-    );
-    
-    if (updateResult.affectedRows > 0) {
-      res.json({ success: true, message: 'User updated successfully!' });
-    } else {
-      return res.status(404).json({ error: 'User not found.' });
-    }
-    
-  } catch (err) {
-    console.error('Update user error:', err);
-    return res.status(500).json({ 
-      error: 'Database update error', 
-      message: 'An error occurred during updating user.' 
-    });
-  }
-});
+
+//SUPPLIERS
+
 
 app.get('/dashboard/suppliers', async (req, res) => {
   try {

@@ -62,12 +62,20 @@ function DashAdmin() {
     //Reorder Alerts
     const [reorderAlerts, setReorderAlerts] = useState([]);
 
-    //Inventory update, insert, remove
+    //INVENTORY update, insert, remove
     const [editMode, setEditMode] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
     const [newItem, setNewItem] = useState(null);
     const [editingItemId, setEditingItemId] = useState(null);
     const [editedItemData, setEditedItemData] = useState({});
+
+    //EMPLOYEE update, insert, remove
+    const [editModeEmployee, setEditModeEmployee] = useState(false);
+    const [newEmployeeEntry, setNewEmployeeEntry] = useState(null);
+    const [editingEmployeeId, setEditingEmployeeId] = useState(null);
+    const [editedEmployeeData, setEditedEmployeeData] = useState({});
+    const [employeeToDelete, setEmployeeToDelete] = useState(null);
+
 
     
     // #region Inventory Management
@@ -190,153 +198,84 @@ function DashAdmin() {
             setError("Failed to load employee data. Please try again later.");
         } 
     };
-    useEffect(() => {
-        fetchUsers();
+
+   useEffect(() => {
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch(`${API_URL}/dashboard/users`);
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const data = await response.json();
+            console.log("Fetched employees:", data); // ✅ log employee array
+            setUsers(data);
+        } catch (err) {
+            console.error("Error fetching users:", err);
+            setError("Failed to load employee data. Please try again later.");
+        }
+    };
+
+    fetchUsers();
     }, []);
 
-
-
-
-    // INSERT USER
-    // Add this function to handle form submission
-    const handleAddEmployee = async (e) => {
-        e.preventDefault();
-        setFormError('');
-        setFormSuccess('');
-        setSubmitLoading(true);
-        
+    const handleAddEmployeeEntry = async () => {
+        const { name, email, password, role, hourly_pay_rate } = newEmployeeEntry;
+    
+        if (!name || !email || !password || !role || !hourly_pay_rate) {
+            alert("All fields must be filled out.");
+            return;
+        }
+    
         try {
             const response = await fetch(`${API_URL}/dashboard/users/insert`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newEmployeeEntry)
             });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to add employee');
-            }
-            
-            // Success! Clear form and show success message
-            setFormSuccess('Employee added successfully!');
-            setFormData({
-                name: '',
-                email: '',
-                password: '',
-                role: '',
-                hourly_pay_rate: ''
-            });
-            
-            // Refresh the users list
-            fetchUsers();
-            
-        } catch (error) {
-            console.error('Error adding employee:', error);
-            setFormError(error.message || 'Failed to add employee. Please try again.');
-        } finally {
-            setSubmitLoading(false);
-        }
-    };
-    //UPDATE USER
-    // Handler for selecting an employee to update
-    const handleEmployeeSelect = (e) => {
-        const selectedEmail = e.target.value;
-        if (!selectedEmail) {
-            setUpdateFormData({
-                name: '',
-                email: '',
-                role: '',
-                hourly_pay_rate: ''
-            });
-            return;
-        }
-        
-        const selectedUser = users.find(user => user.email === selectedEmail);
-        if (selectedUser) {
-            setUpdateFormData({
-                name: selectedUser.name,
-                email: selectedUser.email,
-                role: selectedUser.role,
-                hourly_pay_rate: selectedUser.pay.toString()
-            });
-        }
-    };
-    //REMOVE USER
-    // Handler for removing an employee
-    const handleRemoveEmployee = async (e) => {
-        e.preventDefault();
-        setFormError('');
-        setFormSuccess('');
-        setSubmitLoading(true);
-        
-        try {
-            const response = await fetch(`${API_URL}/dashboard/users/delete`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: removeEmail }),
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to remove employee');
-            }
-            
-            // Success! Clear form and show success message
-            setFormSuccess('Employee removed successfully!');
-            setRemoveEmail('');
-            
-            // Refresh the users list
-            fetchUsers();
-            
-        } catch (error) {
-            console.error('Error removing employee:', error);
-            setFormError(error.message || 'Failed to remove employee. Please try again.');
-        } finally {
-            setSubmitLoading(false);
+    
+            if (!response.ok) throw new Error("Failed to add employee.");
+    
+            const added = await response.json();
+            setUsers(prev => [...prev, added]);
+            setNewEmployeeEntry(null);
+        } catch (err) {
+            alert("Error adding employee.");
         }
     };
 
-    // Handler for updating an employee
-    const handleUpdateEmployee = async (e) => {
-        e.preventDefault();
-        setUpdateFormError('');
-        setUpdateFormSuccess('');
-        setUpdateSubmitLoading(true);
-        
+    const handleUpdateEmployeeEntry = async (userId) => {
         try {
-            const response = await fetch(`${API_URL}/dashboard/users/update`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateFormData),
+            const response = await fetch(`${API_URL}/dashboard/users/update/${userId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(editedEmployeeData)
             });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to update employee');
-            }
-            
-            // Success! Show success message
-            setUpdateFormSuccess('Employee updated successfully!');
-            
-            // Refresh the users list
-            fetchUsers();
-            
-        } catch (error) {
-            console.error('Error updating employee:', error);
-            setUpdateFormError(error.message || 'Failed to update employee. Please try again.');
-        } finally {
-            setUpdateSubmitLoading(false);
+    
+            if (!response.ok) throw new Error("Update failed");
+    
+            setUsers(prev =>
+                prev.map(user =>
+                    user.user_id === userId ? { ...user, ...editedEmployeeData } : user
+                )
+            );
+            setEditingEmployeeId(null);
+            setEditedEmployeeData({});
+        } catch (err) {
+            alert("Failed to update employee.");
         }
     };
+    
+    const handleDeleteEmployee = async (userId) => {
+        try {
+            const response = await fetch(`${API_URL}/dashboard/users/delete/${userId}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error("Delete failed");
+            setUsers(prev => prev.filter(user => user.user_id !== userId));
+            setEmployeeToDelete(null);
+        } catch (err) {
+            alert("Failed to delete employee.");
+        }
+    };
+
 
     // FETCH SUPPLIERS
     const fetchSuppliers = async () => {
@@ -804,277 +743,114 @@ function DashAdmin() {
                     {/* Show users/employees */}
                     {activeSection === 'employees' && (
                     <div className="admin-section">
-                    <div className="section-header">
-                    <h2>Employee Management</h2>
-                    <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                    </div>
-        
-                    <div className="employees-container">
-                        {users.length === 0 ? (
-                        <p>Loading employee data...</p>
-                        ) : (
-                        <table className="employees-table">
-                        <thead>
-                            <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Hours Worked</th>
-                            <th>Hourly Rate</th>
-                            <th>Email</th>
-                            
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {users.map((user, index) => (
-                            <tr key={index}>
-                                <td>{user.name}</td>
-                                <td>
-                                    <span className={`role-badge role-${user.role.toLowerCase()}`}>
-                                        {user.role}
-                                    </span>
-                                </td>
-                                <td>{user.hours.toFixed(1)}</td>
-                                <td>${user.pay.toFixed(2)}</td>
-                                <td>{user.email}</td>
-                                
-                                
-                            </tr>
-                            ))}
-                        </tbody>
-                        </table>
+                        <div className="section-header">
+                            <h2>Employee Management</h2>
+                            <div className="inventory-controls">
+                                <button className="edit-btn" onClick={() => setEditModeEmployee(!editModeEmployee)}>
+                                    {editModeEmployee ? 'Done' : 'Edit'}
+                                </button>
+                                {editModeEmployee && (
+                                    <button className="add-item-btn" onClick={() => {
+                                        setNewEmployeeEntry({ name: '', email: '', password: '', role: '', hourly_pay_rate: '' });
+                                        setTimeout(() => {
+                                            document.getElementById('add-employee-row')?.scrollIntoView({ behavior: 'smooth' });
+                                        }, 100);
+                                    }}>
+                                        + Add New Employee
+                                    </button>
+                                )}
+                            </div>
+                            <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                        </div>
+
+                        <div className="employees-container">
+                            <table className="employees-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Hourly Rate</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {users.map((user, index) => (
+                                        <tr key={index}>
+                                            {editingEmployeeId === user.user_id ? (
+                                                <>
+                                                    <td><input value={editedEmployeeData.name || ''} onChange={(e) => setEditedEmployeeData({ ...editedEmployeeData, name: e.target.value })} /></td>
+                                                    <td><input value={editedEmployeeData.role || ''} onChange={(e) => setEditedEmployeeData({ ...editedEmployeeData, role: e.target.value })} /></td>
+                                                    <td><input type="number" value={editedEmployeeData.hourly_pay_rate || ''} onChange={(e) => setEditedEmployeeData({ ...editedEmployeeData, hourly_pay_rate: e.target.value })} /></td>
+                                                    <td>{user.email}</td>
+                                                    <td><input type="password" placeholder="Enter new password" value={editedEmployeeData.password || ''} onChange={(e) => setEditedEmployeeData({ ...editedEmployeeData, password: e.target.value })}/></td>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <td>{user.name}</td>
+                                                    <td>{user.role}</td>
+                                                    <td>{user.pay !== undefined ? `$${user.pay.toFixed(2)}` : 'N/A'}</td>
+                                                    <td>{user.email}</td>
+                                                </>
+                                            )}
+                                            {editModeEmployee && (
+                                                <>
+                                                    <td>
+                                                        <button className="delete-btn" onClick={() => setEmployeeToDelete(user)}>
+                                                            <span className="minus-line"></span>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        {editingEmployeeId === user.user_id ? (
+                                                            <>
+                                                                <button onClick={() => setEditingEmployeeId(null)}>Cancel</button>
+                                                                <button onClick={() => handleUpdateEmployeeEntry(user.user_id)}>Save</button>
+                                                            </>
+                                                        ) : (
+                                                            <button onClick={() => {
+                                                                setEditingEmployeeId(user.user_id);
+                                                                setEditedEmployeeData(user);
+                                                            }}>Update</button>
+                                                        )}
+                                                    </td>
+                                                </>
+                                            )}
+                                        </tr>
+                                    ))}
+                                    {editModeEmployee && newEmployeeEntry && (
+                                        <tr id="add-employee-row">
+                                        <td><input placeholder="Name" value={newEmployeeEntry.name} onChange={(e) => setNewEmployeeEntry({ ...newEmployeeEntry, name: e.target.value })} /></td>
+                                        <td><input placeholder="Role" value={newEmployeeEntry.role} onChange={(e) => setNewEmployeeEntry({ ...newEmployeeEntry, role: e.target.value })} /></td>
+                                        <td><input type="number" placeholder="Hourly Rate" value={newEmployeeEntry.hourly_pay_rate} onChange={(e) => setNewEmployeeEntry({ ...newEmployeeEntry, hourly_pay_rate: e.target.value })} /></td>
+                                        <td><input placeholder="Email" value={newEmployeeEntry.email} onChange={(e) => setNewEmployeeEntry({ ...newEmployeeEntry, email: e.target.value })} /></td>
+                                        <td><input placeholder="Password" type="password" value={newEmployeeEntry.password} onChange={(e) => setNewEmployeeEntry({ ...newEmployeeEntry, password: e.target.value })} /></td>
+                                        <td colSpan="2">
+                                            <button onClick={() => setNewEmployeeEntry(null)}>Cancel</button>
+                                            <button onClick={handleAddEmployeeEntry}>Submit</button>
+                                        </td>
+                                    </tr>                                    
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {employeeToDelete && (
+                            <>
+                                <div className="modal-overlay" onClick={() => setEmployeeToDelete(null)} />
+                                <div className="confirmation-box">
+                                    <p>Are you sure you want to delete this employee?</p>
+                                    <div className="delete-item-details">
+                                        <p><strong>Name:</strong> {employeeToDelete.name}</p>
+                                        <p><strong>Email:</strong> {employeeToDelete.email}</p>
+                                        <p><strong>Role:</strong> {employeeToDelete.role}</p>
+                                    </div>
+                                    <button onClick={() => setEmployeeToDelete(null)}>Cancel</button>
+                                    <button className="delete-confirm-btn" onClick={() => handleDeleteEmployee(employeeToDelete.user_id)}>Delete</button>
+                                </div>
+                            </>
                         )}
                     </div>
-                    </div>
                     )}
 
-                    {/* Add user */}
-                    {activeSection === 'add-employee' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Add New Employee</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            
-                            <div className="employee-form-container">
-                                <form className="employee-form" onSubmit={handleAddEmployee}>
-                                    <div className="form-group">
-                                        <label htmlFor="name">Full Name</label>
-                                        <input 
-                                            type="text" 
-                                            id="name" 
-                                            value={formData.name} 
-                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    
-                                    <div className="form-group">
-                                        <label htmlFor="email">Email</label>
-                                        <input 
-                                            type="email" 
-                                            id="email" 
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label htmlFor="password">Password</label>
-                                        <input 
-                                            type="password" 
-                                            id="password" 
-                                            value={formData.password}
-                                            onChange={(e) => setFormData({...formData, password: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    
-                                    <div className="form-group">
-                                        <label htmlFor="role">Role</label>
-                                        <select 
-                                            id="role" 
-                                            value={formData.role}
-                                            onChange={(e) => setFormData({...formData, role: e.target.value})}
-                                            required
-                                        >
-                                            <option value="">Select a role</option>
-                                            <option value="DBA">DBA</option>
-                                            <option value="Admin">Admin</option>
-                                            <option value="Manager">Manager</option>
-                                            <option value="Waiter">Waiter</option>
-                                            <option value="Cook">Cook</option>
-                                            
-                                        </select>
-                                    </div>
-                                    
-                                    <div className="form-group">
-                                        <label htmlFor="hourly_pay_rate">Hourly Pay Rate ($)</label>
-                                        <input 
-                                            type="number" 
-                                            id="hourly_pay_rate" 
-                                            min="10" 
-                                            step="0.10"
-                                            value={formData.hourly_pay_rate}
-                                            onChange={(e) => setFormData({...formData, hourly_pay_rate: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    
-                                    <div className="form-buttons">
-                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
-                                        <button type="submit" className="submit-btn" disabled={submitLoading}>
-                                            {submitLoading ? 'Adding...' : 'Add Employee'}
-                                        </button>
-                                    </div>
-                                </form>
-                                
-                                {formError && <div className="form-error">{formError}</div>}
-                                {formSuccess && <div className="form-success">{formSuccess}</div>}
-                            </div>
-                        </div>
-                    )}
-                    {/* Remove user */}
-                    {activeSection === 'remove-employee' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Remove Employee</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            
-                            <div className="employee-form-container">
-                                <form className="employee-form" onSubmit={handleRemoveEmployee}>
-                                    <div className="form-group">
-                                        <label htmlFor="remove-email">Employee Email</label>
-                                        <select 
-                                            id="remove-email" 
-                                            value={removeEmail}
-                                            onChange={(e) => setRemoveEmail(e.target.value)}
-                                            required
-                                        >
-                                            <option value="">Select an employee</option>
-                                            {users.map((user, index) => (
-                                                <option key={index} value={user.email}>
-                                                    {user.name} ({user.email}) - {user.role}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    
-                                    {removeEmail && (
-                                        <div className="confirmation-box">
-                                            <p className="warning-text">Are you sure you want to remove this employee?</p>
-                                            <p>This action cannot be undone.</p>
-                                            
-                                            <div className="selected-employee">
-                                                <p><strong>Name:</strong> {users.find(u => u.email === removeEmail)?.name}</p>
-                                                <p><strong>Email:</strong> {removeEmail}</p>
-                                                <p><strong>Role:</strong> {users.find(u => u.email === removeEmail)?.role}</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                    
-                                    <div className="form-buttons">
-                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
-                                        <button type="submit" className="delete-confirm-btn" disabled={!removeEmail || submitLoading}>
-                                            {submitLoading ? 'Removing...' : 'Confirm Removal'}
-                                        </button>
-                                    </div>
-                                </form>
-                                
-                                {formError && <div className="form-error">{formError}</div>}
-                                {formSuccess && <div className="form-success">{formSuccess}</div>}
-                            </div>
-                        </div>
-                    )}
-                    {/* Update user */}
-                    {activeSection === 'update-employee' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Update Employee</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            
-                            <div className="employee-form-container">
-                                <div className="employee-selection">
-                                    <label htmlFor="update-email">Select Employee to Update:</label>
-                                    <select 
-                                        id="update-email" 
-                                        value={updateFormData.email}
-                                        onChange={handleEmployeeSelect}
-                                        required
-                                    >
-                                        <option value="">Select an employee</option>
-                                        {users.map((user, index) => (
-                                            <option key={index} value={user.email}>
-                                                {user.name} ({user.email}) - {user.role}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                
-                                {updateFormData.email && (
-                                    <form className="employee-form" onSubmit={handleUpdateEmployee}>
-                                        <div className="form-group">
-                                            <label htmlFor="update-name">Full Name</label>
-                                            <input 
-                                                type="text" 
-                                                id="update-name" 
-                                                value={updateFormData.name} 
-                                                onChange={(e) => setUpdateFormData({...updateFormData, name: e.target.value})}
-                                                required 
-                                            />
-                                        </div>
-                                        
-                                        <div className="form-group">
-                                            <label htmlFor="update-role">Role</label>
-                                            <select 
-                                                id="update-role" 
-                                                value={updateFormData.role}
-                                                onChange={(e) => setUpdateFormData({...updateFormData, role: e.target.value})}
-                                                required
-                                            >
-                                                <option value="">Select a role</option>
-                                                <option value="DBA">DBA</option>
-                                                <option value="Admin">Admin</option>
-                                                <option value="Manager">Manager</option>
-                                                <option value="Waiter">Waiter</option>
-                                                <option value="Cook">Cook</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div className="form-group">
-                                            <label htmlFor="update-hourly_pay_rate">Hourly Pay Rate ($)</label>
-                                            <input 
-                                                type="number" 
-                                                id="update-hourly_pay_rate" 
-                                                min="10" 
-                                                step="0.10"
-                                                value={updateFormData.hourly_pay_rate}
-                                                onChange={(e) => setUpdateFormData({...updateFormData, hourly_pay_rate: e.target.value})}
-                                                required 
-                                            />
-                                        </div>
-                                        
-                                        <div className="form-group">
-                                            <p className="email-note"><strong>Note:</strong> Email cannot be updated as it is used as the unique identifier.</p>
-                                            <p className="email-display">{updateFormData.email}</p>
-                                        </div>
-                                        
-                                        <div className="form-buttons">
-                                            <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
-                                            <button type="submit" className="submit-btn" disabled={updateSubmitLoading}>
-                                                {updateSubmitLoading ? 'Updating...' : 'Update Employee'}
-                                            </button>
-                                        </div>
-                                    </form>
-                                )}
-                                
-                                {updateFormError && <div className="form-error">{updateFormError}</div>}
-                                {updateFormSuccess && <div className="form-success">{updateFormSuccess}</div>}
-                            </div>
-                        </div>
-                    )}
                     {/* Show suppliers */}
                     {activeSection === 'suppliers' && (
                     <div className="admin-section">
