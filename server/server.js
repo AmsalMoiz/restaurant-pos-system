@@ -12,12 +12,34 @@ app.use(cors());
 app.use(express.json()); // Middleware for JSON body parsing
 app.use("/api/auth", authRoutes); // Include auth routes
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 80;
+
+// Middleware to handle database connection errors
+const dbErrorHandler = async (req, res, next) => {
+  try {
+    req.dbConnection = await db(); // Get database connection
+    next();
+  } catch (error) {
+    console.error('Database connection error in middleware:', error);
+    return res.status(500).json({ 
+      error: 'Database connection error', 
+      message: 'Unable to connect to the database. Please try again later.' 
+    });
+  }
+};
+
+// Apply the database middleware to all routes that need DB access
+//app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users', '/dashboard/users/delete', '/dashboard/users/update', '/dashboard/users/insert', '/dashboard/suppliers', '/dashboard/suppliers/insert', '/dashboard/suppliers/delete', '/dashboard/suppliers/update', '/dashboard/reorder_alerts'], dbErrorHandler);
+app.use(dbErrorHandler);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
+
+app.get('/', (req, res) => {
+  res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
 });
 
 app.get('/menu', async (req, res) => {
@@ -79,10 +101,9 @@ app.post('/users/login', async (req, res) => {
 app.get('/dashboard/inventory', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT item_id, items.name as dessert, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
+    const [results] = await req.dbConnection.query('SELECT items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
     const inventory = results.map(item => ({
-      item_id: item.item_id,
-      dessert: item.dessert,
+      dessert: item.item_name,
       price: parseFloat(item.price),
       quantity: item.quantity,
       limit: item.reorder_threshold,
