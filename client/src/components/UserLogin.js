@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./userLogin.css";
 
-const API_URL = '';
+const API_BASE = process.env.API_BASE || '';;
 
 function UserLogin({ onLogin }) {
   const [error, setError] = useState("");
@@ -21,7 +21,7 @@ function UserLogin({ onLogin }) {
     }
 
     try {
-      const response = await fetch(`${API_URL}/users/login`, {
+      const response = await fetch(`${API_BASE}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

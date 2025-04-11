@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashAdmin.css";
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.API_BASE || '';
 
 function DashAdmin() {
     const [adminData, setAdminData] = useState(null);
@@ -76,7 +76,7 @@ function DashAdmin() {
     useEffect(() => {
         const fetchInventory = async () => {
           try {
-            const response = await fetch(`${API_URL}/dashboard/inventory`);
+            const response = await fetch(`${API_BASE}/dashboard/inventory`);
             
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
@@ -98,7 +98,7 @@ function DashAdmin() {
     const handleDeleteItem = async (id) => {
         console.log("Attempting to delete item ID:", id);
         try {
-          const response = await fetch(`${API_URL}/dashboard/items/${id}`, {
+          const response = await fetch(`${API_BASE}/dashboard/items/${id}`, {
             method: 'DELETE'
           });
           if (!response.ok) throw new Error("Delete failed");
@@ -121,7 +121,7 @@ function DashAdmin() {
         if (!window.confirm(`Please review item details before submission:\n${JSON.stringify(newItem, null, 2)}`)) return;
       
         try {
-          const response = await fetch(`${API_URL}/dashboard/items`, {
+          const response = await fetch(`${API_BASE}/dashboard/items`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newItem)
@@ -141,7 +141,7 @@ function DashAdmin() {
     //UPDATE INVENTORY ITEM
     const handleUpdateItem = async (itemId) => {
         try {
-          const response = await fetch(`${API_URL}/dashboard/items/${itemId}`, {
+          const response = await fetch(`${API_BASE}/dashboard/items/${itemId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(editedItemData)
@@ -177,7 +177,7 @@ function DashAdmin() {
     // FETCH USERS
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`${API_URL}/dashboard/users`);
+            const response = await fetch(`${API_BASE}/dashboard/users`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -206,7 +206,7 @@ function DashAdmin() {
         setSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/users/insert`, {
+            const response = await fetch(`${API_BASE}/dashboard/users/insert`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -273,7 +273,7 @@ function DashAdmin() {
         setSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/users/delete`, {
+            const response = await fetch(`${API_BASE}/dashboard/users/delete`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -310,7 +310,7 @@ function DashAdmin() {
         setUpdateSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/users/update`, {
+            const response = await fetch(`${API_BASE}/dashboard/users/update`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -341,7 +341,7 @@ function DashAdmin() {
     // FETCH SUPPLIERS
     const fetchSuppliers = async () => {
         try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers`);
+            const response = await fetch(`${API_BASE}/dashboard/suppliers`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -363,7 +363,7 @@ function DashAdmin() {
         setSupplierSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/insert`, {
+            const response = await fetch(`${API_BASE}/dashboard/suppliers/insert`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -405,7 +405,7 @@ function DashAdmin() {
         setSupplierSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/delete`, {
+            const response = await fetch(`${API_BASE}/dashboard/suppliers/delete`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -465,7 +465,7 @@ function DashAdmin() {
         setUpdateSupplierSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/update`, {
+            const response = await fetch(`${API_BASE}/dashboard/suppliers/update`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -495,7 +495,7 @@ function DashAdmin() {
     // FETCH REORDER ALERTS
     const fetchReorderAlerts = async () => {
         try {
-            const response = await fetch(`${API_URL}/dashboard/reorder_alerts`);
+            const response = await fetch(`${API_BASE}/dashboard/reorder_alerts`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
