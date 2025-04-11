@@ -16,7 +16,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
     const fetchMenuItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`https://sweet-heaven-atduagede6hpdxeg.eastus-01.azurewebsites.net/menu`);
+        const response = await fetch(`/menu`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
