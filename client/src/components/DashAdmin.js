@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashAdmin.css";
-const API_BASE = process.env.API_BASE || '';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 function DashAdmin() {
     const [adminData, setAdminData] = useState(null);

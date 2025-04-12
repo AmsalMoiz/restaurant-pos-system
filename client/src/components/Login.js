@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import "./login.css";
 import UserSignupModal from "./UserSignupModal"; 
 
+const API_BASE = process.env.REACT_APP_API_BASE || '';
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +16,7 @@ const Login = () => {
     e.preventDefault();
   
     try {  
-      const response = await fetch("https://sweet-heaven-atduagede6hpdxeg.eastus-01.azurewebsites.net/api/auth/login", { // hardcoded url better to use env variable but portability and security aren't important considerations for this project currently
+      const response = await fetch(`${API_BASE}/api/auth/login`, { // hardcoded url better to use env variable but portability and security aren't important considerations for this project currently
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

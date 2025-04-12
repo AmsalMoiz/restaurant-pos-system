@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashAdmin.css"; // You'll need to create this CSS file
-//const API_BASE = process.env.API_BASE || '';
+//const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 function DashManager() {
     const [adminData, setManagerData] = useState(null);
