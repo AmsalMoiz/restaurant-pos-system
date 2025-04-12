@@ -35,6 +35,9 @@ function DashAdmin() {
     const [updateFormSuccess, setUpdateFormSuccess] = useState('');
     const [updateSubmitLoading, setUpdateSubmitLoading] = useState(false);
     //Supplier variables
+    const [showAddSupplierForm, setShowAddSupplierForm] = useState(false);
+    const [editingSupplierIndex, setEditingSupplierIndex] = useState(null);
+    const [deletingSupplierIndex, setDeletingSupplierIndex] = useState(null);
     //Supplier Data Query
     const [suppliers, setSuppliers] = useState([]);
     //Supplier Insert
@@ -463,140 +466,133 @@ function DashAdmin() {
         fetchSuppliers();
     }, []);
     // INSERT SUPPLIER
-    const handleAddSupplier = async (e) => {
-        e.preventDefault();
+    // Updated handleAddSupplier function (now doesn't need the event parameter)
+    const handleAddSupplier = async () => {
         setSupplierFormError('');
         setSupplierFormSuccess('');
         setSupplierSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/insert`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(supplierFormData),
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to add supplier');
-            }
-            
-            // Success! Clear form and show success message
-            setSupplierFormSuccess('Supplier added successfully!');
-            setSupplierFormData({
-                name: '',
-                email: '',
-                phone_number: '',
-                rating: ''
-            });
-            
-            // Refresh the users list
-            fetchSuppliers();
-            
+        const response = await fetch(`${API_URL}/dashboard/suppliers/insert`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(supplierFormData),
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to add supplier');
+        }
+        
+        // Success! Clear form and show success message
+        setSupplierFormSuccess('Supplier added successfully!');
+        setSupplierFormData({
+            name: '',
+            email: '',
+            phone_number: '',
+            rating: ''
+        });
+        
+        // Hide the form after successful addition
+        setTimeout(() => {
+            setShowAddSupplierForm(false);
+            setSupplierFormSuccess('');
+        }, 2000);
+        
+        // Refresh the suppliers list
+        fetchSuppliers();
+        
         } catch (error) {
-            console.error('Error adding supplier:', error);
-            setSupplierFormError(error.message || 'Failed to add supplier. Please try again.');
+        console.error('Error adding supplier:', error);
+        setSupplierFormError(error.message || 'Failed to add supplier. Please try again.');
         } finally {
-            setSupplierSubmitLoading(false);
+        setSupplierSubmitLoading(false);
         }
     };
     // REMOVE SUPPLIER
-    // Handler for removing a supplier
-    const handleRemoveSupplier = async (e) => {
-        e.preventDefault();
+    // Updated handleRemoveSupplier function
+    const handleRemoveSupplier = async () => {
         setSupplierFormError('');
         setSupplierFormSuccess('');
         setSupplierSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/delete`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: removeSupplierEmail }),
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to remove supplier');
-            }
-            
-            // Success! Clear form and show success message
-            setSupplierFormSuccess('Supplier removed successfully!');
+        const response = await fetch(`${API_URL}/dashboard/suppliers/delete`, {
+            method: 'DELETE',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: removeSupplierEmail }),
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to remove supplier');
+        }
+        
+        // Success! Clear form and show success message
+        setSupplierFormSuccess('Supplier removed successfully!');
+        
+        // Close the delete confirmation after successful deletion
+        setTimeout(() => {
+            setDeletingSupplierIndex(null);
             setRemoveSupplierEmail('');
-            
-            // Refresh the users list
-            fetchSuppliers();
-            
+            setSupplierFormSuccess('');
+        }, 2000);
+        
+        // Refresh the suppliers list
+        fetchSuppliers();
+        
         } catch (error) {
-            console.error('Error removing supplier:', error);
-            setSupplierFormError(error.message || 'Failed to remove supplier. Please try again.');
+        console.error('Error removing supplier:', error);
+        setSupplierFormError(error.message || 'Failed to remove supplier. Please try again.');
         } finally {
-            setSupplierSubmitLoading(false);
+        setSupplierSubmitLoading(false);
         }
     };
     // UPDATE SUPPLIER
-    // Handler for selecting an employee to update
-    const handleSupplierSelect = (e) => {
-        const selectedEmail = e.target.value;
-        if (!selectedEmail) {
-            setUpdateSupplierFormData({
-                name: '',
-                email: '',
-                phone_number: '',
-                rating: ''
-            });
-            return;
-        }
-        
-        const selectedSupplier = suppliers.find(supplier => supplier.email === selectedEmail);
-        if (selectedSupplier) {
-            setUpdateSupplierFormData({
-                name: selectedSupplier.name,
-                email: selectedSupplier.email,
-                phone_number: selectedSupplier.phone_number,
-                rating: selectedSupplier.rating
-            });
-        }
-    };
-    // Handler for updating an employee
-    const handleUpdateSupplier = async (e) => {
-        e.preventDefault();
+    // Updated handleUpdateSupplier function (now doesn't need the event parameter)
+    const handleUpdateSupplier = async () => {
         setUpdateSupplierFormError('');
         setUpdateSupplierFormSuccess('');
         setUpdateSupplierSubmitLoading(true);
         
         try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/update`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateSupplierFormData),
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to update supplier');
-            }
-            
-            // Success! Show success message
-            setUpdateSupplierFormSuccess('Supplier updated successfully!');
-            
-            // Refresh the suppliers list
-            fetchSuppliers();
-            
+        const response = await fetch(`${API_URL}/dashboard/suppliers/update`, {
+            method: 'PATCH',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateSupplierFormData),
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to update supplier');
+        }
+        
+        // Success! Show success message
+        setUpdateSupplierFormSuccess('Supplier updated successfully!');
+        
+        // Close the edit form after successful update
+        setTimeout(() => {
+            setEditingSupplierIndex(null);
+            setUpdateSupplierFormSuccess('');
+        }, 2000);
+        
+        // Refresh the suppliers list
+        fetchSuppliers();
+        
         } catch (error) {
-            console.error('Error updating supplier:', error);
-            setUpdateSupplierFormError(error.message || 'Failed to update supplier. Please try again.');
+        console.error('Error updating supplier:', error);
+        setUpdateSupplierFormError(error.message || 'Failed to update supplier. Please try again.');
         } finally {
-            setUpdateSupplierSubmitLoading(false);
+        setUpdateSupplierSubmitLoading(false);
         }
     };
     // FETCH REORDER ALERTS
@@ -754,24 +750,6 @@ function DashAdmin() {
                                     <h3>Suppliers</h3>
                                     <p>Manage restaurant suppliers</p>
                                     <button onClick={() => handleSectionClick('suppliers')}>View Suppliers</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Remove Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('remove-supplier')}>Remove Supplier</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Add Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('add-supplier')}>Add Supplier</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Update Supplier</h3>
-                                    <p>Manage restaurant suppliers</p>
-                                    <button onClick={() => handleSectionClick('update-supplier')}>Update Supplier</button>
                                 </div>
 
                                 <div className="admin-card">
@@ -1140,261 +1118,295 @@ function DashAdmin() {
                     {/* Show suppliers */}
                     {activeSection === 'suppliers' && (
                     <div className="admin-section">
-                    <div className="section-header">
-                    <h2>Suppliers</h2>
-                    <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                    </div>
-        
-                    <div className="suppliers-container">
-                        {suppliers.length === 0 ? (
-                        <p>Loading supplier data...</p>
-                        ) : (
-                        <table className="suppliers-table">
-                        <thead>
-                            <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Rating</th>
-                            
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {suppliers.map((supplier, index) => (
-                            <tr key={index}>
-                                <td>{supplier.name}</td>
-                                <td>{supplier.email}</td>
-                                <td>{supplier.phone_number}</td>
-                                <td>{supplier.rating}</td>
-                            </tr>
-                            ))}
-                        </tbody>
-                        </table>
-                        )}
-                    </div>
-                    </div>
-                    )}
-                    {/* Add Supplier */}
-                    {activeSection === 'add-supplier' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Add New Supplier</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            
-                            <div className="employee-form-container">
-                                <form className="employee-form" onSubmit={handleAddSupplier}>
-                                    <div className="form-group">
-                                        <label htmlFor="name">Full Name</label>
-                                        <input 
-                                            type="text" 
-                                            id="name" 
-                                            value={supplierFormData.name} 
-                                            onChange={(e) => setSupplierFormData({...supplierFormData, name: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    
-                                    <div className="form-group">
-                                        <label htmlFor="email">Email</label>
-                                        <input 
-                                            type="email" 
-                                            id="email" 
-                                            value={supplierFormData.email}
-                                            onChange={(e) => setSupplierFormData({...supplierFormData, email: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
+                        <div className="section-header">
+                        <h2>Supplier Management</h2>
+                        <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                        </div>
 
-                                    <div className="form-group">
-                                        <label htmlFor="phone">Phone Number</label>
-                                        <input 
-                                            type="tel" 
-                                            id="phone" 
-                                            pattern="[0-9]{7,15}" 
-                                            minLength="7"
-                                            maxLength="15"
-                                            placeholder="1234567890"
-                                            value={supplierFormData.phone_number}
-                                            onChange={(e) => setSupplierFormData({...supplierFormData, phone_number: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    
-                                    <div className="form-group">
-                                        <label htmlFor="rating">Rating</label>
-                                        <select 
-                                            id="rating" 
-                                            value={supplierFormData.rating}
-                                            onChange={(e) => setSupplierFormData({...supplierFormData, rating: e.target.value})}
-                                            required
-                                        >
-                                            <option value="">Set Supplier Rating</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="3">4</option>
-                                            <option value="5">5</option>
-                                            
-                                        </select>
-                                    </div>
-                                    
-                                    
-                                    <div className="form-buttons">
-                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
-                                        <button type="submit" className="submit-btn" disabled={supplierSubmitLoading}>
-                                            {supplierSubmitLoading ? 'Adding...' : 'Add Supplier'}
-                                        </button>
-                                    </div>
-                                </form>
-                                
-                                {supplierFormError && <div className="form-error">{supplierFormError}</div>}
-                                {supplierFormSuccess && <div className="form-success">{supplierFormSuccess}</div>}
-                            </div>
+                        <div className="suppliers-management-container">
+                        <div className="suppliers-controls">
+                            <h3>Suppliers</h3>
+                            <button 
+                            className="add-supplier-btn"
+                            onClick={() => {
+                                setShowAddSupplierForm(!showAddSupplierForm);
+                                setSupplierFormData({
+                                name: '',
+                                email: '',
+                                phone_number: '',
+                                rating: ''
+                                });
+                                setSupplierFormError('');
+                                setSupplierFormSuccess('');
+                            }}
+                            >
+                            {showAddSupplierForm ? 'Cancel' : 'Add New Supplier'}
+                            </button>
                         </div>
-                    )}
-                    {/* Remove Supplier */}
-                    {activeSection === 'remove-supplier' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Remove Supplier</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            
-                            <div className="employee-form-container">
-                                <form className="employee-form" onSubmit={handleRemoveSupplier}>
-                                    <div className="form-group">
-                                        <label htmlFor="remove-email">Supplier Email</label>
-                                        <select 
-                                            id="remove-email" 
-                                            value={removeSupplierEmail}
-                                            onChange={(e) => setRemoveSupplierEmail(e.target.value)}
-                                            required
-                                        >
-                                            <option value="">Select a supplier</option>
-                                            {suppliers.map((supplier, index) => (
-                                                <option key={index} value={supplier.email}>
-                                                    {supplier.name} ({supplier.email})
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    
-                                    {removeSupplierEmail && (
-                                        <div className="confirmation-box">
-                                            <p className="warning-text">Are you sure you want to remove this supplier?</p>
-                                            <p>This action cannot be undone.</p>
-                                            
-                                            <div className="selected-employee">
-                                                <p><strong>Name:</strong> {suppliers.find(u => u.email === removeSupplierEmail)?.name}</p>
-                                                <p><strong>Email:</strong> {removeSupplierEmail}</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                    
-                                    <div className="form-buttons">
-                                        <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
-                                        <button type="submit" className="delete-confirm-btn" disabled={!removeSupplierEmail || supplierSubmitLoading}>
-                                            {supplierSubmitLoading ? 'Removing...' : 'Confirm Removal'}
-                                        </button>
-                                    </div>
-                                </form>
-                                
-                                {supplierFormError && <div className="form-error">{supplierFormError}</div>}
-                                {supplierFormSuccess && <div className="form-success">{supplierFormSuccess}</div>}
-                            </div>
-                        </div>
-                    )}
-                    {/* Update Supplier */}
-                    {activeSection === 'update-supplier' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Update Supplier</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            
-                            <div className="employee-form-container">
-                                <div className="employee-selection">
-                                    <label htmlFor="update-email">Select Supplier to Update:</label>
-                                    <select 
-                                        id="update-email" 
-                                        value={updateSupplierFormData.email}
-                                        onChange={handleSupplierSelect}
-                                        required
-                                    >
-                                        <option value="">Select a suppplier</option>
-                                        {suppliers.map((supplier, index) => (
-                                            <option key={index} value={supplier.email}>
-                                                {supplier.name} ({supplier.email})
-                                            </option>
-                                        ))}
-                                    </select>
+
+                        {/* Add Supplier Form - Only shown when the Add button is clicked */}
+                        {showAddSupplierForm && (
+                            <div className="supplier-form-container">
+                            <form className="supplier-form" onSubmit={(e) => {
+                                e.preventDefault();
+                                handleAddSupplier();
+                            }}>
+                                <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="name">Supplier Name</label>
+                                    <input 
+                                    type="text" 
+                                    id="name" 
+                                    value={supplierFormData.name} 
+                                    onChange={(e) => setSupplierFormData({...supplierFormData, name: e.target.value})}
+                                    required 
+                                    />
                                 </div>
                                 
-                                {updateSupplierFormData.email && (
-                                    <form className="employee-form" onSubmit={handleUpdateSupplier}>
-                                        <div className="form-group">
-                                            <label htmlFor="update-name">Full Name</label>
-                                            <input 
-                                                type="text" 
-                                                id="update-name" 
-                                                value={updateSupplierFormData.name} 
-                                                onChange={(e) => setUpdateSupplierFormData({...updateSupplierFormData, name: e.target.value})}
-                                                required 
-                                            />
-                                        </div>
-                                        
-                                        <div className="form-group">
-                                            <label htmlFor="update-phone">Phone Number</label>
-                                            <input 
-                                                id="update-phone" 
-                                                type="tel"
-                                                pattern="[0-9]{7,15}"
-                                                minLength="7"
-                                                maxLength="15"
-                                                placeholder="1234567890"
-                                                value={updateSupplierFormData.phone_number}
-                                                onChange={(e) => setUpdateSupplierFormData({...updateSupplierFormData, phone_number: e.target.value})}
-                                                required
-                                            />
-                                           
-                                        </div>
-                                        
-                                        <div className="form-group">
-                                            <label htmlFor="update-rating">Rating</label>
-                                            <select 
-                                                id="update-rating" 
-                                                value={updateSupplierFormData.rating}
-                                                onChange={(e) => setUpdateSupplierFormData({...updateSupplierFormData, rating: e.target.value})}
-                                                required
-                                            >
-                                                <option value="">Select a rating</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div className="form-group">
-                                            <p className="email-note"><strong>Note:</strong> Email cannot be updated as it is used as the unique identifier.</p>
-                                            <p className="email-display">{updateSupplierFormData.email}</p>
-                                        </div>
-                                        
-                                        <div className="form-buttons">
-                                            <button type="button" className="cancel-btn" onClick={() => setActiveSection(null)}>Cancel</button>
-                                            <button type="submit" className="submit-btn" disabled={updateSupplierSubmitLoading}>
-                                                {updateSupplierSubmitLoading ? 'Updating...' : 'Update Supplier'}
-                                            </button>
-                                        </div>
-                                    </form>
-                                )}
+                                <div className="form-group">
+                                    <label htmlFor="email">Email</label>
+                                    <input 
+                                    type="email" 
+                                    id="email" 
+                                    value={supplierFormData.email}
+                                    onChange={(e) => setSupplierFormData({...supplierFormData, email: e.target.value})}
+                                    required 
+                                    />
+                                </div>
+                                </div>
+
+                                <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="phone">Phone Number</label>
+                                    <input 
+                                    type="tel" 
+                                    id="phone" 
+                                    pattern="[0-9]{7,15}" 
+                                    minLength="7"
+                                    maxLength="15"
+                                    placeholder="1234567890"
+                                    value={supplierFormData.phone_number}
+                                    onChange={(e) => setSupplierFormData({...supplierFormData, phone_number: e.target.value})}
+                                    required 
+                                    />
+                                </div>
                                 
-                                {updateSupplierFormError && <div className="form-error">{updateSupplierFormError}</div>}
-                                {updateSupplierFormSuccess && <div className="form-success">{updateSupplierFormSuccess}</div>}
+                                <div className="form-group">
+                                    <label htmlFor="rating">Rating</label>
+                                    <select 
+                                    id="rating" 
+                                    value={supplierFormData.rating}
+                                    onChange={(e) => setSupplierFormData({...supplierFormData, rating: e.target.value})}
+                                    required
+                                    >
+                                    <option value="">Select Rating</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    </select>
+                                </div>
+                                </div>
+                                
+                                <div className="form-buttons">
+                                <button 
+                                    type="submit" 
+                                    className="submit-btn" 
+                                    disabled={supplierSubmitLoading}
+                                >
+                                    {supplierSubmitLoading ? 'Adding...' : 'Add Supplier'}
+                                </button>
+                                </div>
+                            </form>
+                            
+                            {supplierFormError && <div className="form-error">{supplierFormError}</div>}
+                            {supplierFormSuccess && <div className="form-success">{supplierFormSuccess}</div>}
                             </div>
+                        )}
+
+                        {/* Suppliers Table with Inline Edit/Delete */}
+                        <div className="suppliers-table-container">
+                            {suppliers.length === 0 ? (
+                            <p>Loading supplier data...</p>
+                            ) : (
+                            <table className="suppliers-table">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Rating</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {suppliers.map((supplier, index) => (
+                                    <React.Fragment key={index}>
+                                    <tr className={editingSupplierIndex === index ? 'editing-row' : ''}>
+                                        <td>{supplier.name}</td>
+                                        <td>{supplier.email}</td>
+                                        <td>{supplier.phone_number}</td>
+                                        <td>{supplier.rating}</td>
+                                        <td className="action-buttons">
+                                        {editingSupplierIndex !== index && deletingSupplierIndex !== index && (
+                                            <>
+                                            <button 
+                                                className="edit-btn"
+                                                onClick={() => {
+                                                setEditingSupplierIndex(index);
+                                                setUpdateSupplierFormData({
+                                                    name: supplier.name,
+                                                    email: supplier.email,
+                                                    phone_number: supplier.phone_number,
+                                                    rating: supplier.rating.toString()
+                                                });
+                                                setUpdateSupplierFormError('');
+                                                setUpdateSupplierFormSuccess('');
+                                                }}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button 
+                                                className="delete-btn"
+                                                onClick={() => {
+                                                setDeletingSupplierIndex(index);
+                                                setRemoveSupplierEmail(supplier.email);
+                                                setSupplierFormError('');
+                                                setSupplierFormSuccess('');
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                            </>
+                                        )}
+                                        {(editingSupplierIndex === index || deletingSupplierIndex === index) && (
+                                            <button 
+                                            className="cancel-inline-btn"
+                                            onClick={() => {
+                                                setEditingSupplierIndex(null);
+                                                setDeletingSupplierIndex(null);
+                                            }}
+                                            >
+                                            Cancel
+                                            </button>
+                                        )}
+                                        </td>
+                                    </tr>
+                                    
+                                    {/* Inline Edit Form */}
+                                    {editingSupplierIndex === index && (
+                                        <tr className="edit-form-row">
+                                        <td colSpan="5">
+                                            <form className="inline-edit-form" onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleUpdateSupplier();
+                                            }}>
+                                            <div className="form-row">
+                                                <div className="form-group">
+                                                <label>Name</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={updateSupplierFormData.name} 
+                                                    onChange={(e) => setUpdateSupplierFormData({
+                                                    ...updateSupplierFormData, 
+                                                    name: e.target.value
+                                                    })}
+                                                    required 
+                                                />
+                                                </div>
+                                                
+                                                <div className="form-group">
+                                                <label>Phone</label>
+                                                <input 
+                                                    type="tel"
+                                                    pattern="[0-9]{7,15}"
+                                                    value={updateSupplierFormData.phone_number}
+                                                    onChange={(e) => setUpdateSupplierFormData({
+                                                    ...updateSupplierFormData, 
+                                                    phone_number: e.target.value
+                                                    })}
+                                                    required
+                                                />
+                                                </div>
+                                                
+                                                <div className="form-group">
+                                                <label>Rating</label>
+                                                <select 
+                                                    value={updateSupplierFormData.rating}
+                                                    onChange={(e) => setUpdateSupplierFormData({
+                                                    ...updateSupplierFormData, 
+                                                    rating: e.target.value
+                                                    })}
+                                                    required
+                                                >
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                                </div>
+                                                
+                                                <div className="form-group button-group">
+                                                <button 
+                                                    type="submit" 
+                                                    className="save-btn" 
+                                                    disabled={updateSupplierSubmitLoading}
+                                                >
+                                                    {updateSupplierSubmitLoading ? 'Saving...' : 'Save'}
+                                                </button>
+                                                </div>
+                                            </div>
+                                            {updateSupplierFormError && (
+                                                <div className="inline-form-error">{updateSupplierFormError}</div>
+                                            )}
+                                            {updateSupplierFormSuccess && (
+                                                <div className="inline-form-success">{updateSupplierFormSuccess}</div>
+                                            )}
+                                            </form>
+                                        </td>
+                                        </tr>
+                                    )}
+                                    
+                                    {/* Inline Delete Confirmation */}
+                                    {deletingSupplierIndex === index && (
+                                        <tr className="delete-confirm-row">
+                                        <td colSpan="5">
+                                            <div className="inline-delete-confirm">
+                                            <p className="warning-text">
+                                                Are you sure you want to delete supplier <strong>{supplier.name}</strong>?
+                                            </p>
+                                            <div className="confirm-buttons">
+                                                <button 
+                                                className="confirm-delete-btn" 
+                                                onClick={() => {
+                                                    handleRemoveSupplier();
+                                                    // The deleting index will be reset in the success callback
+                                                }}
+                                                disabled={supplierSubmitLoading}
+                                                >
+                                                {supplierSubmitLoading ? 'Deleting...' : 'Confirm Delete'}
+                                                </button>
+                                            </div>
+                                            {supplierFormError && (
+                                                <div className="inline-form-error">{supplierFormError}</div>
+                                            )}
+                                            {supplierFormSuccess && (
+                                                <div className="inline-form-success">{supplierFormSuccess}</div>
+                                            )}
+                                            </div>
+                                        </td>
+                                        </tr>
+                                    )}
+                                    </React.Fragment>
+                                ))}
+                                </tbody>
+                            </table>
+                            )}
                         </div>
+                        </div>
+                    </div>
                     )}
                     {activeSection === 'checkout' && (
                     <div className="admin-section">
