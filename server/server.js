@@ -32,12 +32,6 @@ const dbErrorHandler = async (req, res, next) => {
 //app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users', '/dashboard/users/delete', '/dashboard/users/update', '/dashboard/users/insert', '/dashboard/suppliers', '/dashboard/suppliers/insert', '/dashboard/suppliers/delete', '/dashboard/suppliers/update', '/dashboard/reorder_alerts'], dbErrorHandler);
 app.use(dbErrorHandler);
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
-});
-
 // app.get('/', (req, res) => {
 //   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
 // });
@@ -410,23 +404,6 @@ app.patch('/dashboard/items/:id', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-// Handle application shutdown
-process.on('SIGINT', () => {
-  console.log('Application shutting down...');
-  // Close database connections or perform cleanup if needed
-  process.exit(0);
-});
-
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-  // Log to monitoring service or file
-  process.exit(1);
-});
 
 app.delete('/dashboard/items/:id', async (req, res) => {
   const { id } = req.params;
@@ -474,4 +451,28 @@ app.post('/dashboard/items', async (req, res) => {
     console.error("Add item error:", error);
     res.status(500).json({ error: "Failed to add item." });
   }
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', (req, res) => { // move catch all get to the end
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Handle application shutdown
+process.on('SIGINT', () => {
+  console.log('Application shutting down...');
+  // Close database connections or perform cleanup if needed
+  process.exit(0);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  // Log to monitoring service or file
+  process.exit(1);
 });
