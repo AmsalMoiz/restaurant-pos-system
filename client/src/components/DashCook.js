@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashCook.css";
 
@@ -8,6 +8,27 @@ function DashCook() {
     const [error, setError] = useState("");
     const [isClockedIn, setIsClockedIn] = useState(false); // State to track clock-in status
     const navigate = useNavigate();
+    const [message, setMessage] = useState(null);
+    const [messageType, setMessageType] = useState('');
+    const timeoutId = useRef(null); 
+
+    const displayMessage = (newMessage, newMessageType, duration = 2500) => {
+        // clear existing timeout, so msg time is consistent, 
+        // this is so if someone is spamming buttons, triggering different messages
+        if (timeoutId.current) {
+            clearTimeout(timeoutId.current);
+        }
+
+        setMessage(newMessage);
+        setMessageType(newMessageType);
+
+        // set new timeout
+        timeoutId.current = setTimeout(() => {
+            setMessage(null);
+            setMessageType('');
+            timeoutId.current = null; //clear ref
+        }, duration);
+    };
 
     useEffect(() => {
         // Get user data from localStorage
@@ -53,24 +74,32 @@ function DashCook() {
 
     const handleClockIn = () => {
         if (!cookData) {
-            alert("User data not loaded. Please try again.");
+            displayMessage("User data not loaded. Please try again.", 'error');
+            return;
+        }
+        if (isClockedIn) {
+            displayMessage("Already clocked in. Clock out first.", 'warning');
             return;
         }
 
         setIsClockedIn(true); // Set clock-in status to true
         localStorage.setItem(`isClockedIn_${cookData.email}`, true); // Save to localStorage
-        alert("You have clocked in.");
+        displayMessage("You have clocked in.", 'success');
     };
 
     const handleClockOut = () => {
         if (!cookData) {
-            alert("User data not loaded. Please try again.");
+            displayMessage("User data not loaded. Please try again.", 'error');
+            return;
+        }
+        if (!isClockedIn) {
+            displayMessage("Not clocked in yet.", 'warning');
             return;
         }
 
         setIsClockedIn(false); // Set clock-in status to false
         localStorage.setItem(`isClockedIn_${cookData.email}`, false); // Save to localStorage
-        alert("You have clocked out.");
+        displayMessage("You have clocked out.", 'success');
     };
 
     if (loading) {
@@ -107,6 +136,13 @@ function DashCook() {
                             <button onClick={handleClockOut} className="clock-btn">
                                 Clock Out
                             </button>
+
+                            {/* message display area, messages go here, maybe consider changing color */}
+                            {message && (
+                                <div className={`message ${messageType}`}>
+                                {message}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </main>

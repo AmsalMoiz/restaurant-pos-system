@@ -23,7 +23,6 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Login Successful!");
         navigate("/home");
       } else {
         setError(data.error || "Login failed. Please try again.");
@@ -32,6 +31,28 @@ const Login = () => {
       setError("Error connecting to server.");
     }
   };
+
+  const handleSignup = async (formData) => {
+    try {
+      const response = await fetch("http://localhost:3001/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Account created successfully!");
+        setShowSignupModal(false);
+      } else {
+        alert(data.error || "Signup failed.");
+      }
+    } catch (error) {
+      alert("Server error during signup.");
+      console.error(error);
+    }
+  };  
 
   return (
     <div
@@ -69,9 +90,9 @@ const Login = () => {
 
         <p>
           New to Sweet Heaven?{" "}
-          <a href="#" onClick={() => setShowSignupModal(true)}>Create an account</a> {/* ✅ show modal */}
+          <button onClick={() => setShowSignupModal(true)} className="link-button">Create an account</button>
         </p>
-
+        
         <p style={{ marginTop: "1rem" }}>
           Or <Link to="/home">Go to Home Page</Link>
         </p>
@@ -84,7 +105,9 @@ const Login = () => {
 
       {/* Modal component visible only if toggled on */}
       {showSignupModal && (
-        <UserSignupModal onClose={() => setShowSignupModal(false)} />
+        <UserSignupModal onClose={() => setShowSignupModal(false)} 
+        onSignup={handleSignup}
+        />
       )}
     </div>
   );

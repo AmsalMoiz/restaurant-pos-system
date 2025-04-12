@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashAdmin.css"; // You'll need to create this CSS file
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+//const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`; //not being used, commented it out to avoid warnings, no warnings in deployment
 
 function DashManager() {
     const [adminData, setManagerData] = useState(null);
