@@ -16,7 +16,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
     const fetchMenuItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE}/api/menu`);
+        const response = await fetch(`${API_BASE}/api/retrieve/menu`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
