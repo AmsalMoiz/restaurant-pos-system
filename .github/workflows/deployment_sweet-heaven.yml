@@ -42,8 +42,8 @@ jobs:
         run: npm run build
         working-directory: ./client
 
-      - name: Create server public directory
-        run: mkdir -p ./server/public
+      # - name: Create server public directory
+      #   run: mkdir -p ./server/public
 
       - name: Move frontend build to backend
         run: mv ./client/build ./server/public

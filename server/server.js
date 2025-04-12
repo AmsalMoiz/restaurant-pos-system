@@ -38,9 +38,9 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
 
-app.get('/', (req, res) => {
-  res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
-});
+// app.get('/', (req, res) => {
+//   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
+// });
 
 app.get('/menu', async (req, res) => {
   try {
