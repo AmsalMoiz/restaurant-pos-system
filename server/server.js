@@ -42,7 +42,7 @@ app.get('*', (req, res) => {
 //   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
 // });
 
-app.get('/menu', async (req, res) => {
+app.get('/api/menu', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
     const [results] = await req.dbConnection.query('SELECT name, description, image_name, price FROM items');
