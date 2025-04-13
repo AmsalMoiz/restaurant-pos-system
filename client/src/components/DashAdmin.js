@@ -146,7 +146,7 @@ function DashAdmin() {
         }
     };
 
-    //UPDATE INVENTORY ITEM
+    //UPDATE INVENTORY ITEM, comment to trick git into seeing branch has changed. i need this feature on develop
     const handleUpdateItem = async (itemId) => {
         try {
           const response = await fetch(`${API_URL}/dashboard/items/${itemId}`, {
