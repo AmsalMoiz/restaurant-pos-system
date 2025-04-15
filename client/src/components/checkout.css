@@ -1,0 +1,66 @@
+.checkout-background {
+    background-color: #000;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .checkout-container {
+    background-color: #111;
+    border-radius: 18px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+    padding: 40px;
+    width: 400px;
+    color: white;
+  }
+  
+  .checkout-title {
+    color: #ffd700;
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .checkout-label {
+    color: #e1dbbb;
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .checkout-input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border-radius: 8px;
+    background-color: #222;
+    border: none;
+    color: white;
+    font-size: 14px;
+  }
+  
+  .checkout-row {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .checkout-btn {
+    margin-top: 30px;
+    width: 100%;
+    background-color: #ffd700;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .checkout-btn:hover {
+    background-color: #ffcc00;
+  }
+  

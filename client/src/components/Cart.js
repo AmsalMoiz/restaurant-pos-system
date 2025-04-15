@@ -1,8 +1,11 @@
 import React from 'react';
 import './cart.css';
 import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ cartItems, setCartItems }) => {
+  const navigate = useNavigate();
+
   const handleRemove = (indexToRemove) => {
     const updatedCart = cartItems.filter((_, i) => i !== indexToRemove);
     setCartItems(updatedCart);
@@ -65,10 +68,13 @@ const Cart = ({ cartItems, setCartItems }) => {
 
               <div className="cart-checkout-box-row">
                 <span className="checkout-total">Total: ${calculateTotal()}</span>
-                <button className="checkout-btn">Proceed to Checkout</button>
+                <button
+                  className="checkout-btn"
+                  onClick={() => navigate('/checkout')}
+                >
+                  Proceed to Checkout
+                </button>
               </div>
-
-
             </>
           )}
         </div>

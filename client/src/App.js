@@ -11,7 +11,7 @@ import DashManager from './components/DashManager';
 import DashWaiter from './components/DashWaiter';
 import DashCook from './components/DashCook'; 
 import BookTable from './components/BookTable';
-
+import Checkout from './components/Checkout';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -33,6 +33,7 @@ function App() {
         <Route path="/waiter-dashboard" element={<DashWaiter />} />
         <Route path="/cook-dashboard" element={<DashCook />} />
         <Route path="/book-table" element={<BookTable />} />
+        <Route path="/checkout" element={<Checkout />} />
 
       </Routes>
     </Router>
