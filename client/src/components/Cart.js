@@ -17,11 +17,17 @@ const Cart = ({ cartItems, setCartItems }) => {
       const qty = Number(item.quantity);
       return acc + (isNaN(price * qty) ? 0 : price * qty);
     }, 0);
+    return total;
+  };
 
-    return total.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+  const formattedTotal = calculateTotal().toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const handleCheckout = () => {
+    const total = calculateTotal();
+    navigate('/checkout', { state: { total } });
   };
 
   return (
@@ -67,10 +73,10 @@ const Cart = ({ cartItems, setCartItems }) => {
               </div>
 
               <div className="cart-checkout-box-row">
-                <span className="checkout-total">Total: ${calculateTotal()}</span>
+                <span className="checkout-total">Total: ${formattedTotal}</span>
                 <button
                   className="checkout-btn"
-                  onClick={() => navigate('/checkout')}
+                  onClick={handleCheckout}
                 >
                   Proceed to Checkout
                 </button>
