@@ -100,16 +100,41 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
 
   const handleDownloadReceipt = () => {
     const input = document.getElementById('receipt-content');
-    html2canvas(input).then((canvas) => {
+  
+    html2canvas(input, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
       const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Receipt_${orderNumber}.pdf`);
+      const imgHeight = (imgProps.height * pageWidth) / imgProps.width;
+  
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, 0, pageWidth, imgHeight + 20, 'F');
+  
+      pdf.setFontSize(18);
+      pdf.setTextColor(255, 184, 64); 
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Sweet Heaven - Order Receipt', pageWidth / 2, 20, { align: 'center' });
+  
+      pdf.addImage(imgData, 'PNG', 15, 30, pageWidth - 30, imgHeight);
+  
+      pdf.setFontSize(12);
+      pdf.setTextColor(60, 60, 60);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text('Thank you for dining with us!', pageWidth / 2, imgHeight + 45, { align: 'center' });
+  
+      pdf.save(`SweetHeaven_Receipt_${orderNumber}.pdf`);
     });
   };
+  
+  <div id="receipt-content" className="receipt-box pretty-receipt">
+  <h3 className="receipt-title"> Sweet Heaven Receipt</h3>
+  <p><strong>Order #:</strong> {orderNumber}</p>
+  <p><strong>Cardholder:</strong> {form.holder}</p>
+  <p><strong>Billing Address:</strong> {form.street}, {form.city}, {form.state} {form.zip}</p>
+  <p><strong>Total Paid:</strong> ${finalTotal}</p>
+</div>
+
 
   return (
     <>
