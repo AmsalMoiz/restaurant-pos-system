@@ -20,6 +20,13 @@
     margin-bottom: 20px;
     font-family: 'Poppins', sans-serif;
   }
+  .checkout-title {
+    color: #FFD700; 
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
   
   .checkout-form label {
     display: block;
@@ -78,5 +85,15 @@
     text-align: right;
     color: #ffdb4d;
     font-size: 1.1em;
+  }
+  .receipt-box {
+    background-color: #1c1c1c;
+    color: #f4f4f4;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    text-align: left;
   }
   
