@@ -39,6 +39,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
   const calculateTotal = () => {
     return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
   };
+  
 
   const validate = () => {
     const newErrors = {};
@@ -69,10 +70,24 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       value = value.replace(/\D/g, '').slice(0, 16);
       value = value.replace(/(.{4})/g, '$1 ').trim();
     }
-
-    setForm(prev => ({ ...prev, [field]: value }));
-    setErrors(prev => ({ ...prev, [field]: '' }));
+  
+    if (field === 'expiry') {
+      value = value.replace(/\D/g, ''); // remove non-digits
+      if (value.length > 4) value = value.slice(0, 4);
+      if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+  
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: '' }));
   };
+  
+  <input
+  type="text"
+  value={form.expiry}
+  onChange={(e) => handleChange('expiry', e.target.value)}
+  placeholder="MM/YY"
+  maxLength={5}
+/>
 
   const generateOrderNumber = () => {
     const now = new Date();
