@@ -23,6 +23,8 @@
   "dependencies": {
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.7",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "react-router-dom": "^7.4.0",
     "react-scripts": "^5.0.1"
   }

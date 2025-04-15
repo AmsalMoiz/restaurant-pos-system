@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './checkout.css';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const US_STATES = [
   'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
@@ -31,17 +33,20 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [finalTotal, setFinalTotal] = useState('');
 
-  const total = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  ).toFixed(2);
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    ).toFixed(2);
+  };
 
   const validate = () => {
     const newErrors = {};
-
     if (!form.holder.trim()) newErrors.holder = 'Card holder name is required';
     if (!/^\d{4} \d{4} \d{4} \d{4}$/.test(form.number)) newErrors.number = 'Card number must be 16 digits';
+
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(form.expiry)) {
       newErrors.expiry = 'Use MM/YY format';
     } else {
@@ -50,6 +55,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       const input = new Date(`20${year}`, month - 1);
       if (input < now) newErrors.expiry = 'Expiry must be in the future';
     }
+
     if (!/^\d{3}$/.test(form.cvv)) newErrors.cvv = 'CVV must be 3 digits';
     if (!form.street.trim()) newErrors.street = 'Street is required';
     if (!form.city.trim()) newErrors.city = 'City is required';
@@ -80,13 +86,29 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     if (!validate()) return;
 
     const newOrderNum = generateOrderNumber();
+    const totalBeforeClear = calculateTotal();
+
+    setFinalTotal(totalBeforeClear);
     setOrderNumber(newOrderNum);
     setSuccess(true);
     setCartItems([]);
 
     setTimeout(() => {
       navigate('/menu');
-    }, 6000);  // ⏱ 6 seconds
+    }, 6000);
+  };
+
+  const handleDownloadReceipt = () => {
+    const input = document.getElementById('receipt-content');
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Receipt_${orderNumber}.pdf`);
+    });
   };
 
   return (
@@ -97,12 +119,13 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
           <div className="success-popup">
             <h2>✅ Payment Successful!</h2>
             <p>Thank you for your order.</p>
-            <div className="receipt-box">
+            <div id="receipt-content" className="receipt-box">
               <p><strong>Order #:</strong> {orderNumber}</p>
               <p><strong>Cardholder:</strong> {form.holder}</p>
               <p><strong>Billing Address:</strong> {form.street}, {form.city}, {form.state} {form.zip}</p>
-              <p><strong>Total Paid:</strong> ${total}</p>
+              <p><strong>Total Paid:</strong> ${finalTotal}</p>
             </div>
+            <button className="download-btn" onClick={handleDownloadReceipt}>Download Receipt</button>
           </div>
         ) : (
           <form className="checkout-form" onSubmit={handleSubmit}>
@@ -188,7 +211,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
             {errors.zip && <p className="error">{errors.zip}</p>}
 
             <div className="total-display">
-              Total: <strong>${total}</strong>
+              Total: <strong>${calculateTotal()}</strong>
             </div>
 
             <button type="submit" className="pay-button">Pay Now</button>
