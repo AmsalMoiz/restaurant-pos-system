@@ -1,7 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './checkout.css';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
+
+const US_STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+  'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois',
+  'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
+  'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana',
+  'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+  'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
+  'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah',
+  'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+];
 
 const Checkout = ({ cartItems = [], setCartItems }) => {
   const navigate = useNavigate();
@@ -11,7 +22,9 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     number: '',
     expiry: '',
     cvv: '',
-    address: '',
+    street: '',
+    city: '',
+    state: '',
     zip: ''
   });
 
@@ -26,9 +39,9 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
 
   const validate = () => {
     const newErrors = {};
+
     if (!form.holder.trim()) newErrors.holder = 'Card holder name is required';
     if (!/^\d{4} \d{4} \d{4} \d{4}$/.test(form.number)) newErrors.number = 'Card number must be 16 digits';
-
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(form.expiry)) {
       newErrors.expiry = 'Use MM/YY format';
     } else {
@@ -37,9 +50,10 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       const input = new Date(`20${year}`, month - 1);
       if (input < now) newErrors.expiry = 'Expiry must be in the future';
     }
-
     if (!/^\d{3}$/.test(form.cvv)) newErrors.cvv = 'CVV must be 3 digits';
-    if (!form.address.trim()) newErrors.address = 'Address is required';
+    if (!form.street.trim()) newErrors.street = 'Street is required';
+    if (!form.city.trim()) newErrors.city = 'City is required';
+    if (!form.state) newErrors.state = 'State is required';
     if (!/^\d{5}$/.test(form.zip)) newErrors.zip = 'ZIP code must be 5 digits';
 
     setErrors(newErrors);
@@ -72,7 +86,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
 
     setTimeout(() => {
       navigate('/menu');
-    }, 5000); // ⏱ 5 seconds
+    }, 6000);  // ⏱ 6 seconds
   };
 
   return (
@@ -86,7 +100,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
             <div className="receipt-box">
               <p><strong>Order #:</strong> {orderNumber}</p>
               <p><strong>Cardholder:</strong> {form.holder}</p>
-              <p><strong>Billing ZIP:</strong> {form.zip}</p>
+              <p><strong>Billing Address:</strong> {form.street}, {form.city}, {form.state} {form.zip}</p>
               <p><strong>Total Paid:</strong> ${total}</p>
             </div>
           </div>
@@ -136,14 +150,32 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
               </div>
             </div>
 
-            <label>Billing Address</label>
+            <label>Street Address</label>
             <input
               type="text"
-              value={form.address}
-              onChange={(e) => handleChange('address', e.target.value)}
-              placeholder="123 Main St, City, State"
+              value={form.street}
+              onChange={(e) => handleChange('street', e.target.value)}
+              placeholder="123 Main St"
             />
-            {errors.address && <p className="error">{errors.address}</p>}
+            {errors.street && <p className="error">{errors.street}</p>}
+
+            <label>City</label>
+            <input
+              type="text"
+              value={form.city}
+              onChange={(e) => handleChange('city', e.target.value)}
+              placeholder="Austin"
+            />
+            {errors.city && <p className="error">{errors.city}</p>}
+
+            <label>State</label>
+            <select value={form.state} onChange={(e) => handleChange('state', e.target.value)}>
+              <option value="">-- Select State --</option>
+              {US_STATES.map((state) => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
+            {errors.state && <p className="error">{errors.state}</p>}
 
             <label>ZIP Code</label>
             <input
