@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './bookTable.css';
 import ReservationModal from './ReservationModal';
 import Navbar from './Navbar';
@@ -21,10 +21,31 @@ const BookTable = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState('');
+  const timeoutId = useRef(null); 
+
+  const displayMessage = (newMessage, newMessageType, duration = 2500) => {
+    // clear existing timeout, so msg time is consistent, 
+    // this is so if someone is spamming buttons, triggering different messages
+    if (timeoutId.current) {
+        clearTimeout(timeoutId.current);
+    }
+
+    setMessage(newMessage);
+    setMessageType(newMessageType);
+
+    // set new timeout
+    timeoutId.current = setTimeout(() => {
+        setMessage(null);
+        setMessageType('');
+        timeoutId.current = null; //clear ref
+    }, duration);
+  };
 
   const openModal = (item) => {
     if (!selectedDate || !selectedTime) {
-      alert('Please select a date and time first.');
+      displayMessage("Please select a date and time first.", 'error'); // get rid of alert function
       return;
     }
     setModalData({ label: item });
@@ -80,6 +101,12 @@ const BookTable = () => {
         </div>
 
         <div className="layout-sketch center-align">
+          {/* message display area, messages go here, maybe consider changing color */}
+            {message && (
+              <div className={`message ${messageType}`}>
+              {message}
+              </div>
+          )}
           <h2 className="sketch-title">Reserve a Table</h2>
 
           <div className="datetime-selectors">
