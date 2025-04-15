@@ -5,6 +5,7 @@ const cors = require("cors");
 const authRoutes = require("./auth");
 const db = require("./db");
 const transactionRoutes = require("./InpersonTransactions");
+const employeeReportRoutes = require("./EmployeeReport");
 const app = express();
 
 app.use(cors());
@@ -18,6 +19,8 @@ const PORT = process.env.PORT || 3001;
 const dbErrorHandler = async (req, res, next) => {
   try {
     req.dbConnection = await db(); // Get database connection
+    // Sets timezone to Central Time Zone
+    await req.dbConnection.query("SET time_zone = '-10:00'");
     next();
   } catch (error) {
     console.error('Database connection error in middleware:', error);
@@ -31,7 +34,8 @@ const dbErrorHandler = async (req, res, next) => {
 // Apply the database middleware to all routes that need DB access
 //app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users', '/dashboard/users/delete', '/dashboard/users/update', '/dashboard/users/insert', '/dashboard/suppliers', '/dashboard/suppliers/insert', '/dashboard/suppliers/delete', '/dashboard/suppliers/update', '/dashboard/reorder_alerts'], dbErrorHandler);
 app.use(dbErrorHandler);
-app.use("/dashboard", transactionRoutes); 
+app.use("/dashboard", transactionRoutes);
+app.use("/dashboard", employeeReportRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');

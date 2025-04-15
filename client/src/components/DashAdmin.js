@@ -92,6 +92,13 @@ function DashAdmin() {
     const [paymentMethod, setPaymentMethod] = useState('Cash');
     const [orderType, setOrderType] = useState('Dine-in');
 
+    //Employee Sales Report
+    const [employeeMonthlyReport, setEmployeeMonthlyReport] = useState([]);
+    const [employeeWeeklyReport, setEmployeeWeeklyReport] = useState([]);
+    const [employeeDailyReport, setEmployeeDailyReport] = useState([]);
+    const [employeeCustomReport, setEmployeeCustomReport] = useState([]);
+    const [activeReportType, setActiveReportType] = useState('monthly');
+
     //handling adding items to cart
     const handleAddToCart = () => {
     if (!selectedItem) {
@@ -482,7 +489,7 @@ function DashAdmin() {
             alert("Failed to delete employee.");
         }
     };
-
+    // #region Suppliers Management
     // FETCH SUPPLIERS
     const fetchSuppliers = async () => {
         try {
@@ -648,8 +655,78 @@ function DashAdmin() {
     useEffect(() => {
         fetchReorderAlerts();
     }, []);
+    // #region Employee Sales Report
+    // FETCH EMPLOYEE MONTHLY SALES REPORT
+    const fetchEmployeeMonthlyReport = async () => {
+        try {
+            const reponse = await fetch(`${API_URL}/dashboard/monthly`);
+            if (!reponse.ok) {
+                throw new Error(`HTTP error! Status: ${reponse.status}`);
+            }
+            const data = await reponse.json();
+            setEmployeeMonthlyReport(data);
+        } catch(err){
+            console.error("Error fetching employee monthly sales report:", err);
+            setError("Failed to load employee monthly sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchEmployeeMonthlyReport();
+    }, []);
+    // FETCH EMPLOYEE WEEKLY SALES REPORT
+    const fetchEmployeeWeeklyReport = async () => {
+        try {
+            const reponse = await fetch(`${API_URL}/dashboard/weekly`);
+            if (!reponse.ok) {
+                throw new Error(`HTTP error! Status: ${reponse.status}`);
+            }
+            const data = await reponse.json();
+            setEmployeeWeeklyReport(data);
+        } catch(err){
+            console.error("Error fetching employee weekly sales report:", err);
+            setError("Failed to load employee weekly sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchEmployeeWeeklyReport();
+    }, []);
+    // FETCH EMPLOYEE DAILY SALES REPORT
+    const fetchEmployeeDailyReport = async () => {
+        try {
+            const reponse = await fetch(`${API_URL}/dashboard/daily`);
+            if (!reponse.ok) {
+                throw new Error(`HTTP error! Status: ${reponse.status}`);
+            }
+            const data = await reponse.json();
+            setEmployeeDailyReport(data);
+        } catch(err){
+            console.error("Error fetching employee daily sales report:", err);
+            setError("Failed to load employee daily sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchEmployeeDailyReport();
+    }, []);
+    // FETCH EMPLOYEE CUSTOM SALES REPORT
+    /*
+    const fetchEmployeeCustomReport = async (start_date, end_date) => {
+        try {
+            const reponse = await fetch(`${API_URL}/dashboard/custom`);
+            if (!reponse.ok) {
+                throw new Error(`HTTP error! Status: ${reponse.status}`);
+            }
+            const data = await reponse.json();
+            setEmployeeCustomReport(data);
+        } catch(err){
+            console.error("Error fetching employee custom sales report:", err);
+            setError("Failed to load employee custom sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchEmployeeCustomReport();
+    }, []);*/
 
-    
+    // #region Login
     //Login additional features, returns to login page if not properly logged in
     useEffect(() => {
         // Get user data from localStorage
@@ -712,7 +789,7 @@ function DashAdmin() {
                         <button onClick={handleLogout} className="logout-btn">Logout</button>
                     </div>
                 </header>
-                
+
                 <main className="admin-content">
                     {/* Admin menu cards */}
                     {!activeSection && (
@@ -754,9 +831,14 @@ function DashAdmin() {
                                 </div>
 
                                 <div className="admin-card">
-                                    <h3>Sales Reports</h3>
+                                    <h3>Items Sales Report</h3>
                                     <p>View daily, weekly, and monthly sales</p>
                                     <button onClick={() => handleSectionClick('reports')}>View Reports</button>
+                                </div>
+                                <div className="admin-card">
+                                    <h3>Employee Sales Report</h3>
+                                    <p>View daily, weekly, and monthly employee sales</p>
+                                    <button onClick={() => handleSectionClick('employee-reports')}>View Reports</button>
                                 </div>
                             </div>
                         </div>
@@ -1245,7 +1327,8 @@ function DashAdmin() {
                                             <div className="form-row">
                                                 <div className="form-group">
                                                 <label>Name</label>
-                                                <input 
+                                                <input
+                                                    className="name-form-input" 
                                                     type="text" 
                                                     value={updateSupplierFormData.name} 
                                                     onChange={(e) => setUpdateSupplierFormData({
@@ -1272,7 +1355,9 @@ function DashAdmin() {
                                                 
                                                 <div className="form-group">
                                                 <label>Rating</label>
+                                                
                                                 <select 
+                                                    className ="rating-form-select"
                                                     value={updateSupplierFormData.rating}
                                                     onChange={(e) => setUpdateSupplierFormData({
                                                     ...updateSupplierFormData, 
@@ -1680,6 +1765,144 @@ function DashAdmin() {
                     )}
 
                     {/* Add other sections for the remaining functionality */}
+                    {/* Employee Sales Reports */}
+                    {activeSection === 'employee-reports' && (
+                        <div className="admin-section">
+                            <div className="section-header">
+                                <h2>Employee Sales Reports</h2>
+                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            </div>
+                            
+                            <div className="report-controls">
+                                <label htmlFor="report-type">Select Report Type:</label>
+                                <select 
+                                    value={activeReportType} 
+                                    onChange={(e) => setActiveReportType(e.target.value)}
+                                    className="report-type-selector"
+                                >
+                                    <option value="monthly">Monthly Report</option>
+                                    <option value="weekly">Weekly Report</option>
+                                    <option value="daily">Daily Report</option>
+                                </select>
+                            </div>
+                            
+                            <div className="employee-reports-container">
+                                {activeReportType === 'monthly' && (
+                                    <>
+                                        <h3>Monthly Sales Report</h3>
+                                        {employeeMonthlyReport.length === 0 ? (
+                                            <p>Loading monthly report data...</p>
+                                        ) : (
+                                            <table className="employee-reports-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Rank</th>
+                                                        <th>Employee Name</th>
+                                                        <th>Role</th>
+                                                        <th>Transactions Processed</th>
+                                                        <th>Total Tips</th>
+                                                        <th>Tip Percentage</th>
+                                                        <th>Average Sale Amount</th>
+                                                        <th>Total Sales</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {employeeMonthlyReport.map((report, index) => (
+                                                        <tr key={index}>
+                                                            <td>{report.sales_rank}</td>
+                                                            <td>{report.employee_name}</td>
+                                                            <td>{report.role}</td>
+                                                            <td>{report.transactions_processed}</td>
+                                                            <td>${report.total_tips.toFixed(2)}</td>
+                                                            <td>{report.tip_percentage}%</td>
+                                                            <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                                            <td>${report.total_sales.toFixed(2)}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                    </>
+                                )}
+                                
+                                {activeReportType === 'weekly' && (
+                                    <>
+                                        <h3>Weekly Sales Report</h3>
+                                        {employeeWeeklyReport.length === 0 ? (
+                                            <p>Loading weekly report data...</p>
+                                        ) : (
+                                            <table className="employee-reports-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Rank</th>
+                                                        <th>Employee Name</th>
+                                                        <th>Role</th>
+                                                        <th>Transactions Processed</th>
+                                                        <th>Total Tips</th>
+                                                        <th>Tip Percentage</th>
+                                                        <th>Average Sale Amount</th>
+                                                        <th>Total Sales</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {employeeWeeklyReport.map((report, index) => (
+                                                        <tr key={index}>
+                                                            <td>{report.sales_rank}</td>
+                                                            <td>{report.employee_name}</td>
+                                                            <td>{report.role}</td>
+                                                            <td>{report.transactions_processed}</td>
+                                                            <td>${report.total_tips.toFixed(2)}</td>
+                                                            <td>{report.tip_percentage}%</td>
+                                                            <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                                            <td>${report.total_sales.toFixed(2)}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                    </>
+                                )}
+                                
+                                {activeReportType === 'daily' && (
+                                    <>
+                                        <h3>Daily Sales Report</h3>
+                                        {employeeDailyReport.length === 0 ? (
+                                            <p>Loading daily report data...</p>
+                                        ) : (
+                                            <table className="employee-reports-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Rank</th>
+                                                        <th>Employee Name</th>
+                                                        <th>Role</th>
+                                                        <th>Transactions Processed</th>
+                                                        <th>Total Tips</th>
+                                                        <th>Tip Percentage</th>
+                                                        <th>Average Sale Amount</th>
+                                                        <th>Total Sales</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {employeeDailyReport.map((report, index) => (
+                                                        <tr key={index}>
+                                                            <td>{report.sales_rank}</td>
+                                                            <td>{report.employee_name}</td>
+                                                            <td>{report.role}</td>
+                                                            <td>{report.transactions_processed}</td>
+                                                            <td>${report.total_tips.toFixed(2)}</td>
+                                                            <td>{report.tip_percentage}%</td>
+                                                            <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                                            <td>${report.total_sales.toFixed(2)}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </main>
             </div>
         </div>
