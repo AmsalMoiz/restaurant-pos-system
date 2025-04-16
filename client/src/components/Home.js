@@ -75,8 +75,14 @@ const Home = () => {
           <div className="hero-final-band">
             <h2 className="final-title">We look forward to having you dine with us</h2>
             <div className="final-details">
-              <span><i className="fas fa-map-marker-alt"></i> 3458 Seraphina Avenue, Lower Westside, NY 10219</span>
-              <span><i className="fas fa-phone-alt"></i> +1 (212) 555-9874</span>
+              <span>
+                <i className="fas fa-map-marker-alt"></i>
+                <strong>Find us at:</strong> 3458 Seraphina Avenue, Lower Westside, NY 10219
+              </span>
+              <span>
+                <i className="fas fa-phone-alt"></i>
+                <strong>Call us on:</strong> +1 (212) 555-9874
+              </span>
             </div>
             <div className="final-button">
               <Link to="/login">Sign up to reserve your table</Link>
