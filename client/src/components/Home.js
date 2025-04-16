@@ -1,8 +1,8 @@
 // File: Home.js
 
 import React from 'react';
-import './home.css';
 import { Link } from 'react-router-dom';
+import './home.css';
 import Navbar from './Navbar';
 
 const Home = () => {
@@ -58,9 +58,27 @@ const Home = () => {
             </p>
           </div>
 
-          <Link to="/login" className="back-link">
-            Back to Login
-          </Link>
+          <Link to="/login" className="back-link">Back to Login</Link>
+        </div>
+      </div>
+
+      {/* NEW SECTION */}
+      <div className="menu-highlight-section">
+        <div className="menu-text-content">
+          <p className="menu-subtitle">Taste the mood</p>
+          <h2 className="menu-highlight-title">Our Menu</h2>
+          <p className="menu-highlight-description">
+            Reserve now at <strong>Sweet Heaven</strong> — an indulgent dessert and cocktail experience inspired by timeless international flavors. Delight in artisanal sweets, signature libations, and impeccable service in a setting of understated elegance.
+          </p>
+
+          <div className="menu-buttons">
+            <Link to="/book" className="menu-button outline">Book your table</Link>
+            <Link to="/menu" className="menu-button filled">View Menu</Link>
+          </div>
+        </div>
+
+        <div className="menu-image-container">
+          <img src="/images/fancy_dessert_plate.jpg" alt="Our Signature Dish" className="menu-image" />
         </div>
       </div>
     </>

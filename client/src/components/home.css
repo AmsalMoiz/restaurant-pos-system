@@ -150,3 +150,85 @@ html, body {
   background-color: #444;
   width: 100%;
 }
+
+
+
+
+
+.menu-highlight-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 100px;
+  gap: 60px;
+  background-color: #0c0c0c;
+  flex-wrap: wrap;
+}
+
+.menu-text-content {
+  flex: 1;
+  color: #f4f4f4;
+  max-width: 550px;
+}
+
+.menu-subtitle {
+  font-family: 'Playfair Display', cursive;
+  font-size: 18px;
+  color: #c7b382;
+  margin-bottom: 10px;
+}
+
+.menu-highlight-title {
+  font-size: 44px;
+  font-family: 'Playfair Display', serif;
+  color: #f1e7c5;
+  margin-bottom: 18px;
+}
+
+.menu-highlight-description {
+  font-size: 16px;
+  color: #ddd;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.menu-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.menu-button {
+  padding: 12px 22px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 14px;
+  text-decoration: none;
+  border: 2px solid #d4af37;
+  transition: all 0.3s ease;
+}
+
+.menu-button.outline {
+  background: transparent;
+  color: #d4af37;
+}
+
+.menu-button.filled {
+  background: #d4af37;
+  color: #000;
+}
+
+.menu-button:hover {
+  opacity: 0.85;
+}
+
+.menu-image-container {
+  flex: 1;
+  text-align: center;
+}
+
+.menu-image {
+  max-width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+}
