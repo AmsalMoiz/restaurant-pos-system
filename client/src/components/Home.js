@@ -47,7 +47,6 @@ const Home = () => {
               <p className="note">
                 Reservations are limited to <span>2 hours</span> • No parties over <span>6</span>
               </p>
-              <Link to="/login" className="back-link">Back to Login</Link>
             </div>
 
             {/* SECTION 2: Taste the Mood */}

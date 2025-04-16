@@ -12,34 +12,52 @@ html, body {
   background-attachment: fixed;
 }
 
-/* ==== BACKGROUND SECTION ==== */
+/* ==== BACKGROUND ==== */
 .home-background {
   min-height: 100vh;
   background-size: cover;
-  background-position: bottom;
+  background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-image:
+    radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%); 
   position: relative;
 }
 
-/* ==== HERO (FIRST) SECTION ==== */
-.hero-content {
-  text-align: center;
-  padding: 100px 20px 60px;
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9));
-  margin-bottom: 80px;
+/* ==== HERO SECTION ==== */
+.hero-overlay {
+  position: relative;
+  padding: 100px 5% 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-
-.hero-content::after {
-  content: '';
+.hero-overlay::before {
+  content: "";
   position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 80px;
-  background: linear-gradient(rgba(0, 0, 0, 0.9), transparent);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6); /* perfect elegant fade */
+  backdrop-filter: blur(2px); /* soft glow */
+  z-index: 0;
+  border-radius: 12px;
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 1000px;
+  width: 100%;
 }
 
-/* Title */
+.subtitle {
+  font-family: 'Great Vibes', cursive;
+  font-size: 24px;
+  color: #d8c49c;
+  margin-bottom: 10px;
+}
+
 .main-title {
   font-family: 'Playfair Display', serif;
   font-size: 52px;
@@ -48,15 +66,7 @@ html, body {
   margin-bottom: 40px;
 }
 
-/* Subtitle */
-.subtitle {
-  font-family: 'Great Vibes', cursive;
-  font-size: 24px;
-  color: #d8c49c;
-  margin-bottom: 10px;
-}
-
-/* Hours section */
+/* ==== HOURS ==== */
 .hours-section {
   margin-top: 30px;
 }
@@ -99,57 +109,41 @@ html, body {
   margin-top: 25px;
 }
 
-/* Link */
-.back-link {
-  display: inline-block;
-  margin-top: 30px;
-  color: #e6cfa7;
-  text-decoration: underline;
-  font-size: 16px;
-  transition: 0.3s ease;
-}
-
-.back-link:hover {
-  color: white;
-}
-
-/* ==== MENU PREVIEW SECTION (SECOND SECTION) ==== */
+/* ==== MENU SECTION (SECOND) ==== */
 .menu-preview-section {
   background: transparent;
   padding: 0;
   margin-top: 0;
-  position: relative;
 }
 
 .menu-preview-overlay {
-  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.95));
-  padding: 80px 0 100px;
+  background: rgba(0, 0, 0, 0.4); /* lighter than before */
+  padding: 80px 5% 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  border-radius: 12px;
 }
 
 .menu-preview-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1200px;
-  width: 90%;
-  gap: 60px;
+  max-width: 1100px;
+  width: 100%;
+  gap: 40px;
   flex-wrap: nowrap;
 }
 
-/* ==== LEFT SIDE TEXT ==== */
-/* Text block */
+/* ==== LEFT SIDE ==== */
 .menu-text {
   flex: 1;
   color: #fdf4d4;
-  padding-left: 40px;
-  padding-right: 20px;
-  max-width: 550px;
+  padding-left: 20px;
   text-align: left;
+  max-width: 550px;
 }
+
 .menu-subtitle {
   font-family: 'Great Vibes', cursive;
   font-size: 24px;
@@ -185,6 +179,7 @@ html, body {
   text-decoration: none;
   transition: 0.3s ease;
 }
+
 .menu-btn.filled {
   background-color: #FFD700;
   color: #000;
@@ -202,16 +197,19 @@ html, body {
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
 }
 
-/* ==== IMAGE SIDE ==== */
+/* ==== RIGHT IMAGE ==== */
 .menu-image {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* pull closer to center */
   align-items: center;
 }
 
 .menu-image img {
-  max-width: 320px;
+  max-width: 180px;
   border-radius: 12px;
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.3);
 }
