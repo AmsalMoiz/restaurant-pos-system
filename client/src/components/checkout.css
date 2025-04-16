@@ -140,3 +140,9 @@
 .download-btn:hover {
   background: #e6c200;
 }
+
+.receipt-summary {
+  margin: 16px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}

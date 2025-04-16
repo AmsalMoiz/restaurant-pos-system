@@ -30,16 +30,26 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     zip: ''
   });
 
+
+  const [discountCode, setDiscountCode] = useState('');
+  const [discountMessage, setDiscountMessage] = useState('');
+  const [discountPercent, setDiscountPercent] = useState(0);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [finalTotal, setFinalTotal] = useState('');
+  const [subtotal, setSubtotal] = useState('');
   const [itemsPurchased, setItemsPurchased] = useState([]);
 
-  const calculateTotal = () => {
+  const calculateSubtotal = () => {
     return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
   };
-  
+
+  const calculateTotal = () => {
+    const subtotal = parseFloat(calculateSubtotal());
+    const discountAmount = subtotal * (discountPercent / 100);
+    return (subtotal - discountAmount).toFixed(2);
+  };
 
   const validate = () => {
     const newErrors = {};
@@ -70,24 +80,26 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       value = value.replace(/\D/g, '').slice(0, 16);
       value = value.replace(/(.{4})/g, '$1 ').trim();
     }
-  
+
     if (field === 'expiry') {
-      value = value.replace(/\D/g, ''); // remove non-digits
+      value = value.replace(/\D/g, '');
       if (value.length > 4) value = value.slice(0, 4);
       if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
     }
-  
-    setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: '' }));
+
+    setForm(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
   };
-  
-  <input
-  type="text"
-  value={form.expiry}
-  onChange={(e) => handleChange('expiry', e.target.value)}
-  placeholder="MM/YY"
-  maxLength={5}
-/>
+
+  const handleDiscountApply = () => {
+    if (discountCode.trim().toUpperCase() === 'SWEET10') {
+      setDiscountPercent(10);
+      setDiscountMessage('✅ Code SWEET10 applied: 10% off!');
+    } else {
+      setDiscountPercent(0);
+      setDiscountMessage('❌ Invalid discount code.');
+    }
+  };
 
   const generateOrderNumber = () => {
     const now = new Date();
@@ -98,12 +110,14 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     e.preventDefault();
     if (!validate()) return;
 
+    const subtotalAmount = calculateSubtotal();
+    const totalAfterDiscount = calculateTotal();
     const newOrderNum = generateOrderNumber();
-    const totalBeforeClear = calculateTotal();
 
     setOrderNumber(newOrderNum);
-    setFinalTotal(totalBeforeClear);
-    setItemsPurchased([...cartItems]); // Save copy before clearing
+    setSubtotal(subtotalAmount);
+    setFinalTotal(totalAfterDiscount);
+    setItemsPurchased([...cartItems]);
     setSuccess(true);
     setCartItems([]);
 
@@ -126,7 +140,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       pdf.rect(0, 0, pageWidth, imgHeight + 20, 'F');
 
       pdf.setFontSize(18);
-      pdf.setTextColor(218, 165, 32); // golden
+      pdf.setTextColor(218, 165, 32);
       pdf.setFont('helvetica', 'bold');
       pdf.text('Sweet Heaven - Order Receipt', pageWidth / 2, 20, { align: 'center' });
 
@@ -153,6 +167,8 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
               <p><strong>Order #:</strong> {orderNumber}</p>
               <p><strong>Cardholder:</strong> {form.holder}</p>
               <p><strong>Billing Address:</strong> {form.street}, {form.city}, {form.state} {form.zip}</p>
+              <p><strong>Subtotal:</strong> ${subtotal}</p>
+              <p><strong>Discount:</strong> {discountPercent > 0 ? `${discountPercent}%` : 'None'}</p>
               <p><strong>Total Paid:</strong> ${finalTotal}</p>
 
               <h4 style={{ marginTop: '20px' }}>🍰 Items Purchased</h4>
@@ -171,7 +187,6 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
           <form className="checkout-form" onSubmit={handleSubmit}>
             <h2 className="checkout-title gold-text">Checkout</h2>
 
-            {/* Card Info */}
             <label>Card Holder</label>
             <input type="text" value={form.holder} onChange={e => handleChange('holder', e.target.value)} placeholder="John Doe" />
             {errors.holder && <p className="error">{errors.holder}</p>}
@@ -183,7 +198,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
             <div className="flex-row">
               <div className="half">
                 <label>Expiration Date</label>
-                <input type="text" value={form.expiry} onChange={e => handleChange('expiry', e.target.value)} placeholder="MM/YY" />
+                <input type="text" value={form.expiry} onChange={e => handleChange('expiry', e.target.value)} placeholder="MM/YY" maxLength={5} />
                 {errors.expiry && <p className="error">{errors.expiry}</p>}
               </div>
               <div className="half">
@@ -193,7 +208,6 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
               </div>
             </div>
 
-            {/* Billing Info */}
             <label>Street Address</label>
             <input type="text" value={form.street} onChange={e => handleChange('street', e.target.value)} placeholder="123 Main St" />
             {errors.street && <p className="error">{errors.street}</p>}
@@ -215,7 +229,12 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
             <input type="text" value={form.zip} onChange={e => handleChange('zip', e.target.value)} placeholder="77004" maxLength={5} />
             {errors.zip && <p className="error">{errors.zip}</p>}
 
-            {/* Total */}
+            {/* Discount Input */}
+            <label>Discount Code</label>
+            <input type="text" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="Enter code like SWEET10" />
+            <button type="button" className="pay-button" onClick={handleDiscountApply}>Apply Code</button>
+            {discountMessage && <p style={{ fontSize: '0.9em' }}>{discountMessage}</p>}
+
             <div className="total-display">
               Total: <strong>${calculateTotal()}</strong>
             </div>
