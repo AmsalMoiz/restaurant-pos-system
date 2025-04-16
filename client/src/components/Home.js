@@ -1,8 +1,6 @@
-// File: Home.js
-
 import React from 'react';
-import { Link } from 'react-router-dom';
 import './home.css';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
 const Home = () => {
@@ -54,9 +52,7 @@ const Home = () => {
                 </div>
               ))}
             </div>
-            <p className="note">
-              Reservations are limited to <span>2 hours</span> • No parties over <span>6</span>
-            </p>
+            <p className="note">Reservations are limited to <span>2 hours</span> • No parties over <span>6</span></p>
           </div>
 
           <Link to="/login" className="back-link">Back to Login</Link>
