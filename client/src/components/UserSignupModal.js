@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './usersignupmodal.css';
 
-const UserSignupModal = ({ onClose, onSignup }) => {
+const UserSignupModal = ({ onClose, onSignup, showSignupModal, errorMessage, setErrorMessage }) => {
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -9,6 +9,7 @@ const UserSignupModal = ({ onClose, onSignup }) => {
     email: '',
     password: ''
   });
+  //const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,10 +21,22 @@ const UserSignupModal = ({ onClose, onSignup }) => {
     onSignup(formData);  // pass data back to parent
   };
 
+  useEffect(() => {
+    setFormData({
+      name: '',
+      address: '',
+      phone: '',
+      email: '',
+      password: ''
+    });
+    setErrorMessage("");
+  }, [showSignupModal, setErrorMessage]);
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>Create an Account</h2>
+        {errorMessage && <p className="error-message-modal">{errorMessage}</p>}
         <form onSubmit={handleSubmit}>
           <input type="text" name="name" placeholder="Full Name" required onChange={handleChange} />
           <input type="text" name="address" placeholder="Full Address" required onChange={handleChange} />
