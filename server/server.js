@@ -7,10 +7,12 @@ const db = require("./db");
 const transactionRoutes = require("./InpersonTransactions");
 const employeeReportRoutes = require("./EmployeeReport");
 const app = express();
+const logHoursRoute = require("./logHours");
 
 app.use(cors());
 app.use(express.json()); // Middleware for JSON body parsing
 app.use("/api/auth", authRoutes); // Include auth routes
+app.use("/api", logHoursRoute); // Include log hours routes
 
 
 const PORT = process.env.PORT || 3001;
@@ -85,6 +87,9 @@ app.post('/users/login', async (req, res) => {
         email: user.email
       };
       res.json({ success: true, user: userWithoutPassword });
+      
+      global.logged_in_user_id = user.user_id;
+
     } else {
       return res.status(401).json({ error: 'Invalid email or password!' });
     }
