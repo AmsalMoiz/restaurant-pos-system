@@ -6,12 +6,12 @@ import ScrollToTop from './components/ScrollToTop';
 import Home from './components/Home';
 import Login from './components/Login';
 import Menu from './components/MenuTest';
-import Cart from './components/Cart'; 
+import Cart from './components/Cart';
 import UserLogin from './components/UserLogin';
 import DashAdmin from './components/DashAdmin';
 import DashManager from './components/DashManager';
 import DashWaiter from './components/DashWaiter';
-import DashCook from './components/DashCook'; 
+import DashCook from './components/DashCook';
 import BookTable from './components/BookTable';
 import Checkout from './components/Checkout';
 
@@ -24,19 +24,33 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop /> 
+
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/menu" element={<Menu cartItems={cartItems} setCartItems={setCartItems} />} />
-        <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
-        <Route path="/users/login" element={<UserLogin onLogin={handleUserLogin} />} />
+        <Route
+          path="/menu"
+          element={<Menu cartItems={cartItems} setCartItems={setCartItems} />}
+        />
+        <Route
+          path="/cart"
+          element={<Cart cartItems={cartItems} setCartItems={setCartItems} />}
+        />
+        <Route
+          path="/users/login"
+          element={<UserLogin onLogin={handleUserLogin} />}
+        />
         <Route path="/admin-dashboard" element={<DashAdmin />} />
         <Route path="/manager-dashboard" element={<DashManager />} />
         <Route path="/waiter-dashboard" element={<DashWaiter />} />
         <Route path="/cook-dashboard" element={<DashCook />} />
         <Route path="/book-table" element={<BookTable />} />
-        <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
+        <Route
+          path="/checkout"
+          element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />}
+        />
       </Routes>
     </Router>
   );
