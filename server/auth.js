@@ -30,7 +30,22 @@ router.post("/login", async (req, res) => { // POST /api/auth/login
         return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    res.json({ message: "Login successful" });
+    const [userInfo] = await connection.execute(
+      "SELECT name, email, phone_number FROM customers WHERE customer_id = ?",
+      [customer.customer_id]
+    );
+    
+    const user = userInfo[0];
+
+    
+    res.json({
+      user: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone_number
+      }
+    });
+    
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });

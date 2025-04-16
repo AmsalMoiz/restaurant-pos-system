@@ -1,99 +1,148 @@
 .checkout-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
-    background: #0b0b0b;
-  }
-  
-  .checkout-form {
-    background: #1a1a1a;
-    color: #e1dbc4;
-    padding: 30px 35px;
-    border-radius: 20px;
-    width: 400px;
-    box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
-  }
-  
-  .checkout-form h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-family: 'Poppins', sans-serif;
-  }
-  .checkout-title {
-    color: #FFD700; 
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .checkout-form label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-  }
-  
-  .checkout-form input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    background: #2c2c2c;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
-  }
-  
-  .flex-row {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .half {
-    flex: 1;
-  }
-  
-  .error {
-    color: #ff5c5c;
-    font-size: 0.8em;
-    margin-top: 3px;
-  }
-  
-  .pay-button {
-    margin-top: 20px;
-    width: 100%;
-    background: linear-gradient(to right, #ffe680, #ffd633);
-    border: none;
-    color: #000;
-    font-weight: bold;
-    padding: 12px;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  
-  .success-popup {
-    background: #1a1a1a;
-    padding: 30px;
-    text-align: center;
-    border-radius: 20px;
-    color: #fff;
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
-  }
-  
-  .total-display {
-    margin-top: 20px;
-    text-align: right;
-    color: #ffdb4d;
-    font-size: 1.1em;
-  }
-  .receipt-box {
-    background-color: #1c1c1c;
-    color: #f4f4f4;
-    padding: 1rem;
-    margin-top: 1rem;
-    border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-    text-align: left;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #0b0b0b;
+  padding: 40px 20px;
+}
+
+/* === Checkout Form === */
+.checkout-form {
+  background: #1a1a1a;
+  color: #e1dbc4;
+  padding: 30px 35px;
+  border-radius: 20px;
+  width: 400px;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+}
+
+.checkout-title {
+  color: #FFD700;
+  text-align: center;
+  font-size: 24px;
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.checkout-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.checkout-form input,
+.checkout-form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  background: #2c2c2c;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.flex-row {
+  display: flex;
+  gap: 10px;
+}
+
+.half {
+  flex: 1;
+}
+
+.error {
+  color: #ff5c5c;
+  font-size: 0.8em;
+  margin-top: 3px;
+}
+
+.pay-button {
+  margin-top: 20px;
+  width: 100%;
+  background: linear-gradient(to right, #ffe680, #ffd633);
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.total-display {
+  margin-top: 20px;
+  text-align: right;
+  color: #ffdb4d;
+  font-size: 1.1em;
+}
+
+.success-popup {
+  background: #ffffff;
+  padding: 40px;
+  text-align: center;
+  border-radius: 16px;
+  color: #000;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+  max-width: 550px;
+  width: 100%;
+}
+
+.receipt-box {
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  color: #000000;
+  padding: 24px 32px;
+  margin-top: 20px;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  text-align: left;
+}
+
+.receipt-title {
+  color: #DAA520;
+  font-size: 22px;
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.receipt-items {
+  list-style: square;
+  padding-left: 20px;
+  margin: 10px 0 20px;
+}
+
+.receipt-items li {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+/* Download Receipt Button */
+.download-btn {
+  margin-top: 25px;
+  background: #FFD700;
+  color: #000;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.download-btn:hover {
+  background: #e6c200;
+}
+
+.receipt-summary {
+  margin: 16px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}

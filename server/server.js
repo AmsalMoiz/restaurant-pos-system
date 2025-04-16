@@ -22,7 +22,7 @@ const dbErrorHandler = async (req, res, next) => {
   try {
     req.dbConnection = await db(); // Get database connection
     // Sets timezone to Central Time Zone
-    await req.dbConnection.query("SET time_zone = '-10:00'");
+    //await req.dbConnection.query("SET time_zone = '-10:00'");
     next();
   } catch (error) {
     console.error('Database connection error in middleware:', error);
@@ -490,5 +490,63 @@ app.post('/dashboard/items', async (req, res) => {
   } catch (error) {
     console.error("Add item error:", error);
     res.status(500).json({ error: "Failed to add item." });
+  }
+});
+
+//reservations
+
+app.post('/api/reservations', async (req, res) => {
+  const { name, email, phone, num_guests, date, time, table_name, special_requests } = req.body;
+
+  try {
+
+    const [existing] = await req.dbConnection.query(
+      `SELECT COUNT(*) as count FROM reservations WHERE email = ? AND date = ?`,
+      [email, date]
+    );
+
+    if (existing[0].count >= 2) {
+      return res.status(403).json({ message: 'Limit reached: You may only make 2 reservations per day.' });
+    }
+
+    const [conflicts] = await req.dbConnection.query(
+      `SELECT * FROM reservations
+       WHERE table_name = ?
+         AND date = ?
+         AND ABS(TIMESTAMPDIFF(MINUTE, time, ?)) < 120`,
+      [table_name, date, time]
+    );
+
+    if (conflicts.length > 0) {
+      return res.status(409).json({ message: 'Table is already booked during this time.' });
+    }
+
+    await req.dbConnection.query(
+      `INSERT INTO reservations (name, email, phone, num_guests, date, time, table_name, special_requests)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, email, phone, num_guests, date, time, table_name, special_requests]
+    );
+
+    res.status(200).json({ message: 'Reservation successful!' });
+  } catch (err) {
+    console.error('Reservation error:', err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+app.get("/api/reservations", async (req, res) => {
+  const { date } = req.query;
+  const connection = await req.dbConnection;
+
+  try {
+    const [results] = await connection.execute(
+      "SELECT table_name, time FROM reservations WHERE date = ?",
+      [date]
+    );
+
+    res.json(results);
+  } catch (error) {
+    console.error("Fetch reservations error:", error);
+    res.status(500).json({ error: "Database fetch error" });
   }
 });

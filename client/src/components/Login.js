@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./login.css";
 import UserSignupModal from "./UserSignupModal"; 
@@ -9,6 +9,27 @@ const Login = () => {
   const [error, setError] = useState("");
   const [showSignupModal, setShowSignupModal] = useState(false); 
   const navigate = useNavigate();
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState('');
+  const timeoutId = useRef(null); 
+
+  const displayMessage = (newMessage, newMessageType, duration = 2500) => {
+    // clear existing timeout, so msg time is consistent, 
+    // this is so if someone is spamming buttons, triggering different messages
+    if (timeoutId.current) {
+        clearTimeout(timeoutId.current);
+    }
+
+    setMessage(newMessage);
+    setMessageType(newMessageType);
+
+    // set new timeout
+    timeoutId.current = setTimeout(() => {
+        setMessage(null);
+        setMessageType('');
+        timeoutId.current = null; //clear ref
+    }, duration);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,15 +44,27 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
+        const { name, email, phone } = data.user; // adjust if your backend returns differently
+      
+        localStorage.setItem("user", JSON.stringify({
+          name,
+          email,
+          phone
+        }));
+      
         navigate("/home");
-      } else {
+      }
+       else {
         setError(data.error || "Login failed. Please try again.");
       }
     } catch (error) {
-      setError("Error connecting to server.");
+      console.error("Login error:", error);
+      setError("Something went wrong. See console for details.");
     }
+    
   };
 
+  const [modalErrorMessage, setModalErrorMessage] = useState("")
   const handleSignup = async (formData) => {
     try {
       const response = await fetch("http://localhost:3001/api/auth/register", {
@@ -39,17 +72,17 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-  
+      
       const data = await response.json();
   
       if (response.ok) {
-        alert("Account created successfully!");
+        displayMessage("Account created successfully!", 'success');
         setShowSignupModal(false);
       } else {
-        alert(data.error || "Signup failed.");
+        setModalErrorMessage(data.error || "Signup failed.");
       }
     } catch (error) {
-      alert("Server error during signup.");
+      setModalErrorMessage("Server error during signup.", 'error');
       console.error(error);
     }
   };  
@@ -101,12 +134,21 @@ const Login = () => {
         <p style={{ marginTop: "1rem" }}>
           <Link to="/users/login">Go to Employee Login</Link>
         </p>
+        {/* message display area, messages go here */}
+          {message && (
+          <div className={`message ${messageType}`}>
+          {message}
+          </div>
+        )}
       </div>
 
       {/* Modal component visible only if toggled on */}
       {showSignupModal && (
         <UserSignupModal onClose={() => setShowSignupModal(false)} 
         onSignup={handleSignup}
+        showSignupModal={showSignupModal}
+        errorMessage={modalErrorMessage}
+        setErrorMessage={setModalErrorMessage}
         />
       )}
     </div>

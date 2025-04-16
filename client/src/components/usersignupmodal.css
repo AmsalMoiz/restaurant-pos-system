@@ -44,4 +44,12 @@
     font-weight: bold;
     cursor: pointer;
   }
+
+.error-message-modal {
+  color: red; /* Keep the error text color as red */
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  background-color: transparent; /* no background color is hiding the modal's background, believe this prevents color of modal to change  */
+}
+
   
