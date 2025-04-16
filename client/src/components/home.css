@@ -12,7 +12,7 @@ html, body {
   background-attachment: fixed;
 }
 
-/* ==== BACKGROUND ==== */
+/* === BACKGROUND WRAPPER === */
 .home-background {
   min-height: 100vh;
   background-size: cover;
@@ -20,42 +20,44 @@ html, body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-image:
-    radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%); 
+    radial-gradient(circle at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.95) 100%);
   position: relative;
 }
 
-/* ==== HERO SECTION ==== */
+/* === OVERLAY ON WHOLE HERO === */
 .hero-overlay {
-  position: relative;
-  padding: 100px 5% 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.hero-overlay::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6); /* perfect elegant fade */
-  backdrop-filter: blur(2px); /* soft glow */
-  z-index: 0;
-  border-radius: 12px;
-}
-.hero-content {
+  background-color: rgba(0, 0, 0, 0.55);
+  padding: 100px 0 60px;
   position: relative;
   z-index: 1;
-  text-align: center;
-  padding: 60px 20px;
-  max-width: 1000px;
-  width: 100%;
 }
 
-.subtitle {
-  font-family: 'Great Vibes', cursive;
-  font-size: 24px;
-  color: #d8c49c;
-  margin-bottom: 10px;
+/* === FULL-WIDTH HERO BAND === */
+.hero-band::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 0;
+}
+
+.hero-band {
+  position: relative;
+  z-index: 2;
+  padding: 60px 0;
+  width: 100%;
+  margin: 0;
+}
+
+/* === HERO TEXT CONTENT === */
+.hero-content {
+  text-align: center;
+  position: relative;
+  z-index: 3;
 }
 
 .main-title {
@@ -66,7 +68,14 @@ html, body {
   margin-bottom: 40px;
 }
 
-/* ==== HOURS ==== */
+.subtitle {
+  font-family: 'Great Vibes', cursive;
+  font-size: 24px;
+  color: #d8c49c;
+  margin-bottom: 10px;
+}
+
+/* === HOURS SECTION === */
 .hours-section {
   margin-top: 30px;
 }
@@ -76,6 +85,7 @@ html, body {
   justify-content: center;
   gap: 40px;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .hours-column {
@@ -109,39 +119,41 @@ html, body {
   margin-top: 25px;
 }
 
-/* ==== MENU SECTION (SECOND) ==== */
+/* === MENU PREVIEW SECTION === */
 .menu-preview-section {
   background: transparent;
   padding: 0;
   margin-top: 0;
+  position: relative;
 }
 
 .menu-preview-overlay {
-  background: rgba(0, 0, 0, 0.4); /* lighter than before */
-  padding: 80px 5% 100px;
+  padding: 80px 0 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 12px;
+  width: 100%;
+  position: relative;
 }
 
 .menu-preview-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 90%;
   max-width: 1100px;
-  width: 100%;
-  gap: 40px;
+  gap: 60px;
   flex-wrap: nowrap;
 }
 
-/* ==== LEFT SIDE ==== */
+/* LEFT SIDE TEXT */
 .menu-text {
   flex: 1;
   color: #fdf4d4;
   padding-left: 20px;
-  text-align: left;
+  padding-right: 20px;
   max-width: 550px;
+  text-align: left;
 }
 
 .menu-subtitle {
@@ -165,7 +177,7 @@ html, body {
   margin-bottom: 30px;
 }
 
-/* ==== BUTTONS ==== */
+/* BUTTONS */
 .menu-buttons {
   display: flex;
   gap: 20px;
@@ -197,16 +209,16 @@ html, body {
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
 }
 
-/* ==== RIGHT IMAGE ==== */
+/* IMAGE */
 .menu-image {
   flex: 1;
   display: flex;
-  justify-content: flex-start; /* pull closer to center */
+  justify-content: center;
   align-items: center;
 }
 
 .menu-image img {
-  max-width: 180px;
+  max-width: 220px;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.08);
