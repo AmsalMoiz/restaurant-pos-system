@@ -12,7 +12,7 @@ html, body {
   background-attachment: fixed;
 }
 
-/* Background wrapper */
+/* ==== BACKGROUND SECTION ==== */
 .home-background {
   min-height: 100vh;
   background-size: cover;
@@ -21,14 +21,25 @@ html, body {
   position: relative;
 }
 
-/* First section overlay */
+/* ==== HERO (FIRST) SECTION ==== */
 .hero-content {
   text-align: center;
   padding: 100px 20px 60px;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9));
+  margin-bottom: 80px;
 }
 
-/* Section title (Sweet Heaven) */
+.hero-content::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(rgba(0, 0, 0, 0.9), transparent);
+}
+
+/* Title */
 .main-title {
   font-family: 'Playfair Display', serif;
   font-size: 52px;
@@ -37,7 +48,7 @@ html, body {
   margin-bottom: 40px;
 }
 
-/* Subtext (Intimate dining...) */
+/* Subtitle */
 .subtitle {
   font-family: 'Great Vibes', cursive;
   font-size: 24px;
@@ -45,46 +56,50 @@ html, body {
   margin-bottom: 10px;
 }
 
-/* Hours grid */
+/* Hours section */
 .hours-section {
   margin-top: 30px;
 }
+
 .hours-grid {
   display: flex;
   justify-content: center;
   gap: 40px;
   margin-top: 20px;
 }
+
 .hours-column {
   text-align: center;
   min-width: 120px;
 }
+
 .day {
   font-weight: 600;
   font-size: 16px;
   color: #e3d3a4;
   margin-bottom: 6px;
 }
+
 .time {
   font-size: 14px;
   color: #f5f5f5;
   white-space: nowrap;
   margin-bottom: 6px;
 }
+
 .underline {
   height: 1px;
   background-color: #444;
   width: 100%;
 }
 
-/* Note under hours */
 .note {
   font-size: 14px;
   color: #aaa;
   margin-top: 25px;
 }
 
-/* Back to login link */
+/* Link */
 .back-link {
   display: inline-block;
   margin-top: 30px;
@@ -93,67 +108,75 @@ html, body {
   font-size: 16px;
   transition: 0.3s ease;
 }
+
 .back-link:hover {
   color: white;
 }
 
-/* ===Section 2=== */
+/* ==== MENU PREVIEW SECTION (SECOND SECTION) ==== */
 .menu-preview-section {
-  background-size: cover;
+  background: transparent;
+  padding: 0;
+  margin-top: 0;
   position: relative;
-  background-attachment: fixed;
-  background-position: center;
 }
 
 .menu-preview-overlay {
-  background-color: rgba(0, 0, 0, 0.85);
-  padding: 80px 10%;
+  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.95));
+  padding: 80px 0 100px;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .menu-preview-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 60px;
+  justify-content: space-between;
   max-width: 1200px;
-  width: 100%;
+  width: 90%;
+  gap: 60px;
+  flex-wrap: nowrap;
 }
 
-/* Text side */
+/* ==== LEFT SIDE TEXT ==== */
+/* Text block */
 .menu-text {
   flex: 1;
-  max-width: 600px;
   color: #fdf4d4;
+  padding-left: 40px;
+  padding-right: 20px;
+  max-width: 550px;
+  text-align: left;
 }
 .menu-subtitle {
   font-family: 'Great Vibes', cursive;
-  font-size: 22px;
-  color: #e6cfa7;
+  font-size: 24px;
+  color: #d8c49c;
   margin-bottom: 10px;
 }
+
 .menu-heading {
   font-family: 'Playfair Display', serif;
   font-size: 48px;
-  color: #fdf4d4;
+  color: #fceea7;
   margin-bottom: 20px;
 }
+
 .menu-description {
   font-size: 16px;
   line-height: 1.7;
-  margin-bottom: 30px;
   color: #e9e9e9;
+  margin-bottom: 30px;
 }
 
-/* Button group */
+/* ==== BUTTONS ==== */
 .menu-buttons {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap;
 }
+
 .menu-btn {
   padding: 12px 22px;
   font-weight: 600;
@@ -167,19 +190,28 @@ html, body {
   color: #000;
   border: none;
 }
+
 .menu-btn.outlined {
   border: 2px solid #FFD700;
   color: #FFD700;
   background: transparent;
 }
+
 .menu-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
 }
 
-/* Image */
+/* ==== IMAGE SIDE ==== */
+.menu-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .menu-image img {
-  max-width: 300px;
+  max-width: 320px;
   border-radius: 12px;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.18);
 }
