@@ -6,10 +6,9 @@ function DashCook() {
     const [cookData, setCookData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [isClockedIn, setIsClockedIn] = useState(false); // State to track clock-in status
+    const [date, setDate] = useState(new Date().toISOString().split("T")[0]); // Default to today's date
+    const [hoursWorked, setHoursWorked] = useState("");
     const navigate = useNavigate();
-    const [message, setMessage] = useState(null);
-    const [messageType, setMessageType] = useState('');
     const timeoutId = useRef(null); 
 
     const displayMessage = (newMessage, newMessageType, duration = 2500) => {
@@ -18,16 +17,6 @@ function DashCook() {
         if (timeoutId.current) {
             clearTimeout(timeoutId.current);
         }
-
-        setMessage(newMessage);
-        setMessageType(newMessageType);
-
-        // set new timeout
-        timeoutId.current = setTimeout(() => {
-            setMessage(null);
-            setMessageType('');
-            timeoutId.current = null; //clear ref
-        }, duration);
     };
 
     useEffect(() => {
@@ -51,16 +40,11 @@ function DashCook() {
             }
 
             setCookData(user);
-
-            // Retrieve clock-in status from localStorage
-            const savedClockStatus = localStorage.getItem(`isClockedIn_${user.email}`);
-            setIsClockedIn(savedClockStatus === "true"); // Convert string to boolean
-
-            setLoading(false);
         } catch (err) {
             console.error("Error loading cook data:", err);
             setError("Error loading Cook data");
-            setLoading(false);
+        } finally {
+            setLoading(false); // Ensure loading is set to false in all cases
         }
     }, [navigate]);
 
@@ -72,34 +56,39 @@ function DashCook() {
         navigate("/users/login");
     };
 
-    const handleClockIn = () => {
-        if (!cookData) {
-            displayMessage("User data not loaded. Please try again.", 'error');
-            return;
-        }
-        if (isClockedIn) {
-            displayMessage("Already clocked in. Clock out first.", 'warning');
+    const handleLogHours = async () => {
+        if (!hoursWorked || isNaN(hoursWorked) || hoursWorked <= 0) {
+            alert("Please enter a valid number of hours worked.");
             return;
         }
 
-        setIsClockedIn(true); // Set clock-in status to true
-        localStorage.setItem(`isClockedIn_${cookData.email}`, true); // Save to localStorage
-        displayMessage("You have clocked in.", 'success');
-    };
+        try {
+            const res = await fetch("http://localhost:3001/api/log-hours", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user_id: cookData.user_id,
+                    date_worked: date,
+                    hours_worked: hoursWorked,
+                }),
+            });
 
-    const handleClockOut = () => {
-        if (!cookData) {
-            displayMessage("User data not loaded. Please try again.", 'error');
-            return;
-        }
-        if (!isClockedIn) {
-            displayMessage("Not clocked in yet.", 'warning');
-            return;
-        }
+            const data = await res.json();
 
-        setIsClockedIn(false); // Set clock-in status to false
-        localStorage.setItem(`isClockedIn_${cookData.email}`, false); // Save to localStorage
-        displayMessage("You have clocked out.", 'success');
+            if (!res.ok) {
+                console.error("Log hours failed with response:", data);
+                alert(data.message || "Failed to log hours.");
+                return;
+            }
+
+            alert(data.message || "Hours logged successfully!");
+            setHoursWorked(""); // Reset hours worked input
+        } catch (err) {
+            console.error("Log hours failed:", err);
+            alert("Failed to log hours.");
+        }
     };
 
     if (loading) {
@@ -127,22 +116,30 @@ function DashCook() {
                 </header>
 
                 <main className="cook-content">
-                    <div className="cook-section">
-                        <h2>Clock In/Clock Out</h2>
-                        <div className="clock-buttons">
-                            <button onClick={handleClockIn} className="clock-btn">
-                                Clock In
-                            </button>
-                            <button onClick={handleClockOut} className="clock-btn">
-                                Clock Out
-                            </button>
 
-                            {/* message display area, messages go here, maybe consider changing color */}
-                            {message && (
-                                <div className={`message ${messageType}`}>
-                                {message}
-                                </div>
-                            )}
+                    <div className="cook-section">
+                        <h2>Log Hours Worked</h2>
+                        <div className="log-hours-form">
+                            <label htmlFor="date">Date:</label>
+                            <input
+                                type="date"
+                                id="date"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                            />
+
+                            <label htmlFor="hoursWorked">Hours Worked:</label>
+                            <input
+                                type="number"
+                                id="hoursWorked"
+                                value={hoursWorked}
+                                onChange={(e) => setHoursWorked(e.target.value)}
+                                placeholder="Enter hours worked"
+                            />
+
+                            <button onClick={handleLogHours} className="log-hours-btn">
+                                Log Hours
+                            </button>
                         </div>
                     </div>
                 </main>
