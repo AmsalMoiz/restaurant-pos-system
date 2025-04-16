@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './bookTable.css';
 import ReservationModal from './ReservationModal';
 import Navbar from './Navbar';
+
 
 const tables = [
   ['A1', 'A2', 'A3', 'A4', 'A5'],
@@ -21,48 +22,188 @@ const BookTable = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [reservationLimitReached, setReservationLimitReached] = useState(false);
+
 
   const openModal = (item) => {
     if (!selectedDate || !selectedTime) {
       alert('Please select a date and time first.');
       return;
     }
+  
+    const selectedDateTime = new Date(`${selectedDate}T${convertTo24HourFormat(selectedTime)}`);
+    const now = new Date();
+  
+    if (selectedDateTime < now) {
+      alert('You cannot reserve a past time.');
+      return;
+    }
+  
     setModalData({ label: item });
   };
+  
 
   const closeModal = () => {
     setModalData(null);
   };
 
-  const handleReserve = ({ item, guests, time, date }) => {
-    const newReservation = { item, guests, time, date };
-    setReservations((prev) => [...prev, newReservation]);
-    setModalData(null);
-    setShowConfirmation({
-      label: item,
-      guests,
-      time,
-      date
-    });
+  function convertTo24HourFormat(timeStr) {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+  
+    if (modifier === 'PM' && hours !== 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+  
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+  }
+  
+
+  const handleReserve = async ({ item, guests, time, date, special_requests }) => {
+    const user = JSON.parse(localStorage.getItem("user")); // or from context
+  
+    if (!user || !user.name || !user.email || !user.phone) {
+      alert("User info missing. Please log in again.");
+      return;
+    }
+  
+    const reservationData = {
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      num_guests: guests,
+      date,
+      time: convertTo24HourFormat(time),
+      table_name: item,
+      special_requests
+    };
+  
+    try {
+      const response = await fetch("http://localhost:3001/api/reservations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(reservationData)
+      });
+  
+      if (response.status === 409) {
+        alert("This table is already booked for that time.");
+        return;
+      } else if (response.status === 403) {
+        setReservationLimitReached(true);
+        return;
+      } else if (!response.ok) {
+        throw new Error("Failed to reserve table");
+      }
+      
+      
+      setBookedTables((prev) => [
+        ...prev,
+        {
+          table_name: item,
+          time: convertTo24HourFormat(time)
+        }
+      ]);
+
+      setShowConfirmation({ label: item, guests, time, date });
+      setModalData(null);
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred while reserving the table.");
+    }
   };
+  
   
 
   const isOccupied = (label) => {
-    return reservations.some(
-      (r) =>
-        r.item === label &&
-        r.date === selectedDate &&
-        Math.abs(getHour(r.time) - getHour(selectedTime)) < 2
-    );
+    const toMinutes = (time) => {
+      const normalized = time.includes(' ')
+        ? convertTo24HourFormat(time)  // if input like "11:00 PM"
+        : time;                        // if already in "23:00:00"
+  
+      const [h, m] = normalized.split(':').map(Number);
+      return h * 60 + m;
+    };
+  
+    const selectedMinutes = toMinutes(selectedTime);
+  
+    return bookedTables.some((r) => {
+      if (r.table_name !== label) return false;
+  
+      const reservedMinutes = toMinutes(r.time);
+      const diff = Math.abs(reservedMinutes - selectedMinutes);
+  
+      return diff < 120; // within 2 hours
+    });
   };
+  
+  
 
   const getHour = (time) => {
+    // Handle MySQL 24-hour format (e.g., "19:00:00")
+    if (time.includes(":") && time.length === 8) {
+      const [h] = time.split(':').map(Number);
+      return h;
+    }
+  
+    // Handle 12-hour format (e.g., "7:00 PM")
     const [hour, modifier] = time.split(' ');
     let [h] = hour.split(':').map(Number);
     if (modifier === 'PM' && h !== 12) h += 12;
     if (modifier === 'AM' && h === 12) h = 0;
     return h;
   };
+  
+
+  const timeOptions = [
+    '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM',
+    '9:00 PM', '10:00 PM', '11:00 PM', '12:00 AM'
+  ];
+  
+  function getValidTimeOptions() {
+    if (!selectedDate) return timeOptions;
+  
+    const selected = new Date(selectedDate);
+    const now = new Date();
+  
+    const isToday = selected.toDateString() === now.toDateString();
+  
+    if (!isToday) return timeOptions;
+  
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+  
+    return timeOptions.filter((timeStr) => {
+      const [hour, modifier] = timeStr.split(' ');
+      let [h, m] = hour.split(':').map(Number);
+      if (modifier === 'PM' && h !== 12) h += 12;
+      if (modifier === 'AM' && h === 12) h = 0;
+  
+      const optionMinutes = h * 60 + m;
+      return optionMinutes > currentTime;
+    });
+  }
+
+  //checking if table is reserved
+  const [bookedTables, setBookedTables] = useState([]);
+  useEffect(() => {
+    if (!selectedDate || !selectedTime) return;
+  
+    const fetchReservations = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/api/reservations?date=${selectedDate}`);
+        const data = await res.json();
+        setBookedTables(data);
+        console.log("Fetched reservations from DB:", data);
+      } catch (err) {
+        console.error("Failed to fetch reservations:", err);
+      }
+    };
+  
+    fetchReservations();
+  }, [selectedDate, selectedTime]);
+  
+
+  
 
   const today = new Date();
   const maxDate = new Date();
@@ -103,10 +244,19 @@ const BookTable = () => {
               }}
             >
               <option value="">-- Select Time --</option>
-              {['5:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM','10:00 PM','11:00 PM','12:00 AM'].map((t) => (
+              {getValidTimeOptions().map((t) => (
                 <option key={t} value={t}>{t}</option>
               ))}
             </select>
+            <p style={{ fontSize: '0.9rem', marginTop: '6px', color: '#ccc' }}>
+              * Reservations are for a maximum of 2 hours
+            </p>
+            {reservationLimitReached && (
+            <p style={{ fontSize: '0.9rem', marginTop: '6px', color: '#ff7373' }}>
+              You may only make 2 reservations per day. To change or remove one, go to <strong>Profile &gt; Reservations</strong>.
+            </p>
+          )}
+
           </div>
 
           <div className="reservation-zone">
@@ -116,26 +266,30 @@ const BookTable = () => {
                 <div className="table-row" key={rowIndex}>
                   {row.map((label, colIndex) => (
                     <button
-                      key={`${rowIndex}-${colIndex}`}
-                      className={`square-table ${isOccupied(label) ? 'occupied' : ''}`}
-                      onClick={() => openModal(label)}
-                    >
-                      {label}
-                    </button>
+                    key={`${rowIndex}-${colIndex}`}
+                    className={`square-table ${isOccupied(label) ? 'occupied' : ''}`}
+                    onClick={() => {
+                      if (!isOccupied(label)) openModal(label);
+                    }}
+                    disabled={isOccupied(label)}
+                    title={isOccupied(label) ? "This table is booked" : ""}
+                  >
+                    {label}
+                  </button>
                   ))}
                 </div>
               ))}
               <div className="restroom-label">Restroom</div>
             </div>
-
             <div className="bar-chair-column">
-              {barChairs.map((chair, i) => (
-                <button
-                  key={i}
-                  className={`circle-chair ${isOccupied(chair) ? 'occupied' : ''}`}
-                  onClick={() => openModal(chair)}
-                />
-              ))}
+            {barChairs.map((chair, i) => (
+              <button
+                key={i}
+                className="circle-chair disabled-bar"
+                disabled
+                title="Walk-ins only"
+              />
+            ))}
               <div className="bar-label">Bar</div>
             </div>
           </div>

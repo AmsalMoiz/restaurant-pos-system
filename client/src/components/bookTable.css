@@ -1,8 +1,20 @@
-.layout-wrapper {
+  .layout-wrapper {
     display: flex;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-y: auto;
   }
+
+  @media (max-width: 768px) {
+    .layout-wrapper {
+      flex-direction: column;
+    }
+
+    .layout-photo, .layout-sketch {
+      width: 100%;
+      height: auto;
+    }
+  }
+
   
   .layout-photo {
     flex: 1;
@@ -171,5 +183,12 @@
     background-color: red;
     border-color: red;
     color: white;
+  }
+  
+
+  .disabled-bar {
+    background-color: gray;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
   

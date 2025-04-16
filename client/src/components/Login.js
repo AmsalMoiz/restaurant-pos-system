@@ -23,13 +23,24 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
+        const { name, email, phone } = data.user; // adjust if your backend returns differently
+      
+        localStorage.setItem("user", JSON.stringify({
+          name,
+          email,
+          phone
+        }));
+      
         navigate("/home");
-      } else {
+      }
+       else {
         setError(data.error || "Login failed. Please try again.");
       }
     } catch (error) {
-      setError("Error connecting to server.");
+      console.error("Login error:", error);
+      setError("Something went wrong. See console for details.");
     }
+    
   };
 
   const handleSignup = async (formData) => {
