@@ -11,15 +11,10 @@ const Home = () => {
         className="home-background"
         style={{
           backgroundImage: "url('/images/restomainpic.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
-          minHeight: '100vh',
         }}
       >
         <div className="hero-overlay">
-          {/* SECTION 1: Restaurant Info */}
+          {/* SECTION 1 */}
           <div className="hero-band">
             <div className="hero-content">
               <p className="subtitle">Intimate dining restaurant</p>
@@ -52,7 +47,7 @@ const Home = () => {
             </div>
           </div>
 
-          {/* SECTION 2: Taste the Mood */}
+          {/* SECTION 2 */}
           <div className="menu-preview-section">
             <div className="menu-preview-overlay">
               <div className="menu-preview-content">
@@ -69,29 +64,25 @@ const Home = () => {
                     <Link to="/menu" className="menu-btn filled">View Menu</Link>
                   </div>
                 </div>
-
                 <div className="menu-image">
                   <img src="/images/tiramisuNoir.jpg" alt="Tiramisu Noir" />
                 </div>
               </div>
             </div>
           </div>
-          {/* === THIRD SECTION: Final Band === */}
+
+          {/* SECTION 3 */}
           <div className="hero-final-band">
             <h2 className="final-title">We look forward to having you dine with us</h2>
-
-          <div className="final-details">
-            <span><i className="fas fa-map-marker-alt"></i> 3458 Seraphina Avenue, Lower Westside, NY 10219</span>
-            <span><i className="fas fa-phone-alt"></i> +1 (212) 555-9874</span>
+            <div className="final-details">
+              <span><i className="fas fa-map-marker-alt"></i> 3458 Seraphina Avenue, Lower Westside, NY 10219</span>
+              <span><i className="fas fa-phone-alt"></i> +1 (212) 555-9874</span>
+            </div>
+            <div className="final-button">
+              <Link to="/login">Sign up to reserve your table</Link>
+            </div>
+            <div className="final-logo">SH</div>
           </div>
-
-          <div className="final-button">
-            <Link to="/login">Sign up to reserve your table</Link>
-          </div>
-
-          <div className="final-logo">SH</div>
-        </div>
-
         </div>
       </div>
     </>
