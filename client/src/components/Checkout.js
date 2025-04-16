@@ -6,14 +6,14 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 const US_STATES = [
-  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
-  'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois',
-  'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
-  'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana',
-  'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
-  'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
-  'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah',
-  'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+  'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+  'Wisconsin', 'Wyoming'
 ];
 
 const Checkout = ({ cartItems = [], setCartItems }) => {
@@ -30,16 +30,25 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     zip: ''
   });
 
+
+  const [discountCode, setDiscountCode] = useState('');
+  const [discountMessage, setDiscountMessage] = useState('');
+  const [discountPercent, setDiscountPercent] = useState(0);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
   const [finalTotal, setFinalTotal] = useState('');
+  const [subtotal, setSubtotal] = useState('');
+  const [itemsPurchased, setItemsPurchased] = useState([]);
+
+  const calculateSubtotal = () => {
+    return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  };
 
   const calculateTotal = () => {
-    return cartItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    ).toFixed(2);
+    const subtotal = parseFloat(calculateSubtotal());
+    const discountAmount = subtotal * (discountPercent / 100);
+    return (subtotal - discountAmount).toFixed(2);
   };
 
   const validate = () => {
@@ -72,8 +81,24 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       value = value.replace(/(.{4})/g, '$1 ').trim();
     }
 
-    setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: '' }));
+    if (field === 'expiry') {
+      value = value.replace(/\D/g, '');
+      if (value.length > 4) value = value.slice(0, 4);
+      if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+
+    setForm(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
+  };
+
+  const handleDiscountApply = () => {
+    if (discountCode.trim().toUpperCase() === 'SWEET10') {
+      setDiscountPercent(10);
+      setDiscountMessage('✅ Code SWEET10 applied: 10% off!');
+    } else {
+      setDiscountPercent(0);
+      setDiscountMessage('❌ Invalid discount code.');
+    }
   };
 
   const generateOrderNumber = () => {
@@ -85,11 +110,14 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     e.preventDefault();
     if (!validate()) return;
 
+    const subtotalAmount = calculateSubtotal();
+    const totalAfterDiscount = calculateTotal();
     const newOrderNum = generateOrderNumber();
-    const totalBeforeClear = calculateTotal();
 
-    setFinalTotal(totalBeforeClear);
     setOrderNumber(newOrderNum);
+    setSubtotal(subtotalAmount);
+    setFinalTotal(totalAfterDiscount);
+    setItemsPurchased([...cartItems]);
     setSuccess(true);
     setCartItems([]);
 
@@ -100,41 +128,31 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
 
   const handleDownloadReceipt = () => {
     const input = document.getElementById('receipt-content');
-  
+
     html2canvas(input, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const imgProps = pdf.getImageProperties(imgData);
       const imgHeight = (imgProps.height * pageWidth) / imgProps.width;
-  
+
       pdf.setFillColor(255, 255, 255);
       pdf.rect(0, 0, pageWidth, imgHeight + 20, 'F');
-  
+
       pdf.setFontSize(18);
-      pdf.setTextColor(255, 184, 64); 
+      pdf.setTextColor(218, 165, 32);
       pdf.setFont('helvetica', 'bold');
       pdf.text('Sweet Heaven - Order Receipt', pageWidth / 2, 20, { align: 'center' });
-  
+
       pdf.addImage(imgData, 'PNG', 15, 30, pageWidth - 30, imgHeight);
-  
+
       pdf.setFontSize(12);
       pdf.setTextColor(60, 60, 60);
-      pdf.setFont('helvetica', 'normal');
       pdf.text('Thank you for dining with us!', pageWidth / 2, imgHeight + 45, { align: 'center' });
-  
+
       pdf.save(`SweetHeaven_Receipt_${orderNumber}.pdf`);
     });
   };
-  
-  <div id="receipt-content" className="receipt-box pretty-receipt">
-  <h3 className="receipt-title"> Sweet Heaven Receipt</h3>
-  <p><strong>Order #:</strong> {orderNumber}</p>
-  <p><strong>Cardholder:</strong> {form.holder}</p>
-  <p><strong>Billing Address:</strong> {form.street}, {form.city}, {form.state} {form.zip}</p>
-  <p><strong>Total Paid:</strong> ${finalTotal}</p>
-</div>
-
 
   return (
     <>
@@ -144,12 +162,25 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
           <div className="success-popup">
             <h2>✅ Payment Successful!</h2>
             <p>Thank you for your order.</p>
-            <div id="receipt-content" className="receipt-box">
+
+            <div id="receipt-content" className="receipt-box pretty-receipt">
               <p><strong>Order #:</strong> {orderNumber}</p>
               <p><strong>Cardholder:</strong> {form.holder}</p>
               <p><strong>Billing Address:</strong> {form.street}, {form.city}, {form.state} {form.zip}</p>
+              <p><strong>Subtotal:</strong> ${subtotal}</p>
+              <p><strong>Discount:</strong> {discountPercent > 0 ? `${discountPercent}%` : 'None'}</p>
               <p><strong>Total Paid:</strong> ${finalTotal}</p>
+
+              <h4 style={{ marginTop: '20px' }}>🍰 Items Purchased</h4>
+              <ul className="receipt-items">
+                {itemsPurchased.map((item, index) => (
+                  <li key={index}>
+                    {item.quantity}x {item.name} - ${Number(item.price * item.quantity).toFixed(2)}
+                  </li>
+                ))}
+              </ul>
             </div>
+
             <button className="download-btn" onClick={handleDownloadReceipt}>Download Receipt</button>
           </div>
         ) : (
@@ -157,83 +188,52 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
             <h2 className="checkout-title gold-text">Checkout</h2>
 
             <label>Card Holder</label>
-            <input
-              type="text"
-              value={form.holder}
-              onChange={(e) => handleChange('holder', e.target.value)}
-              placeholder="John Doe"
-            />
+            <input type="text" value={form.holder} onChange={e => handleChange('holder', e.target.value)} placeholder="John Doe" />
             {errors.holder && <p className="error">{errors.holder}</p>}
 
             <label>Card Number</label>
-            <input
-              type="text"
-              value={form.number}
-              onChange={(e) => handleChange('number', e.target.value)}
-              placeholder="1234 5678 9012 3456"
-            />
+            <input type="text" value={form.number} onChange={e => handleChange('number', e.target.value)} placeholder="1234 5678 9012 3456" />
             {errors.number && <p className="error">{errors.number}</p>}
 
             <div className="flex-row">
               <div className="half">
                 <label>Expiration Date</label>
-                <input
-                  type="text"
-                  value={form.expiry}
-                  onChange={(e) => handleChange('expiry', e.target.value)}
-                  placeholder="MM/YY"
-                />
+                <input type="text" value={form.expiry} onChange={e => handleChange('expiry', e.target.value)} placeholder="MM/YY" maxLength={5} />
                 {errors.expiry && <p className="error">{errors.expiry}</p>}
               </div>
               <div className="half">
                 <label>CVV</label>
-                <input
-                  type="text"
-                  value={form.cvv}
-                  onChange={(e) => handleChange('cvv', e.target.value)}
-                  placeholder="123"
-                  maxLength={3}
-                />
+                <input type="text" value={form.cvv} onChange={e => handleChange('cvv', e.target.value)} placeholder="123" maxLength={3} />
                 {errors.cvv && <p className="error">{errors.cvv}</p>}
               </div>
             </div>
 
             <label>Street Address</label>
-            <input
-              type="text"
-              value={form.street}
-              onChange={(e) => handleChange('street', e.target.value)}
-              placeholder="123 Main St"
-            />
+            <input type="text" value={form.street} onChange={e => handleChange('street', e.target.value)} placeholder="123 Main St" />
             {errors.street && <p className="error">{errors.street}</p>}
 
             <label>City</label>
-            <input
-              type="text"
-              value={form.city}
-              onChange={(e) => handleChange('city', e.target.value)}
-              placeholder="Austin"
-            />
+            <input type="text" value={form.city} onChange={e => handleChange('city', e.target.value)} placeholder="Austin" />
             {errors.city && <p className="error">{errors.city}</p>}
 
             <label>State</label>
-            <select value={form.state} onChange={(e) => handleChange('state', e.target.value)}>
+            <select value={form.state} onChange={e => handleChange('state', e.target.value)}>
               <option value="">-- Select State --</option>
-              {US_STATES.map((state) => (
+              {US_STATES.map(state => (
                 <option key={state} value={state}>{state}</option>
               ))}
             </select>
             {errors.state && <p className="error">{errors.state}</p>}
 
             <label>ZIP Code</label>
-            <input
-              type="text"
-              value={form.zip}
-              onChange={(e) => handleChange('zip', e.target.value)}
-              placeholder="77004"
-              maxLength={5}
-            />
+            <input type="text" value={form.zip} onChange={e => handleChange('zip', e.target.value)} placeholder="77004" maxLength={5} />
             {errors.zip && <p className="error">{errors.zip}</p>}
+
+            {/* Discount Input */}
+            <label>Discount Code</label>
+            <input type="text" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="Enter code like SWEET10" />
+            <button type="button" className="pay-button" onClick={handleDiscountApply}>Apply Code</button>
+            {discountMessage && <p style={{ fontSize: '0.9em' }}>{discountMessage}</p>}
 
             <div className="total-display">
               Total: <strong>${calculateTotal()}</strong>

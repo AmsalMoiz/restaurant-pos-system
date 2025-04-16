@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './bookTable.css';
 import ReservationModal from './ReservationModal';
 import Navbar from './Navbar';
@@ -17,17 +17,32 @@ const tables = [
 const barChairs = ['Bar1', 'Bar2', 'Bar3', 'Bar4', 'Bar5', 'Bar6', 'Bar7', 'Bar8'];
 
 const BookTable = () => {
-  const [modalData, setModalData] = useState(null);
-  const [reservations, setReservations] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [reservationLimitReached, setReservationLimitReached] = useState(false);
+const [modalData, setModalData] = useState(null);
+const [reservations, setReservations] = useState([]);
+const [selectedDate, setSelectedDate] = useState('');
+const [selectedTime, setSelectedTime] = useState('');
+const [showConfirmation, setShowConfirmation] = useState(false);
+const [reservationLimitReached, setReservationLimitReached] = useState(false);
+const [message, setMessage] = useState(null);
+const [messageType, setMessageType] = useState('');
+const timeoutId = useRef(null);
 
+const displayMessage = (newMessage, newMessageType, duration = 2500) => {
+  if (timeoutId.current) clearTimeout(timeoutId.current);
+
+  setMessage(newMessage);
+  setMessageType(newMessageType);
+
+  timeoutId.current = setTimeout(() => {
+    setMessage(null);
+    setMessageType('');
+    timeoutId.current = null;
+  }, duration);
+};
 
   const openModal = (item) => {
     if (!selectedDate || !selectedTime) {
-      alert('Please select a date and time first.');
+      displayMessage("Please select a date and time first.", 'error'); // get rid of alert function
       return;
     }
   
@@ -221,6 +236,12 @@ const BookTable = () => {
         </div>
 
         <div className="layout-sketch center-align">
+          {/* message display area, messages go here, maybe consider changing color */}
+            {message && (
+              <div className={`message ${messageType}`}>
+              {message}
+              </div>
+          )}
           <h2 className="sketch-title">Reserve a Table</h2>
 
           <div className="datetime-selectors">

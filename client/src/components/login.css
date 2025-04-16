@@ -104,6 +104,29 @@ a:hover {
   box-shadow: none;
 }
 
+.message {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 5px;
+  text-align: center;
+  /* You might want a default background for all messages */
+  background-color: rgba(255, 255, 255, 0.1); /* Light, semi-transparent white */
+  color: white; /* Default text color for messages */
+}
+
+.message.success {
+  background-color: rgba(144, 238, 144, 0.3); /* Light green with some transparency */
+  color: lightgreen; /* Light green text */
+  border: 1px solid lightgreen; /* Optional: a subtle border */
+}
+
+.message.error {
+  background-color: rgba(255, 99, 71, 0.3); /* Light red with some transparency */
+  color: salmon; /* Light red text */
+  border: 1px solid salmon; /* Optional: a subtle border */
+}
+
+
 /* Error message */
 .error {
   color: #ff4d4d;
