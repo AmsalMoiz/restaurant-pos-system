@@ -165,7 +165,7 @@ html, body {
 
 .menu-heading {
   font-family: 'Playfair Display', serif;
-  font-size: 48px;
+  font-size: 38px; /* smaller than Sweet Heaven */
   color: #fceea7;
   margin-bottom: 20px;
 }
@@ -193,14 +193,14 @@ html, body {
 }
 
 .menu-btn.filled {
-  background-color: #FFD700;
+  background-color: #c4aa48;
   color: #000;
   border: none;
 }
 
 .menu-btn.outlined {
-  border: 2px solid #FFD700;
-  color: #FFD700;
+  border: 2px solid #c4aa48;
+  color: #c4aa48;
   background: transparent;
 }
 
@@ -224,4 +224,80 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 6px;
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* === FINAL BAND SECTION (Third section) === */
+.hero-final-band {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4); /* matches first section darkness */
+  backdrop-filter: blur(4px);
+  padding: 100px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #fdf4d4;
+  position: relative;
+  z-index: 2;
+}
+
+.final-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 38px; 
+  font-weight: 700;
+  color: #f5e6b8;
+  margin-bottom: 40px;
+}
+
+.final-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 16px;
+  color: #ddd;
+  margin-bottom: 40px;
+}
+
+.final-details span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.final-details span i {
+  color: #c4aa48;
+}
+
+.final-button {
+  margin-bottom: 60px;
+}
+
+.final-button a {
+  background-color: #c4aa48;
+  padding: 12px 24px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+  font-size: 14px;
+  transition: 0.3s ease;
+}
+
+.final-button a:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(196, 170, 72, 0.3);
+}
+
+/* Final logo circle */
+.final-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  padding: 14px 20px;
+  display: inline-block;
+  margin-top: 20px;
+  letter-spacing: 2px;
 }
