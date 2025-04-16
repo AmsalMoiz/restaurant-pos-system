@@ -10,6 +10,7 @@ const Home = () => {
     <>
       <Navbar />
 
+      {/* SECTION 1 – Restaurant Info & Hours */}
       <div
         className="home-background"
         style={{
@@ -62,25 +63,29 @@ const Home = () => {
         </div>
       </div>
 
-      {/* NEW SECTION */}
-      <div className="menu-highlight-section">
-        <div className="menu-text-content">
-          <p className="menu-subtitle">Taste the mood</p>
-          <h2 className="menu-highlight-title">Our Menu</h2>
-          <p className="menu-highlight-description">
-            Reserve now at <strong>Sweet Heaven</strong> — an indulgent dessert and cocktail experience inspired by timeless international flavors. Delight in artisanal sweets, signature libations, and impeccable service in a setting of understated elegance.
-          </p>
-
-          <div className="menu-buttons">
-            <Link to="/book" className="menu-button outline">Book your table</Link>
-            <Link to="/menu" className="menu-button filled">View Menu</Link>
-          </div>
-        </div>
-
-        <div className="menu-image-container">
-          <img src="/images/fancy_dessert_plate.jpg" alt="Our Signature Dish" className="menu-image" />
+      {/* SECTION 2 – Taste the Mood + Menu Teaser */}
+      <div className="menu-preview-section">
+  <div className="menu-preview-overlay">
+    <div className="menu-preview-content">
+      <div className="menu-text">
+        <p className="menu-subtitle">Taste the mood</p>
+        <h2 className="menu-heading">Our Menu</h2>
+        <p className="menu-description">
+          Reserve now at Sweet Heaven — an indulgent dessert and cocktail experience inspired by timeless international flavors.
+          Delight in artisanal sweets, signature libations, and impeccable service in a setting of understated elegance.
+        </p>
+        <div className="menu-buttons">
+          <Link to="/reservation" className="menu-btn outlined">Book your table</Link>
+          <Link to="/menu" className="menu-btn filled">View Menu</Link>
         </div>
       </div>
+
+      <div className="menu-image">
+        <img src="/images/tiramisuNoir.jpg" alt="Our Dish" />
+      </div>
+    </div>
+  </div>
+</div>
     </>
   );
 };
