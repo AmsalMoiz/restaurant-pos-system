@@ -26,7 +26,7 @@ html, body {
 
 /* === OVERLAY ON WHOLE HERO === */
 .hero-overlay {
-  background-color: rgba(0, 0, 0, 0.55);
+  background-color: rgba(0, 0, 0, 0.70);
   padding: 100px 0 60px;
   position: relative;
   z-index: 1;
