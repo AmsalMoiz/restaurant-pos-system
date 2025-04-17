@@ -162,3 +162,39 @@
   justify-content: center;
   gap: 16px;
 }
+
+.toast-popup {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(34, 34, 34, 0.95);
+  padding: 14px 22px;
+  border-radius: 12px;
+  color: #d4fcd2;
+  font-weight: bold;
+  font-size: 15px;
+  border: 1px solid #3aff4b;
+  box-shadow: 0 0 10px rgba(62, 255, 119, 0.3);
+  z-index: 9999;
+  animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 30px);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+}

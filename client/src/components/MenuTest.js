@@ -10,6 +10,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
   const [selectedDessert, setSelectedDessert] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   // Fetch menu items from the server when component mounts
   useEffect(() => {
@@ -49,14 +50,18 @@ const MenuTest = ({ cartItems, setCartItems }) => {
   const handleAddToCart = () => {
     const itemToAdd = {
       ...selectedDessert,
-      price: Number(selectedDessert.price), 
-      quantity: Number(quantity),           
+      price: Number(selectedDessert.price),
+      quantity: Number(quantity),
       notes,
     };
-    
+  
     setCartItems([...cartItems, itemToAdd]);
     closeModal();
+  
+    setShowToast(true); // show toast
+    setTimeout(() => setShowToast(false), 3000); // auto-hide after 3s
   };
+  
 
   // Show loading state
   if (loading) {
@@ -150,6 +155,11 @@ const MenuTest = ({ cartItems, setCartItems }) => {
               <button onClick={closeModal} className="close-btn">Cancel</button>
             </div>
           </div>
+        </div>
+      )}
+      {showToast && (
+        <div className="toast-popup">
+          ✅ Added to your bag with love 💕        
         </div>
       )}
     </>
