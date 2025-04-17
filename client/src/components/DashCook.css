@@ -6,14 +6,14 @@
     position: absolute;
 }
 
-.cook-dashboard {
+.cook-dashboard { 
     font-family: Arial, sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 
-.cook-header {
+.cook-header { 
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -76,7 +76,7 @@
     text-align: center;
 }
 
-.cook-section h2 {
+.cook-section h2 { 
     margin-top: 0;
     color: #2c3e50;
     border-bottom: 2px solid #3498db;
@@ -140,4 +140,31 @@
     .cook-section {
         width: 100%;
     }
+}
+
+.back-btn {
+    background-color: #e74c3c; /* Red background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Match padding with .clock-btn */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Match font size with .clock-btn */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.2s ease, transform 0.2s ease; /* Smooth transitions */
+    width: 200px; /* Match width with .clock-btn */
+    text-align: center; /* Center text inside the button */
+    margin: 20px auto; /* Center the button horizontally and add spacing */
+    display: block; /* Ensure the button behaves like a block element */
+}
+
+/* Hover effect */
+.back-btn:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+/* Active effect */
+.back-btn:active {
+    background-color: #a93226; /* Even darker red when clicked */
+    transform: scale(0.95); /* Slightly shrink on click */
 }

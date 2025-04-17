@@ -6,8 +6,6 @@ function DashWaiter() {
     const [waiterData, setWaiterData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [date, setDate] = useState(new Date().toISOString().split("T")[0]); // Default to today's date
-    const [hoursWorked, setHoursWorked] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,48 +31,13 @@ function DashWaiter() {
             console.error("Error loading waiter data:", err);
             setError("Error loading waiter data");
         } finally {
-            setLoading(false); // Ensure loading is set to false in all cases
+            setLoading(false);
         }
     }, [navigate]);
 
     const handleLogout = () => {
         localStorage.removeItem("user");
         navigate("/users/login");
-    };
-
-    const handleLogHours = async () => {
-        if (!hoursWorked || isNaN(hoursWorked) || hoursWorked <= 0) {
-            alert("Please enter a valid number of hours worked.");
-            return;
-        }
-
-        try {
-            const res = await fetch("http://localhost:3001/api/log-hours", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    user_id: waiterData.user_id,
-                    date_worked : date,
-                    hours_worked: hoursWorked,
-                }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                console.error("Log hours failed with response:", data);
-                alert(data.message || "Failed to log hours.");
-                return;
-            }
-
-            alert(data.message || "Hours logged successfully!");
-            setHoursWorked(""); // Reset hours worked input
-        } catch (err) {
-            console.error("Log hours failed:", err);
-            alert("Failed to log hours.");
-        }
     };
 
     if (loading) {
@@ -106,29 +69,10 @@ function DashWaiter() {
                         <h2>Actions</h2>
                         <div className="waiter-buttons">
                             <button className="waiter-btn">Make Transaction</button>
-                        </div>
-                    </div>
-                    <div className="waiter-section">
-                        <h2>Log Hours Worked</h2>
-                        <div className="log-hours-form">
-                            <label htmlFor="date">Date:</label>
-                            <input
-                                type="date"
-                                id="date"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                            />
-
-                            <label htmlFor="hoursWorked">Hours Worked:</label>
-                            <input
-                                type="number"
-                                id="hoursWorked"
-                                value={hoursWorked}
-                                onChange={(e) => setHoursWorked(e.target.value)}
-                                placeholder="Enter hours worked"
-                            />
-
-                            <button onClick={handleLogHours} className="log-hours-btn">
+                            <button
+                                className="waiter-btn"
+                                onClick={() => navigate("/log-hours")}
+                            >
                                 Log Hours
                             </button>
                         </div>

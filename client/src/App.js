@@ -14,6 +14,7 @@ import DashWaiter from './components/DashWaiter';
 import DashCook from './components/DashCook';
 import BookTable from './components/BookTable';
 import Checkout from './components/Checkout';
+import LogHoursPage from './components/LogHoursPage';
 import ItemSalesReport from './components/ItemSalesReport';
 import CustomerDashboard from './components/CustomerDashboard'; 
 function App() {
@@ -48,6 +49,7 @@ function App() {
         <Route path="/manager-dashboard" element={<DashManager />} />
         <Route path="/waiter-dashboard" element={<DashWaiter />} />
         <Route path="/cook-dashboard" element={<DashCook />} />
+        <Route path="/log-hours" element={<LogHoursPage />} /> {/* Add the new route */}
         <Route path="/book-table" element={<BookTable />} />
         <Route
           path="/checkout"
