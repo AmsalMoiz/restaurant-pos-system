@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ItemSalesReport.css';
 import { useNavigate } from 'react-router-dom';
-const API_BASE = process.env.REACT_APP_API_BASE || '';
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 /*
 dev notes:
