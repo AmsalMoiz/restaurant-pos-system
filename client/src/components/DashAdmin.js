@@ -813,14 +813,14 @@ function DashAdmin() {
                                 <div className="admin-card">
                                     <h3>Inventory</h3>
                                     <p>Manage restaurant inventory</p>
-                                    <button onClick={handleShowInventory}>View Inventory</button>
+                                    <button onClick={() => navigate('/inventory')}>View Inventory</button>
                                 </div>
 
                                 {/* Users side */}
                                 <div className="admin-card">
                                     <h3>Employee Management</h3>
                                     <p>Manage restaurant staff</p>
-                                    <button onClick={() => handleSectionClick('employees')}>View Employees</button>
+                                    <button onClick={() => navigate('/employees')}>View Employees</button>
                                 </div>
 
                                 {/* Suppliers side */}

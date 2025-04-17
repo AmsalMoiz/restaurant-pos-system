@@ -13,6 +13,9 @@ import DashWaiter from './components/DashWaiter';
 import DashCook from './components/DashCook'; 
 import BookTable from './components/BookTable';
 import Checkout from './components/Checkout';
+import InventoryPage from './components/Inventory';
+import EmployeesPage from './components/Employees';
+
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -36,6 +39,8 @@ function App() {
         <Route path="/cook-dashboard" element={<DashCook />} />
         <Route path="/book-table" element={<BookTable />} />
         <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
+        <Route path="/inventory" element={<InventoryPage />} />
+        <Route path="/employees" element={<EmployeesPage />} />
       </Routes>
     </Router>
   );
