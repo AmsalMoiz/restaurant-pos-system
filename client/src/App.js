@@ -15,7 +15,7 @@ import DashCook from './components/DashCook';
 import BookTable from './components/BookTable';
 import Checkout from './components/Checkout';
 import ItemSalesReport from './components/ItemSalesReport';
-
+import CustomerDashboard from './components/CustomerDashboard'; 
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -53,6 +53,7 @@ function App() {
           path="/checkout"
           element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />}
         />
+        <Route path="/customer-dashboard" element={<CustomerDashboard />} />
       </Routes>
     </Router>
   );

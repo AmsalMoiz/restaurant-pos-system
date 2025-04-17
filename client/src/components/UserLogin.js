@@ -38,13 +38,19 @@ function UserLogin({ onLogin }) {
       localStorage.setItem("user", JSON.stringify(data.user));
       onLogin(data.user);
 
-      // Role-based redirects
-      if (data.user.role === "Admin") navigate("/admin-dashboard");
-      else if (data.user.role === "Manager") navigate("/manager-dashboard");
-      else if (data.user.role === "Waiter") navigate("/waiter-dashboard");
-      else if (data.user.role === "Cook") navigate("/cook-dashboard");
-
-    } catch (error) {
+      if (data.user.role === "Admin") {
+        navigate("/admin-dashboard");
+      } else if (data.user.role === "Manager") {
+        navigate("/manager-dashboard");
+      } else if (data.user.role === "Waiter") {
+        navigate("/waiter-dashboard");
+      } else if (data.user.role === "Cook") {
+        navigate("/cook-dashboard");
+      } else {
+        navigate("/customer-dashboard");
+      }
+    
+    }catch (error) {
       console.error("Login error:", error);
       setError(error.message || "Login failed. Please try again.");
     }
