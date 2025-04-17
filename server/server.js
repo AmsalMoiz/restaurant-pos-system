@@ -134,7 +134,7 @@ app.get('/dashboard/inventory', async (req, res) => {
 app.get('/dashboard/users', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT user_id, name, role, hours_worked, hourly_pay_rate, email FROM users');
+    const [results] = await req.dbConnection.query('SELECT user_id, name, role, hourly_pay_rate, email FROM users');
     const users = results.map(user => ({
       user_id: user.user_id,
       name: user.name,
