@@ -139,7 +139,6 @@ app.get('/dashboard/users', async (req, res) => {
       user_id: user.user_id,
       name: user.name,
       role: user.role,
-      hours: parseFloat(user.hours_worked),
       pay: parseFloat(user.hourly_pay_rate),
       email: user.email
     }));
@@ -171,8 +170,8 @@ app.post('/dashboard/users/insert', async (req, res) => {
       return res.status(409).json({ error: 'Email already in use!' });
     } else {
       const [insertResult] = await req.dbConnection.query(
-        'INSERT INTO users (role, name, email, password, hours_worked, hourly_pay_rate) VALUES (?, ?, ?, ?, ?, ?)', 
-        [role, name, email, password, 0, hourly_pay_rate]
+        'INSERT INTO users (role, name, email, password, hourly_pay_rate) VALUES (?, ?, ?, ?, ?)', 
+        [role, name, email, password, hourly_pay_rate]
       );
       if (insertResult.affectedRows > 0) {
         res.json({ success: true, message: 'User added successfully!' });
