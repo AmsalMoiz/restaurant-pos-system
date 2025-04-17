@@ -8,14 +8,11 @@ const transactionRoutes = require("./InpersonTransactions");
 const employeeReportRoutes = require("./EmployeeReport");
 const app = express();
 const logHoursRoute = require("./logHours");
-const ItemSalesReportRoutes = require("./ItemSalesReportRoutes");
 
 app.use(cors());
 app.use(express.json()); // Middleware for JSON body parsing
 app.use("/api/auth", authRoutes); // Include auth routes
 app.use("/api", logHoursRoute); // Include log hours routes
-app.use("/api/sales-report", ItemSalesReportRoutes); 
-
 
 
 const PORT = process.env.PORT || 3001;
