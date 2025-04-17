@@ -9,7 +9,6 @@ function DashWaiter() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Get user data from localStorage
         const userData = localStorage.getItem("user");
 
         if (!userData) {
@@ -21,7 +20,6 @@ function DashWaiter() {
         try {
             const user = JSON.parse(userData);
 
-            // Check if user has Waiter role
             if (user.role !== "Waiter") {
                 setError("Unauthorized access");
                 navigate("/users/login");
@@ -29,10 +27,10 @@ function DashWaiter() {
             }
 
             setWaiterData(user);
-            setLoading(false);
         } catch (err) {
             console.error("Error loading waiter data:", err);
             setError("Error loading waiter data");
+        } finally {
             setLoading(false);
         }
     }, [navigate]);
@@ -40,14 +38,6 @@ function DashWaiter() {
     const handleLogout = () => {
         localStorage.removeItem("user");
         navigate("/users/login");
-    };
-
-    const handleClockIn = () => {
-        alert("You have clocked in!");
-    };
-
-    const handleClockOut = () => {
-        alert("You have clocked out!");
     };
 
     if (loading) {
@@ -78,17 +68,12 @@ function DashWaiter() {
                     <div className="waiter-section">
                         <h2>Actions</h2>
                         <div className="waiter-buttons">
-                            <button className="waiter-btn">
-                                Make Transaction
-                            </button>
-                            <button className="waiter-btn">
-                                Show Transactions
-                            </button>
-                            <button onClick={handleClockIn} className="waiter-btn">
-                                Clock In
-                            </button>
-                            <button onClick={handleClockOut} className="waiter-btn">
-                                Clock Out
+                            <button className="waiter-btn">Make Transaction</button>
+                            <button
+                                className="waiter-btn"
+                                onClick={() => navigate("/log-hours")}
+                            >
+                                Log Hours
                             </button>
                         </div>
                     </div>

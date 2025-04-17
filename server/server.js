@@ -7,10 +7,15 @@ const db = require("./db");
 const transactionRoutes = require("./InpersonTransactions");
 const employeeReportRoutes = require("./EmployeeReport");
 const app = express();
+const logHoursRoute = require("./logHours");
+const ItemSalesReportRoutes = require("./ItemSalesReportRoutes");
 
 app.use(cors());
 app.use(express.json()); // Middleware for JSON body parsing
 app.use("/api/auth", authRoutes); // Include auth routes
+app.use("/api", logHoursRoute); // Include log hours routes
+app.use("/api/sales-report", ItemSalesReportRoutes); 
+
 
 
 const PORT = process.env.PORT || 3001;
@@ -85,6 +90,9 @@ app.post('/users/login', async (req, res) => {
         email: user.email
       };
       res.json({ success: true, user: userWithoutPassword });
+      
+      global.logged_in_user_id = user.user_id;
+
     } else {
       return res.status(401).json({ error: 'Invalid email or password!' });
     }
@@ -126,12 +134,11 @@ app.get('/dashboard/inventory', async (req, res) => {
 app.get('/dashboard/users', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT user_id, name, role, hours_worked, hourly_pay_rate, email FROM users');
+    const [results] = await req.dbConnection.query('SELECT user_id, name, role, hourly_pay_rate, email FROM users');
     const users = results.map(user => ({
       user_id: user.user_id,
       name: user.name,
       role: user.role,
-      hours: parseFloat(user.hours_worked),
       pay: parseFloat(user.hourly_pay_rate),
       email: user.email
     }));
@@ -163,8 +170,8 @@ app.post('/dashboard/users/insert', async (req, res) => {
       return res.status(409).json({ error: 'Email already in use!' });
     } else {
       const [insertResult] = await req.dbConnection.query(
-        'INSERT INTO users (role, name, email, password, hours_worked, hourly_pay_rate) VALUES (?, ?, ?, ?, ?, ?)', 
-        [role, name, email, password, 0, hourly_pay_rate]
+        'INSERT INTO users (role, name, email, password, hourly_pay_rate) VALUES (?, ?, ?, ?, ?)', 
+        [role, name, email, password, hourly_pay_rate]
       );
       if (insertResult.affectedRows > 0) {
         res.json({ success: true, message: 'User added successfully!' });

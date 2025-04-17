@@ -708,23 +708,38 @@ function DashAdmin() {
         fetchEmployeeDailyReport();
     }, []);
     // FETCH EMPLOYEE CUSTOM SALES REPORT
-    /*
-    const fetchEmployeeCustomReport = async (start_date, end_date) => {
+    
+    const fetchEmployeeCustomReport = async (e) => {
+        e.preventDefault();
+        setError("");
+        const start_date = document.getElementById('start_date').value;
+        const end_date = document.getElementById('end_date').value;
+        if (!start_date || !end_date) {
+            setError("Please use both start and end dates.");
+            return;
+        }
         try {
-            const reponse = await fetch(`${API_URL}/dashboard/custom`);
+            const reponse = await fetch(`${API_URL}/dashboard/custom`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ start_date, end_date }),
+            });
+
+            const data = await reponse.json();
+
             if (!reponse.ok) {
                 throw new Error(`HTTP error! Status: ${reponse.status}`);
             }
-            const data = await reponse.json();
+            
             setEmployeeCustomReport(data);
         } catch(err){
             console.error("Error fetching employee custom sales report:", err);
             setError("Failed to load employee custom sales report. Please try again later.");
         }
     };
-    useEffect(() => {
-        fetchEmployeeCustomReport();
-    }, []);*/
+    
 
     // #region Login
     //Login additional features, returns to login page if not properly logged in
@@ -833,7 +848,7 @@ function DashAdmin() {
                                 <div className="admin-card">
                                     <h3>Items Sales Report</h3>
                                     <p>View daily, weekly, and monthly sales</p>
-                                    <button onClick={() => handleSectionClick('reports')}>View Reports</button>
+                                    <button onClick={() => navigate('/reports/items-sales')}>View Reports</button>
                                 </div>
                                 <div className="admin-card">
                                     <h3>Employee Sales Report</h3>
@@ -1783,6 +1798,7 @@ function DashAdmin() {
                                     <option value="monthly">Monthly Report</option>
                                     <option value="weekly">Weekly Report</option>
                                     <option value="daily">Daily Report</option>
+                                    <option value="custom">Choose a Date</option>
                                 </select>
                             </div>
                             
@@ -1900,6 +1916,69 @@ function DashAdmin() {
                                         )}
                                     </>
                                 )}
+                                {activeReportType === 'custom' && (
+                                <> 
+                                    <h3>Custom Date Range Report</h3>
+                                    <div className="custom-report-form">
+                                        <form onSubmit={fetchEmployeeCustomReport}>
+                                            <div className="form-row">
+                                                <div className="form-group">
+                                                    <label htmlFor="start_date">Start Date:</label>
+                                                    <input 
+                                                        className="date-input" 
+                                                        id="start_date" 
+                                                        type="date" 
+                                                        required
+                                                    />
+                                                
+                                                    <label htmlFor="end_date">End Date:</label>
+                                                    <input 
+                                                        className="date-input" 
+                                                        id="end_date" 
+                                                        type="date" 
+                                                        required
+                                                    />
+                                                
+                                                    <button type="submit" className="generate-btn">Generate Report</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    {error && <div className="report-error">{error}</div>}
+                                    
+                                    {employeeCustomReport.length > 0 && (
+                                        <table className="employee-reports-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>Employee Name</th>
+                                                    <th>Role</th>
+                                                    <th>Transactions Processed</th>
+                                                    <th>Total Tips</th>
+                                                    <th>Tip Percentage</th>
+                                                    <th>Average Sale Amount</th>
+                                                    <th>Total Sales</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {employeeCustomReport.map((report, index) => (
+                                                    <tr key={index}>
+                                                        <td>{report.sales_rank}</td>
+                                                        <td>{report.employee_name}</td>
+                                                        <td>{report.role}</td>
+                                                        <td>{report.transactions_processed}</td>
+                                                        <td>${report.total_tips.toFixed(2)}</td>
+                                                        <td>{report.tip_percentage}%</td>
+                                                        <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                                        <td>${report.total_sales.toFixed(2)}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    )}
+                                </>
+                            )}
                             </div>
                         </div>
                     )}

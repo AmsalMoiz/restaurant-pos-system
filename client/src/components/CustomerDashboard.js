@@ -1,17 +1,34 @@
-import React from 'react';
-import './home.css';
-import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import React, { useEffect } from 'react';
+import './customerDashboard.css';
+import { Link, useNavigate } from 'react-router-dom';
+import NavbarCustomer from './NavbarCustomer';
 
-const Home = () => {
+const CustomerDashboard = ({ customerName }) => {
+  const navigate = useNavigate();
+
+  // Safe parsing of user from localStorage
+  let user = null;
+  try {
+    user = JSON.parse(localStorage.getItem("user"));
+  } catch (e) {
+    user = null;
+  }
+
+  const firstName = user?.name?.split(" ")[0] || "Guest";
+
+  // Optional redirect if no user found
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [navigate, user]);
+
   return (
     <>
-      <Navbar />
+      <NavbarCustomer customerName={customerName} />
       <div
         className="home-background"
-        style={{
-          backgroundImage: "url('/images/restomainpic.jpg')",
-        }}
+        style={{ backgroundImage: "url('/images/restomainpic.jpg')" }}
       >
         <div className="hero-overlay">
           {/* SECTION 1 */}
@@ -60,7 +77,7 @@ const Home = () => {
                     signature libations, and impeccable service in a setting of understated elegance.
                   </p>
                   <div className="menu-buttons">
-                    <Link to="/Book-Table" className="menu-btn outlined">Reserve your table</Link>
+                    <Link to="/book-table" className="menu-btn outlined">Reserve your table</Link>
                     <Link to="/menu" className="menu-btn filled">View Menu</Link>
                   </div>
                 </div>
@@ -85,7 +102,7 @@ const Home = () => {
               </span>
             </div>
             <div className="final-button">
-              <Link to="/login">Sign up to reserve your table</Link>
+              <Link to="/book-table">{firstName}, reserve your table now!</Link>
             </div>
             <div className="final-logo">SH</div>
           </div>
@@ -95,4 +112,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default CustomerDashboard;

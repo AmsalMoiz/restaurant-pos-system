@@ -216,7 +216,7 @@ router.get('/daily', async (req, res) => {
     }
 });
 //Custom Report
-router.get('/custom', async (req, res) => {
+router.post('/custom', async (req, res) => {
     const { start_date, end_date } = req.body;
     if (!start_date || !end_date) {
         return res.status(400).json({ error: 'Start date and end date are required.' });

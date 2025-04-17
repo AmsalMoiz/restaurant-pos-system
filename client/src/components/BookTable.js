@@ -122,6 +122,8 @@ const displayMessage = (newMessage, newMessageType, duration = 2500) => {
 
       setShowConfirmation({ label: item, guests, time, date });
       setModalData(null);
+      setTimeout(() => setShowConfirmation(false), 6000);
+
     } catch (err) {
       console.error(err);
       alert("An error occurred while reserving the table.");
@@ -322,18 +324,15 @@ const displayMessage = (newMessage, newMessageType, duration = 2500) => {
           </div>
 
           {showConfirmation && (
-  <div className="confirmation-message">
-    <h3>
-      You are reserved successfully <strong></strong> on{" "}
-      <span style={{ color: "#ffd700" }}>{showConfirmation.date}</span>,{" "}
-      {showConfirmation.guests} {showConfirmation.guests > 1 ? 'people' : 'person'}{" "}
-      at <span style={{ color: "#ffd700" }}>{showConfirmation.time}</span>{" "}
-      on table <span style={{ color: "#ffd700" }}>{showConfirmation.label}</span>.
-    </h3>
-  </div>
-)}
-        </div>
+            <div className="toast-popup">
+              <strong>Reservation Confirmed!</strong>
+              <span>{showConfirmation.date}</span>,{" "}
+              <span>{showConfirmation.guests} {showConfirmation.guests > 1 ? "people" : "person"}</span> at{" "}
+              <span>{showConfirmation.time}</span> on table <span>{showConfirmation.label}</span>.
+            </div>
+          )}
 
+        </div>
         {modalData && (
           <ReservationModal
             item={modalData.label}
