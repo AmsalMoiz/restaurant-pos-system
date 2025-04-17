@@ -833,7 +833,7 @@ function DashAdmin() {
                                 <div className="admin-card">
                                     <h3>Items Sales Report</h3>
                                     <p>View daily, weekly, and monthly sales</p>
-                                    <button onClick={() => handleSectionClick('reports')}>View Reports</button>
+                                    <button onClick={() => navigate('/reports/items-sales')}>View Reports</button>
                                 </div>
                                 <div className="admin-card">
                                     <h3>Employee Sales Report</h3>
