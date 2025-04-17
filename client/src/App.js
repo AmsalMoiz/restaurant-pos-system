@@ -14,6 +14,8 @@ import DashWaiter from './components/DashWaiter';
 import DashCook from './components/DashCook';
 import BookTable from './components/BookTable';
 import Checkout from './components/Checkout';
+import LogHoursPage from './components/LogHoursPage';
+import ItemSalesReport from './components/ItemSalesReport';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
