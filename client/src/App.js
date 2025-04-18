@@ -18,10 +18,8 @@ import InventoryPage from './components/Inventory';
 import EmployeesPage from './components/Employees';
 import LogHoursPage from './components/LogHoursPage';
 import ItemSalesReport from './components/ItemSalesReport';
-import CustomerDashboard from './components/CustomerDashboard'; 
-
-
-
+import CustomerDashboard from './components/CustomerDashboard';
+import Transactions from './components/Transactions';
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -50,6 +48,7 @@ function App() {
           element={<UserLogin onLogin={handleUserLogin} />}
         />
         <Route path="/admin-dashboard" element={<DashAdmin />} />
+        <Route path="/transactions" element={<Transactions />} />
         <Route path="/reports/items-sales" element={<ItemSalesReport />} />
         <Route path="/manager-dashboard" element={<DashManager />} />
         <Route path="/waiter-dashboard" element={<DashWaiter />} />

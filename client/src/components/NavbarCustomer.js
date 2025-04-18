@@ -3,9 +3,17 @@ import { Link } from 'react-router-dom';
 import './navbarCustomer.css';
 
 const NavbarCustomer = ({ customerName }) => {
-  const storedName = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")).name
-    : customerName || "Customer";
+  let storedName = customerName || "Customer";
+
+  try {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      storedName = parsedUser.name || storedName;
+    }
+  } catch (err) {
+    console.error("Failed to parse user from localStorage:", err);
+  }
 
   return (
     <nav className="navbar">
