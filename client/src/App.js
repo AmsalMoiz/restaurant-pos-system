@@ -14,9 +14,12 @@ import DashWaiter from './components/DashWaiter';
 import DashCook from './components/DashCook';
 import BookTable from './components/BookTable';
 import Checkout from './components/Checkout';
+import InventoryPage from './components/Inventory';
+import EmployeesPage from './components/Employees';
 import LogHoursPage from './components/LogHoursPage';
 import ItemSalesReport from './components/ItemSalesReport';
-import CustomerDashboard from './components/CustomerDashboard'; 
+import CustomerDashboard from './components/CustomerDashboard';
+import Transactions from './components/Transactions';
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -45,16 +48,16 @@ function App() {
           element={<UserLogin onLogin={handleUserLogin} />}
         />
         <Route path="/admin-dashboard" element={<DashAdmin />} />
+        <Route path="/transactions" element={<Transactions />} />
         <Route path="/reports/items-sales" element={<ItemSalesReport />} />
         <Route path="/manager-dashboard" element={<DashManager />} />
         <Route path="/waiter-dashboard" element={<DashWaiter />} />
         <Route path="/cook-dashboard" element={<DashCook />} />
         <Route path="/log-hours" element={<LogHoursPage />} /> {/* Add the new route */}
         <Route path="/book-table" element={<BookTable />} />
-        <Route
-          path="/checkout"
-          element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />}
-        />
+        <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
+        <Route path="/inventory" element={<InventoryPage />} />
+        <Route path="/employees" element={<EmployeesPage />} />
         <Route path="/customer-dashboard" element={<CustomerDashboard />} />
       </Routes>
     </Router>
