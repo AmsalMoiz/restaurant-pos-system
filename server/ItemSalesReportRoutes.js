@@ -1,5 +1,6 @@
 const express = require('express');
 const connect = require('./db');
+const moment = require('moment-timezone');
 
 const router = express.Router();
 
@@ -159,16 +160,28 @@ router.post('/api/generate-sales-report', async (req, res) => {
         }
 
         query += ' GROUP BY t.transaction_id';
+        query += ' ORDER BY t.created_at DESC';
 
         console.log('Generated SQL Query:', query);
         console.log('Query Values:', values);
 
         const [rows] = await pool.execute(query, values);
-        res.json(rows);
+
+        //console.log('Database created_at:', row.created_at);
+        const reportData = rows.map(row => {
+            const utcTime = moment.utc(row.created_at);
+            const localTime = utcTime.subtract(10, 'hours').format('YYYY-MM-DD HH:mm:ss');
+            return {
+                ...row,
+                created_at: localTime,
+            };
+        });
+
+        res.json(reportData);
     } catch (error) {
         console.error('Error generating sales report:', error);
         res.status(500).json({ error: 'Failed to generate sales report' });
     }
 });
-      
+
 module.exports = router;
