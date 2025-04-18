@@ -14,26 +14,7 @@ function DashAdmin() {
     const [users, setUsers] = useState([]);
     //const [showUsers, setShowUsers] = useState(false);
     // Add these state variables at the top of your component with the other state declarations
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        role: '',
-        hourly_pay_rate: ''
-        });
-    const [formError, setFormError] = useState('');
-    const [formSuccess, setFormSuccess] = useState('');
-    const [submitLoading, setSubmitLoading] = useState(false);
-    const [removeEmail, setRemoveEmail] = useState('');
-    const [updateFormData, setUpdateFormData] = useState({
-        name: '',
-        email: '',
-        role: '',
-        hourly_pay_rate: ''
-    });
-    const [updateFormError, setUpdateFormError] = useState('');
-    const [updateFormSuccess, setUpdateFormSuccess] = useState('');
-    const [updateSubmitLoading, setUpdateSubmitLoading] = useState(false);
+    
     //Supplier variables
     const [showAddSupplierForm, setShowAddSupplierForm] = useState(false);
     const [editingSupplierIndex, setEditingSupplierIndex] = useState(null);
@@ -195,21 +176,7 @@ function DashAdmin() {
     // #region Employee Management
 
     // FETCH USERS
-    const fetchUsers = async () => {
-        try {
-            const response = await fetch(`${API_URL}/dashboard/users`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            setUsers(data);
-        } catch (err) {
-            console.error("Error fetching users:", err);
-            setError("Failed to load employee data. Please try again later.");
-        } 
-    };
+    
 
    useEffect(() => {
     const fetchUsers = async () => {
