@@ -46,10 +46,27 @@
   }
 
 .error-message-modal {
-  color: red; /* Keep the error text color as red */
+  color: red; 
   margin-bottom: 10px;
   font-size: 0.9em;
-  background-color: transparent; /* no background color is hiding the modal's background, believe this prevents color of modal to change  */
+  background-color: transparent; 
 }
 
-  
+.phone-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.phone-prefix {
+  position: absolute;
+  left: 16px;
+  color: #ccc;
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.phone-input-wrapper input[type="tel"] {
+  padding-left: 38px; 
+}

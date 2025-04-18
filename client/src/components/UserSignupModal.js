@@ -40,18 +40,10 @@ const UserSignupModal = ({ onClose, onSignup, showSignupModal, errorMessage, set
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     if (name === 'phone') {
-      let digits = value.replace(/\D/g, '');
-      digits = digits.substring(0, 10);
-
-      let formatted = '';
-      if (digits.length > 0) formatted = '+1 ';
-      if (digits.length > 0) formatted += `(${digits.slice(0, 3)}`;
-      if (digits.length >= 3) formatted += `) ${digits.slice(3, 6)}`;
-      if (digits.length >= 6) formatted += `-${digits.slice(6, 10)}`;
-
-      setFormData(prev => ({ ...prev, phone: formatted }));
+      // Only allow digits, max 10
+      let digits = value.replace(/\D/g, '').slice(0, 10);
+      setFormData(prev => ({ ...prev, phone: digits }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -59,48 +51,103 @@ const UserSignupModal = ({ onClose, onSignup, showSignupModal, errorMessage, set
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const { street, city, state, zip, ...rest } = formData;
     const fullAddress = `${street}, ${city}, ${state} ${zip}`.trim();
-
     const payload = {
       ...rest,
-      address: fullAddress
+      address: fullAddress,
+      phone: '+1' + formData.phone // send full E.164 format
     };
-
-    onSignup(payload); // merged address only sent, not individual parts
+    onSignup(payload);
   };
+
+  // Optional: Format for display as (123) 456-7890
+  function formatPhone(digits) {
+    if (!digits) return '';
+    if (digits.length < 4) return `(${digits}`;
+    if (digits.length < 7) return `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6,10)}`;
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h2>Create an Account</h2>
         {errorMessage && <p className="error-message-modal">{errorMessage}</p>}
         <form onSubmit={handleSubmit}>
-          <input type="text" name="name" placeholder="Full Name" required onChange={handleChange} />
-
           <input
-            type="tel"
-            name="phone"
-            placeholder="+1 (___) ___-____"
-            value={formData.phone}
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            required
             onChange={handleChange}
+            value={formData.name}
           />
 
-          <input type="text" name="street" placeholder="Street Address" onChange={handleChange} />
-          <input type="text" name="city" placeholder="City" onChange={handleChange} />
+          <div className="phone-input-wrapper">
+            <span className="phone-prefix">+1</span>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="(555) 123-4567"
+              maxLength={14}
+              onChange={handleChange}
+              value={formatPhone(formData.phone)}
+              style={{ paddingLeft: '50px' }} 
+              autoComplete="tel"
+              required
+            />
+          </div>
 
-          <select name="state" value={formData.state} onChange={handleChange}>
+          <input
+            type="text"
+            name="street"
+            placeholder="Street Address"
+            onChange={handleChange}
+            value={formData.street}
+          />
+          <input
+            type="text"
+            name="city"
+            placeholder="City"
+            onChange={handleChange}
+            value={formData.city}
+          />
+
+          <select
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+          >
             <option value="">Select State</option>
             {US_STATES.map((state, i) => (
               <option key={i} value={state}>{state}</option>
             ))}
           </select>
 
-          <input type="text" name="zip" placeholder="ZIP Code" onChange={handleChange} />
-
-          <input type="email" name="email" placeholder="Email" required onChange={handleChange} />
-          <input type="password" name="password" placeholder="Password" required onChange={handleChange} />
+          <input
+            type="text"
+            name="zip"
+            placeholder="ZIP Code"
+            onChange={handleChange}
+            value={formData.zip}
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            onChange={handleChange}
+            value={formData.email}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            onChange={handleChange}
+            value={formData.password}
+          />
 
           <div className="modal-buttons">
             <button type="submit">Create Account</button>
