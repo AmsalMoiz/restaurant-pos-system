@@ -17,13 +17,13 @@ function CustomerReportPage() {
     // Check user role on page load
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (!storedUser || storedUser.role !== "Admin") {
+        if (!storedUser || (storedUser.role !== "Admin" && storedUser.role !== "Manager")) {
             navigate("/users/login");
         } else {
             setUser(storedUser);
         }
-    }, [navigate]); // Only run once on mount, no data fetching here
-
+    }, [navigate]);
+    
     // Fetch filtered report when Generate button is clicked
     const fetchFilteredReport = async () => {
         try {

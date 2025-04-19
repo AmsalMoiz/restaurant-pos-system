@@ -87,7 +87,7 @@ function EmployeesPage() {
           <h1>Employee Management</h1>
           <div className="admin-info">
             <button className="edit-btn" onClick={() => setEditMode(!editMode)}>{editMode ? "Done" : "Edit"}</button>
-            <button className="back-btn" onClick={() => navigate("/admin-dashboard")}>Back to Dashboard</button>
+            <button className="back-btn" onClick={() => navigate(-1)}>Back to Dashboard</button>
           </div>
         </header>
         <main className="admin-content">

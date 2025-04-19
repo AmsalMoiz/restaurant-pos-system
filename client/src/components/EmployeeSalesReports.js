@@ -7,7 +7,7 @@ function EmployeeSalesReports() {
     //Back to Dashboard
     const navigate = useNavigate();
     const handleBackToDashboard = () => {
-        navigate('/admin-dashboard');
+        navigate(-1);
     };
     
     //const [adminData, setAdminData] = useState(null);
@@ -122,11 +122,11 @@ function EmployeeSalesReports() {
             const user = JSON.parse(userData);
             
             // Check if user has admin role
-            if (user.role !== 'Admin') {
+            if (user.role !== 'Admin' && user.role !== 'Manager') {
                 setError("Unauthorized access");
-                navigate('/users/login'); // Redirect to regular dashboard
+                navigate('/users/login'); // Redirect to login if not authorized
                 return;
-            }
+            }            
             
             //setAdminData(user);
             setLoading(false);
