@@ -1,0 +1,116 @@
+.profile-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background: #111;
+  }
+  
+  .profile-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 40px 60px 8vw;
+    background: #111;
+    min-width: 320px;
+    position: relative;
+  }
+  
+  .profile-initials-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #ffd700;
+    color: #1a1a1a;
+    font-size: 1.6em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #fff;
+    box-shadow: 0 0 8px rgba(0,0,0,0.18);
+    margin-bottom: 24px;
+  }
+  
+  .profile-info-section {
+    color: #f9f5dc;
+  }
+  
+  .profile-title {
+    font-size: 2.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .profile-details-list {
+    margin-top: 30px;
+    font-size: 1.1em;
+    line-height: 1.9;
+    color: #f9f5dc;
+  }
+  .profile-details-list span {
+    color: #ffd700;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+  
+  .profile-actions {
+    margin-top: 38px;
+    display: flex;
+    gap: 18px;
+  }
+  .profile-actions button {
+    background: #ffd700;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.06em;
+    padding: 12px 28px;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(255,215,0,0.16);
+    transition: background 0.2s;
+  }
+  .profile-actions button.delete {
+    background: #ff5c5c;
+    color: #fff;
+  }
+  .profile-actions button:hover {
+    background: #ffcc00;
+  }
+  .profile-actions button.delete:hover {
+    background: #d32f2f;
+  }
+  
+  .profile-right {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    min-width: 320px;
+    background: #444;
+  }
+  .profile-side-img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
+  }
+  
+  /* Responsive: stack on mobile */
+  @media (max-width: 900px) {
+    .profile-wrapper {
+      flex-direction: column;
+    }
+    .profile-right, .profile-left {
+      min-width: 0;
+      width: 100%;
+      padding: 40px 6vw;
+    }
+    .profile-side-img {
+      height: 220px;
+      width: 100vw;
+      object-fit: cover;
+    }
+  }
+  
