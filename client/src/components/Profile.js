@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './profile.css';
 import EditProfileModal from './EditProfileModal';
 import DeleteAccountModal from './DeleteAccountModal';
