@@ -109,17 +109,4 @@
   .modal-buttons .reserve-btn:hover {
     background-color: #ffcc00;
   }
-  
-input[type="date"] {
-  background-color: #1a1a1a;
-  color: white;
-  border: 1px solid white;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 14px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1); 
-  cursor: pointer;
-}
+  /* removed global input class, moved to booktable, reservation looks unchanged  */
