@@ -168,145 +168,144 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
   return (
     <>
       <Navbar />
-      <div className="checkout-container">
-        {success ? (
-          <div className="success-popup">
-            <h2>✅ Payment Successful!</h2>
-            <p>Thank you for your order.</p>
-            <div id="receipt-content" className="receipt-box pretty-receipt">
-              <p><strong>Order #:</strong> {receipt?.orderNumber}</p>
-              <p><strong>Cardholder:</strong> {receipt?.holder}</p>
-              <p><strong>Billing Address:</strong> {receipt?.street}, {receipt?.city}, {receipt?.state} {receipt?.zip}</p>
-              <p><strong>Subtotal:</strong> ${receipt?.subtotal}</p>
-              <p><strong>Discount:</strong> {receipt?.discount}</p>
-              <p><strong>Tax (8.25%):</strong> ${receipt?.tax}</p>
-              <p><strong>Tip:</strong> ${receipt?.tip}</p>
-              <p><strong>Total Paid:</strong> ${receipt?.total}</p>
-              <h4 style={{ marginTop: '20px' }}>🍰 Items Purchased</h4>
-              <ul className="receipt-items">
-                {itemsPurchased.map((item, index) => (
-                  <li key={index}>
-                    {item.quantity}x {item.name} - ${Number(item.price * item.quantity).toFixed(2)}
-                  </li>
-                ))}
-              </ul>
+      <div
+        className="checkout-bg"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(${process.env.PUBLIC_URL}/images/restomainpic.jpg)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <div className="checkout-glass">
+          {success ? (
+            <div className="success-popup">
+              <h2>✅ Payment Successful!</h2>
+              <p>Thank you for your order.</p>
+              <div id="receipt-content" className="receipt-box pretty-receipt">
+                <p><strong>Order #:</strong> {receipt?.orderNumber}</p>
+                <p><strong>Cardholder:</strong> {receipt?.holder}</p>
+                <p><strong>Billing Address:</strong> {receipt?.street}, {receipt?.city}, {receipt?.state} {receipt?.zip}</p>
+                <p><strong>Subtotal:</strong> ${receipt?.subtotal}</p>
+                <p><strong>Discount:</strong> {receipt?.discount}</p>
+                <p><strong>Tax (8.25%):</strong> ${receipt?.tax}</p>
+                <p><strong>Tip:</strong> ${receipt?.tip}</p>
+                <p><strong>Total Paid:</strong> ${receipt?.total}</p>
+                <h4 style={{ marginTop: '20px' }}>🍰 Items Purchased</h4>
+                <ul className="receipt-items">
+                  {itemsPurchased.map((item, index) => (
+                    <li key={index}>
+                      {item.quantity}x {item.name} - ${Number(item.price * item.quantity).toFixed(2)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <button className="download-btn" onClick={handleDownloadReceipt}>Download Receipt</button>
             </div>
-            <button className="download-btn" onClick={handleDownloadReceipt}>Download Receipt</button>
-          </div>
-        ) : (
-        <form className="checkout-form" onSubmit={handleSubmit}>
-          <h2 className="checkout-title gold-text">Checkout</h2>
-          <p style={{ textAlign: 'center', marginTop: '-10px', fontSize: '13px', color: '#aaa' }}>
-            Your information is secure
-          </p>
-
-            <label>Payment Method</label>
-            <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
-              <option value="card">💳 Credit/Debit Card</option>
-              <option value="applepay">Apple Pay</option>
-            </select>
-
-            {paymentMethod === 'card' && (
-              <>
-                <label>Card Holder</label>
-                <input type="text" value={form.holder} onChange={e => handleChange('holder', e.target.value)} placeholder="John Doe" />
-                {errors.holder && <p className="error">{errors.holder}</p>}
-
-                <label>Card Number</label>
-                <input type="text" value={form.number} onChange={e => handleChange('number', e.target.value)} placeholder="1234 5678 9012 3456" />
-                {errors.number && <p className="error">{errors.number}</p>}
-
-                <div className="flex-row">
-                  <div className="half">
-                    <label>Expiration Date</label>
-                    <input type="text" value={form.expiry} onChange={e => handleChange('expiry', e.target.value)} placeholder="MM/YY" maxLength={5} />
-                    {errors.expiry && <p className="error">{errors.expiry}</p>}
-                  </div>
-                  <div className="half">
-                    <label>CVV</label>
-                    <input type="text" value={form.cvv} onChange={e => handleChange('cvv', e.target.value)} placeholder="123" maxLength={3} />
-                    {errors.cvv && <p className="error">{errors.cvv}</p>}
-                  </div>
-                </div>
-              </>
-            )}
-
-            <label>Street Address</label>
-            <input type="text" value={form.street} onChange={e => handleChange('street', e.target.value)} placeholder="123 Main St" />
-            {errors.street && <p className="error">{errors.street}</p>}
-
-            <label>City</label>
-            <input type="text" value={form.city} onChange={e => handleChange('city', e.target.value)} placeholder="Austin" />
-            {errors.city && <p className="error">{errors.city}</p>}
-
-            <label>State</label>
-            <select value={form.state} onChange={e => handleChange('state', e.target.value)}>
-              <option value="">-- Select State --</option>
-              {US_STATES.map(state => (
-                <option key={state} value={state}>{state}</option>
-              ))}
-            </select>
-            {errors.state && <p className="error">{errors.state}</p>}
-
-            <label>ZIP Code</label>
-            <input type="text" value={form.zip} onChange={e => handleChange('zip', e.target.value)} placeholder="77004" maxLength={5} />
-            {errors.zip && <p className="error">{errors.zip}</p>}
-
-            <label>Discount Code</label>
-            <input type="text" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="Enter code like SWEET10" />
-            <button type="button" className="pay-button" onClick={handleDiscountApply}>Apply Code</button>
-            {discountMessage && <p style={{ fontSize: '0.9em' }}>{discountMessage}</p>}
-
-            <div className="total-display">
-              <p>Subtotal: ${calculateSubtotal().toFixed(2)}</p>
-              <p>Tax (8.25%): ${(Number((calculateSubtotal() - (calculateSubtotal() * (discountPercent / 100))) * taxRate).toFixed(2))}</p>
-
-              <label style={{ marginTop: '10px' }}>Tip:</label>
-              <select value={tipPercent} onChange={(e) => setTipPercent(e.target.value === 'custom' ? 'custom' : parseInt(e.target.value))}>
-                <option value={0}>None</option>
-                <option value={10}>10%</option>
-                <option value={15}>15%</option>
-                <option value={20}>20%</option>
-                <option value="custom">Custom</option>
+          ) : (
+            <form className="checkout-form" onSubmit={handleSubmit}>
+              <h2 className="checkout-title gold-text">Checkout</h2>
+              <p style={{ textAlign: 'center', marginTop: '-10px', fontSize: '13px', color: '#aaa' }}>
+                Your information is secure
+              </p>
+              <label>Payment Method</label>
+              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                <option value="card">💳 Credit/Debit Card</option>
+                <option value="applepay">Apple Pay</option>
               </select>
-
-              {tipPercent === 'custom' && (
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  placeholder="Enter tip %"
-                  value={customTip}
-                  onChange={(e) => setCustomTip(e.target.value)}
-                  style={{ marginTop: '5px', padding: '8px', width: '100%', borderRadius: '8px' }}
-                />
+              {paymentMethod === 'card' && (
+                <>
+                  <label>Card Holder</label>
+                  <input type="text" value={form.holder} onChange={e => handleChange('holder', e.target.value)} placeholder="John Doe" />
+                  {errors.holder && <p className="error">{errors.holder}</p>}
+                  <label>Card Number</label>
+                  <input type="text" value={form.number} onChange={e => handleChange('number', e.target.value)} placeholder="1234 5678 9012 3456" />
+                  {errors.number && <p className="error">{errors.number}</p>}
+                  <div className="flex-row">
+                    <div className="half">
+                      <label>Expiration Date</label>
+                      <input type="text" value={form.expiry} onChange={e => handleChange('expiry', e.target.value)} placeholder="MM/YY" maxLength={5} />
+                      {errors.expiry && <p className="error">{errors.expiry}</p>}
+                    </div>
+                    <div className="half">
+                      <label>CVV</label>
+                      <input type="text" value={form.cvv} onChange={e => handleChange('cvv', e.target.value)} placeholder="123" maxLength={3} />
+                      {errors.cvv && <p className="error">{errors.cvv}</p>}
+                    </div>
+                  </div>
+                </>
               )}
-
-              <p>Tip Amount: ${(Number((calculateSubtotal() - (calculateSubtotal() * (discountPercent / 100))) * getTipRate()).toFixed(2))}</p>
-            </div>
-
-            <div className="total-display">
-              Total: <strong>
-                {(() => {
-                  const subtotal = Number(calculateSubtotal().toFixed(2));
-                  const discount = Number((subtotal * (discountPercent / 100)).toFixed(2));
-                  const taxedSubtotal = subtotal - discount;
-                  const tax = Number((taxedSubtotal * taxRate).toFixed(2));
-                  const tip = Number((taxedSubtotal * getTipRate()).toFixed(2));
-                  const total = Number((taxedSubtotal + tax + tip).toFixed(2));
-                  return `$${total.toFixed(2)}`;
-                })()}
-              </strong>
-            </div>
-
-            <button type="submit" className="pay-button">
-              {paymentMethod === 'applepay' ? 'Pay with Apple' : 'Pay Now'}
-            </button>
-          </form>
-        )}
+              <label>Street Address</label>
+              <input type="text" value={form.street} onChange={e => handleChange('street', e.target.value)} placeholder="123 Main St" />
+              {errors.street && <p className="error">{errors.street}</p>}
+              <label>City</label>
+              <input type="text" value={form.city} onChange={e => handleChange('city', e.target.value)} placeholder="Austin" />
+              {errors.city && <p className="error">{errors.city}</p>}
+              <label>State</label>
+              <select value={form.state} onChange={e => handleChange('state', e.target.value)}>
+                <option value="">-- Select State --</option>
+                {US_STATES.map(state => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
+              {errors.state && <p className="error">{errors.state}</p>}
+              <label>ZIP Code</label>
+              <input type="text" value={form.zip} onChange={e => handleChange('zip', e.target.value)} placeholder="77004" maxLength={5} />
+              {errors.zip && <p className="error">{errors.zip}</p>}
+              <label>Discount Code</label>
+              <input type="text" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="Enter code like SWEET10" />
+              <button type="button" className="pay-button" onClick={handleDiscountApply}>Apply Code</button>
+              {discountMessage && <p style={{ fontSize: '0.9em' }}>{discountMessage}</p>}
+              <div className="total-display">
+                <p>Subtotal: ${calculateSubtotal().toFixed(2)}</p>
+                <p>Tax (8.25%): ${(Number((calculateSubtotal() - (calculateSubtotal() * (discountPercent / 100))) * taxRate).toFixed(2))}</p>
+                <label style={{ marginTop: '10px' }}>Tip:</label>
+                <select value={tipPercent} onChange={(e) => setTipPercent(e.target.value === 'custom' ? 'custom' : parseInt(e.target.value))}>
+                  <option value={0}>None</option>
+                  <option value={10}>10%</option>
+                  <option value={15}>15%</option>
+                  <option value={20}>20%</option>
+                  <option value="custom">Custom</option>
+                </select>
+                {tipPercent === 'custom' && (
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="Enter tip %"
+                    value={customTip}
+                    onChange={(e) => setCustomTip(e.target.value)}
+                    style={{ marginTop: '5px', padding: '8px', width: '100%', borderRadius: '8px' }}
+                  />
+                )}
+                <p>Tip Amount: ${(Number((calculateSubtotal() - (calculateSubtotal() * (discountPercent / 100))) * getTipRate()).toFixed(2))}</p>
+              </div>
+              <div className="total-display">
+                Total: <strong>
+                  {(() => {
+                    const subtotal = Number(calculateSubtotal().toFixed(2));
+                    const discount = Number((subtotal * (discountPercent / 100)).toFixed(2));
+                    const taxedSubtotal = subtotal - discount;
+                    const tax = Number((taxedSubtotal * taxRate).toFixed(2));
+                    const tip = Number((taxedSubtotal * getTipRate()).toFixed(2));
+                    const total = Number((taxedSubtotal + tax + tip).toFixed(2));
+                    return `$${total.toFixed(2)}`;
+                  })()}
+                </strong>
+              </div>
+              <button type="submit" className="pay-button">
+                {paymentMethod === 'applepay' ? 'Pay with Apple' : 'Pay Now'}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </>
-  );
+  );  
 };
 
 export default Checkout;
