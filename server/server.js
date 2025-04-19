@@ -605,3 +605,5 @@ process.on('uncaughtException', (error) => {
   // Log to monitoring service or file
   process.exit(1);
 });
+
+// v4.1.0
