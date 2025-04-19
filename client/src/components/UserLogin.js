@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./userLogin.css";
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 function UserLogin({ onLogin }) {
   const [error, setError] = useState("");

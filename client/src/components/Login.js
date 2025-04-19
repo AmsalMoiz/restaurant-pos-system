@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "./login.css";
 import UserSignupModal from "./UserSignupModal"; 
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 const Login = () => {
   const [email, setEmail] = useState("");

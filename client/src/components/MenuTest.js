@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './menu.css';
 import Navbar from './Navbar';
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 const MenuTest = ({ cartItems, setCartItems }) => {
   const [desserts, setDesserts] = useState([]);

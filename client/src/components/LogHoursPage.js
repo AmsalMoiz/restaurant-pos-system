@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashCook.css"; // Reuse same styling for consistency
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 function LogHoursPage() {
     const [userData, setUserData] = useState(null);

@@ -68,6 +68,9 @@ function App() {
         <Route path="/suppliers" element={<Suppliers />} />
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
+
+        {/* catch all and redirect to login */}
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );

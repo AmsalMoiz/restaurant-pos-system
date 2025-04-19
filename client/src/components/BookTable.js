@@ -3,7 +3,7 @@ import './bookTable.css';
 import ReservationModal from './ReservationModal';
 import Navbar from './Navbar';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 const tables = [
   ['A1', 'A2', 'A3', 'A4', 'A5'],

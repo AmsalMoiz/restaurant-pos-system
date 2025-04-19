@@ -7,22 +7,19 @@ const authRoutes = require("./auth");
 const db = require("./db");
 const transactionRoutes = require("./InpersonTransactions");
 const employeeReportRoutes = require("./EmployeeReport");
-const app = express();
 const logHoursRoute = require("./logHours");
 const ItemSalesReportRoutes = require("./ItemSalesReportRoutes");
 const multer = require('multer');
 const customerReportRoutes = require("./CustomerReport");
 
+const PORT = process.env.PORT || 80;
+
+const app = express();
+
 app.use(cors());
 app.use(express.json({limit: '5mb' })); // Middleware for JSON body parsing, with a limit of 5mb
-app.use("/api/auth", authRoutes); // Include auth routes
-app.use("/api", logHoursRoute); // Include log hours routes
-app.use("/api/sales-report", ItemSalesReportRoutes); 
-app.use("/api", customerReportRoutes); // Add this line to include customer report routes
 
-
-
-const PORT = process.env.PORT || 80;
+app.use(express.static(path.join(__dirname, 'public'))); // serve static files from the public directory
 
 // Middleware to handle database connection errors
 const dbErrorHandler = async (req, res, next) => {
@@ -40,16 +37,22 @@ const dbErrorHandler = async (req, res, next) => {
   }
 };
 
-// Apply the database middleware to all routes that need DB access
-//app.use(['/menu', '/users/login', '/dashboard/inventory', '/dashboard/users', '/dashboard/users/delete', '/dashboard/users/update', '/dashboard/users/insert', '/dashboard/suppliers', '/dashboard/suppliers/insert', '/dashboard/suppliers/delete', '/dashboard/suppliers/update', '/dashboard/reorder_alerts'], dbErrorHandler);
-app.use(dbErrorHandler);
+app.use(dbErrorHandler); // DB error handling middleware  
+
+// API/backend routes from other files
+app.use("/api/auth", authRoutes); // Include auth routes
+app.use("/api", logHoursRoute); // Include log hours routes
+app.use("/api/sales-report", ItemSalesReportRoutes); 
+app.use("/api", customerReportRoutes); // Add this line to include customer report routes
 app.use("/dashboard", transactionRoutes);
 app.use("/dashboard", employeeReportRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
+app.get('/', (req, res) => { // serve the main page, redirect to login
+  res.redirect('/login');
 });
 
+// routes:
+// route from menutest.js, menu items
 app.get('/api/menu', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
@@ -582,7 +585,6 @@ app.get("/api/reservations", async (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => { // move catch all get to the end
   res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
@@ -606,4 +608,4 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
-// v4.1.0
+// v4.3.39
