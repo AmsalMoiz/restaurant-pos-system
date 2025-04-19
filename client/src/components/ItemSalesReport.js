@@ -1,6 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import './ItemSalesReport.css';
 import { useNavigate } from 'react-router-dom';
+
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 /*
@@ -81,6 +102,7 @@ const ItemSalesReport = () => {
   };
 
   const [filteredReportData, setFilteredReportData] = useState([]);
+  const [detailedListReportData, setDetailedListReportData] = useState([]);
   const [viewMode, setViewMode] = useState('list');
 
   const [paymentMethodsOptions, setPaymentMethodsOptions] = useState([]);
@@ -169,17 +191,79 @@ const ItemSalesReport = () => {
     if (name === 'endDate') setEndDate(value);
   };
 
+  // Chart code:
+  const [chartData, setChartData] = useState(null);
+
+  const processChartData = (data) => {
+    if (!data || data.length === 0) {
+      return null;
+    }
+
+    const labels = data.map(item => item.item_name);
+    const salesValues = data.map(item => parseFloat(item.total_sales));
+    // Create the chart data object
+    const chart = {
+      labels,
+      datasets: [
+        {
+          label: 'Total Sales per Item',
+          backgroundColor: 'rgba(75,192,192,0.6)',
+          borderColor: 'rgba(75,192,192,1)',
+          borderWidth: 1,
+          data: salesValues,
+        },
+      ],
+    };
+    return chart;
+  };
+
+  // generateReport function to fetch the report data
   const generateReport = async () => {
-    const response = await fetch(`${API_BASE}/api/sales-report/api/generate-sales-report`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ startDate, endDate, transactionFilters, customerFilters, discountFilters, selectedItems }),
-    });
-    const data = await response.json();
-    //setReportData(data);
-    setFilteredReportData(data);
+    try {
+      const responseFullList = await fetch(`${API_BASE}/api/sales-report/api/generate-sales-report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ startDate, endDate, transactionFilters, customerFilters, discountFilters, selectedItems }),
+      });
+      if (!responseFullList.ok) {
+        throw new Error(`HTTP error! status: ${responseFullList.status}`);
+      }
+      const fullListData = await  responseFullList.json();
+      setFilteredReportData(fullListData);
+
+      const transactionIds = fullListData.map(transaction => transaction.transaction_id);
+
+      const responseDetailedList = await fetch(`${API_BASE}/api/sales-report/api/generate-sales-report/list`, {
+        method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transactionIds }),
+      });
+
+      if (!responseDetailedList.ok) throw new Error(`HTTP error! status: ${responseDetailedList.status}`);
+      
+      const detailedListData = await responseDetailedList.json();
+      setDetailedListReportData(detailedListData);
+
+      //chart data
+      const responseChartData = await fetch(`${API_BASE}/api/sales-report/api/generate-sales-report/chart`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionIds }),
+      });
+
+      if (!responseChartData.ok) throw new Error(`HTTP error! status: ${responseChartData.status}`);
+
+      const chartData = await responseChartData.json();
+      setChartData(processChartData(chartData));
+
+    } catch (error) {
+      console.error('Error generating report:', error);
+      setFilteredReportData([]);
+      setDetailedListReportData([]);
+      setChartData(null);
+    }
     setViewMode('list'); // Default to list view after generation
   };
 
@@ -188,13 +272,13 @@ const ItemSalesReport = () => {
   };
 
   return (
-    <div className="admin-dashboard-body">
-      <div className="admin-dashboard">
-        <div className="admin-section">
-          <h1 className="section-header">
+    <div className="admin-dashboard-itemsales-body">
+      <div className="admin-dashboard-itemsales">
+        <div className="admin-section-itemsales-report">
+          <h2 className="item-sales-report-section-header">
             Sales Report
             <button className="back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
-          </h1>
+          </h2>
           <h3>Filter Options:</h3>
           <div className="filter-container">
             <div className="filter-group">
@@ -285,7 +369,7 @@ const ItemSalesReport = () => {
                   {selectedItems.map((item) => (
                     <span key={item} className="selected-item-pill">
                       {item}
-                      <button type="button" className="remove-item-btn" onClick={() => handleRemoveItem(item)}>
+                      <button type="button" className="item-select-remove-item-btn" onClick={() => handleRemoveItem(item)}>
                         &times;
                       </button>
                     </span>
@@ -321,44 +405,77 @@ const ItemSalesReport = () => {
           </div>
 
           {viewMode === 'list' && (
-            <div className="report-view">
-              <h3>Report Data (List View)</h3>
-              {filteredReportData.length > 0 ? (
-                <div className="table-container">
-                  <table>
-                    <thead>
-                      <tr>
-                        {filteredReportData[0] && Object.keys(filteredReportData[0]).map((key) => (
-                          <th key={key}>
-                            {headerMapping[key] || key }
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredReportData.map((row, index) => (
-                        <tr key={index}>
-                          {Object.keys(row).map((key, innerIndex) => (
-                            <td key={innerIndex}>
-                              {key === 'item_names' ? row[key] : row[key]} {/* should display multiple item names separated */}
-                            </td>
+            <>
+              <div className="report-view">
+                <h3>Report Data (List View)</h3>
+                {filteredReportData.length > 0 ? (
+                  <div className="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          {filteredReportData[0] && Object.keys(filteredReportData[0]).map((key) => (
+                            <th key={key}>
+                              {headerMapping[key] || key }
+                            </th>
                           ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p>No data available for the selected criteria.</p>
-              )}
-            </div>
+                      </thead>
+                      <tbody>
+                        {filteredReportData.map((row, index) => (
+                          <tr key={index}>
+                            {Object.keys(row).map((key, innerIndex) => (
+                              <td key={innerIndex}>
+                                {key === 'item_names' ? row[key] : row[key]} {/* should display multiple item names separated */}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p>No data available for the selected criteria.</p>
+                )}
+              </div>
+              <div className="report-view">
+                <h3>Detailed List View</h3>
+                {detailedListReportData.length > 0 ? (
+                  <div className="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Transaction ID</th>
+                          <th>Item Name</th>
+                          <th>Quantity Purchased</th> {/* did headers manually no mapping here */}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {detailedListReportData.map((row, index) => (
+                          <tr key={index}>
+                            {Object.keys(row).map((key, innerIndex) => (
+                              <td key={innerIndex}>
+                                {key === 'item_names' ? row[key] : row[key]} {/* should display multiple item names separated */}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p>No data available for the detailed list.</p>
+                )}
+              </div>
+            </>
           )}
-
           {viewMode === 'chart' && (
-            <div className="report-view">
+            <div className="report-view chart-container">
               <h3>Report Data (Chart View)</h3>
-              {/* current;ly placeholder for your charting component, use filteredReportData */}
-              <p>Chart will be displayed here.</p>
+              {chartData ? (
+                <Bar data = {chartData} />
+              ) : (
+              <p>No data available for the chart</p>
+              )}
             </div>
           )}
         </div>
