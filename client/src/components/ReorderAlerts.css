@@ -1,0 +1,131 @@
+/* Reorder Alerts Styles */
+.t-section-header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .t-section-header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .t-back-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .t-back-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Alerts Container */
+  .employees-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  /* Alerts Table */
+  .employees-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .employees-table th, 
+  .employees-table td {
+    border: 1px solid #e1e1e1;
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .employees-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+  }
+  
+  .employees-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .employees-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Resolved Status Styles */
+  .status-resolved {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+  }
+  
+  .status-pending {
+    color: #856404;
+    background-color: #fff3cd;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+  }
+  
+  /* Loading and Error States */
+  .loading {
+    text-align: center;
+    font-size: 20px;
+    padding: 50px;
+    color: #7f8c8d;
+  }
+  
+  .error-container {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 50px auto;
+    max-width: 500px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .section-header button {
+      margin-top: 10px;
+    }
+    
+    .employees-table th, 
+    .employees-table td {
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+    
+    .employees-table {
+      font-size: 14px;
+    }
+  }

@@ -191,10 +191,10 @@ const ItemSalesReport = () => {
     <div className="admin-dashboard-body">
       <div className="admin-dashboard">
         <div className="admin-section">
-          <h2 className="section-header">
+          <h1 className="section-header">
             Sales Report
             <button className="back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
-          </h2>
+          </h1>
           <h3>Filter Options:</h3>
           <div className="filter-container">
             <div className="filter-group">

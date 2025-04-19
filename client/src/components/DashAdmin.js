@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashAdmin.css";
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+//const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
 
 function DashAdmin() {
     const [adminData, setAdminData] = useState(null);
@@ -15,29 +15,6 @@ function DashAdmin() {
     //const [showUsers, setShowUsers] = useState(false);
     // Add these state variables at the top of your component with the other state declarations
     
-    //Reorder Alerts
-    const [reorderAlerts, setReorderAlerts] = useState([]);
-
-    
-    
-    
-    // FETCH REORDER ALERTS
-    const fetchReorderAlerts = async () => {
-        try {
-            const response = await fetch(`${API_URL}/dashboard/reorder_alerts`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const data = await response.json();
-            setReorderAlerts(data);
-        } catch(err){
-            console.error("Error fetching reorder alerts:", err);
-            setError("Failed to load reorder alerts. Please try again later.");
-        }
-    };
-    useEffect(() => {
-        fetchReorderAlerts();
-    }, []);
     
 
     // #region Login
@@ -76,11 +53,6 @@ function DashAdmin() {
         navigate('/users/login');
     };
 
-    
-
-    const handleSectionClick = (section) => {
-        setActiveSection(section);
-    };
 
     if (loading) {
         return <div className="loading">Loading...</div>;
@@ -119,7 +91,7 @@ function DashAdmin() {
                                 <div className="admin-card">
                                     <h3>Reoder Alerts</h3>
                                     
-                                    <button onClick={() => handleSectionClick('reorder_alerts')}>View Reorder Alerts</button>
+                                    <button onClick={() => navigate('/reorder_alerts')}>View Reorder Alerts</button>
                                 </div>
 
                                 {/* Inventory side */}
@@ -166,42 +138,7 @@ function DashAdmin() {
                         </div>
                     )}
 
-                    {/* Show reorder alerts */}
-                    {activeSection === 'reorder_alerts' && (
-                    <div className="admin-section">
-                    <div className="section-header">
-                    <h2>Reorder Alerts</h2>
-                    <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                    </div>
-        
-                    <div className="employees-container">
-                        {reorderAlerts.length === 0 ? (
-                        <p>Loading alerts data...</p>
-                        ) : (
-                        <table className="employees-table">
-                        <thead>
-                            <tr>
-                            <th>Item Name</th>
-                            <th>timestamp</th>
-                            <th>Resolved Status</th>
-                            
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {reorderAlerts.map((alert, index) => (
-                            <tr key={index}>
-                                <td>{alert.item}</td>
-                                <td>{alert.timestamp}</td>
-                                <td>{alert.resolved}</td>
-
-                            </tr>
-                            ))}
-                        </tbody>
-                        </table>
-                        )}
-                    </div>
-                    </div>
-                    )}
+    
                     
                     
                     {/* Sales Reports */}

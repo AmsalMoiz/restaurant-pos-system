@@ -23,6 +23,7 @@ import Transactions from './components/Transactions';
 import CustomerReport from './components/CustomerReport'; // Import the CustomerReport component
 import Suppliers from './components/Suppliers';
 import EmployeeSalesReports from './components/EmployeeSalesReports';
+import ReorderAlerts from './components/ReorderAlerts';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -66,6 +67,7 @@ function App() {
         <Route path="/customer-report" element={<CustomerReport />} /> {/* Add the route for Customer Reports */}
         <Route path="/suppliers" element={<Suppliers />} />
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
+        <Route path="/reorder_alerts" element={<ReorderAlerts />} />
       </Routes>
     </Router>
   );
