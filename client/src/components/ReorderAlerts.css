@@ -69,17 +69,27 @@
     background-color: #f1f1f1;
   }
   
+
   /* Resolved Status Styles */
-  .status-resolved {
+.status-resolved {
     color: #155724;
     background-color: #d4edda;
-    padding: 2px 8px;
+    padding: 4px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     display: inline-block;
   }
   
+  .status-not-resolved {
+    color: #721c24;
+    background-color: #f8d7da;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+  }
   .status-pending {
     color: #856404;
     background-color: #fff3cd;

@@ -102,7 +102,11 @@ function ReorderAlerts() {
                             <tr key={index}>
                                 <td>{alert.item}</td>
                                 <td>{alert.timestamp}</td>
-                                <td>{alert.resolved === 0 ? 'Not Resolved' : 'Resolved'}</td>
+                                <td>
+                                    <span className={alert.resolved === 0 ? "status-not-resolved" : "status-resolved"}>
+                                            {alert.resolved === 0 ? 'Not Resolved' : 'Resolved'}
+                                    </span>
+                                </td>
 
                             </tr>
                             ))}
