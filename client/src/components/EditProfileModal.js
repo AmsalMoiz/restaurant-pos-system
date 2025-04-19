@@ -27,9 +27,7 @@ function parseAddress(address = '') {
 }
 
 const EditProfileModal = ({ user, onClose }) => {
-  // Parse address into parts
   const { street, city, state, zip } = parseAddress(user.address);
-
   const initialDigits = (user.phone || '').replace(/\D/g, '').slice(0, 10);
 
   const [form, setForm] = useState({
@@ -40,7 +38,10 @@ const EditProfileModal = ({ user, onClose }) => {
     city,
     state,
     zip,
+    password: '',
+    confirmPassword: ''
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -54,9 +55,24 @@ const EditProfileModal = ({ user, onClose }) => {
       setForm({ ...form, [name]: value });
     }
   };
-  
+
+  const validate = () => {
+    let newErrors = {};
+    if (form.password || form.confirmPassword) {
+      if (form.password.length < 6) {
+        newErrors.password = "Password must be at least 6 characters.";
+      }
+      if (form.password !== form.confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match.";
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSave = e => {
     e.preventDefault();
+    if (!validate()) return;
     const fullAddress = `${form.street}, ${form.city}, ${form.state} ${form.zip}`.trim();
     const updatedUser = {
       ...user,
@@ -65,6 +81,10 @@ const EditProfileModal = ({ user, onClose }) => {
       phone: '+1' + form.phone,
       address: fullAddress,
     };
+    // Only update password if changed
+    if (form.password) {
+      updatedUser.password = form.password;
+    }
     localStorage.setItem('user', JSON.stringify(updatedUser));
     onClose();
     window.location.reload();
@@ -72,42 +92,92 @@ const EditProfileModal = ({ user, onClose }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content modal-form-leftlabels">
         <button className="modal-close" onClick={onClose}>&times;</button>
         <h2>Edit Profile</h2>
-        <form onSubmit={handleSave}>
-          <label>Name</label>
-          <input name="name" value={form.name} onChange={handleChange} required />
-          <label>Email</label>
-          <input name="email" value={form.email} onChange={handleChange} required />
-          <label>Phone</label>
-          <div className="phone-input-wrapper">
-            <span className="phone-prefix">+1</span>
+        <form onSubmit={handleSave} autoComplete="off">
+          <div className="modal-form-row">
+            <label htmlFor="edit-name">Name</label>
+            <input id="edit-name" name="name" value={form.name} onChange={handleChange} required />
+          </div>
+          <div className="modal-form-row">
+            <label htmlFor="edit-email">Email</label>
+            <input id="edit-email" name="email" value={form.email} onChange={handleChange} required />
+          </div>
+          <div className="modal-form-row">
+            <label htmlFor="edit-phone">Phone</label>
+            <div className="phone-input-wrapper">
+              <span className="phone-prefix">+1</span>
+              <input
+                id="edit-phone"
+                type="tel"
+                name="phone"
+                placeholder="(555) 123-4567"
+                maxLength={14}
+                onChange={handleChange}
+                value={formatPhone(form.phone)}
+                style={{ paddingLeft: '50px' }}
+                autoComplete="tel"
+                required
+              />
+            </div>
+          </div>
+          <div className="modal-form-row">
+            <label htmlFor="edit-street">Street Address</label>
+            <input id="edit-street" name="street" value={form.street} onChange={handleChange} />
+          </div>
+          <div className="modal-form-row">
+            <label htmlFor="edit-city">City</label>
+            <input id="edit-city" name="city" value={form.city} onChange={handleChange} />
+          </div>
+          <div className="modal-form-row">
+            <label htmlFor="edit-state">State</label>
+            <select id="edit-state" name="state" value={form.state} onChange={handleChange}>
+              <option value="">Select State</option>
+              {US_STATES.map((state, i) => (
+                <option key={i} value={state}>{state}</option>
+              ))}
+            </select>
+          </div>
+          <div className="modal-form-row">
+            <label htmlFor="edit-zip">ZIP Code</label>
             <input
-              type="tel"
-              name="phone"
-              placeholder="(555) 123-4567"
-              maxLength={14}
+              id="edit-zip"
+              name="zip"
+              value={form.zip}
               onChange={handleChange}
-              value={formatPhone(form.phone)}
-              style={{ paddingLeft: '50px' }}
-              autoComplete="tel"
+              maxLength={5}
+              inputMode="numeric"
+              placeholder="ZIP Code"
               required
             />
           </div>
-          <label>Street Address</label>
-          <input name="street" value={form.street} onChange={handleChange} />
-          <label>City</label>
-          <input name="city" value={form.city} onChange={handleChange} />
-          <label>State</label>
-          <select name="state" value={form.state} onChange={handleChange}>
-            <option value="">Select State</option>
-            {US_STATES.map((state, i) => (
-              <option key={i} value={state}>{state}</option>
-            ))}
-          </select>
-          <label>ZIP Code</label>
-          <input name="zip" value={form.zip} onChange={handleChange} />
+          <div className="modal-form-row">
+            <label htmlFor="edit-password">Change Password</label>
+            <input
+              id="edit-password"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="New password"
+              autoComplete="new-password"
+            />
+            {errors.password && <div className="modal-error">{errors.password}</div>}
+          </div>
+          <div className="modal-form-row">
+            <label htmlFor="edit-confirm-password">Confirm Password</label>
+            <input
+              id="edit-confirm-password"
+              name="confirmPassword"
+              type="password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm new password"
+              autoComplete="new-password"
+            />
+            {errors.confirmPassword && <div className="modal-error">{errors.confirmPassword}</div>}
+          </div>
           <div className="modal-actions">
             <button type="submit" className="modal-save">Save</button>
             <button type="button" className="modal-cancel" onClick={onClose}>Cancel</button>
