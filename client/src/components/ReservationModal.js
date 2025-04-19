@@ -1,110 +1,77 @@
 import React, { useState } from 'react';
 import './reservationModal.css';
 
-const ReservationModal = ({ item, onClose, onReserve }) => {
-  const label = typeof item === 'string' ? item : item.label; // support both string and object
-  const isBarChair = label.startsWith('Bar');
 
-  const [selectedGuestCount, setSelectedGuestCount] = useState(isBarChair ? 1 : null);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
+function getReservationEndTime(startTime) {
+  const [time, modifier] = startTime.split(' ');
+  let [hours, minutes] = time.split(':').map(Number);
+
+  if (modifier === 'PM' && hours !== 12) hours += 12;
+  if (modifier === 'AM' && hours === 12) hours = 0;
+
+  const endDate = new Date();
+  endDate.setHours(hours + 2);
+  endDate.setMinutes(minutes);
+
+  const endHours = endDate.getHours();
+  const endMinutes = String(endDate.getMinutes()).padStart(2, '0');
+  const displayHours = ((endHours + 11) % 12 + 1);
+  const displayModifier = endHours >= 12 ? 'PM' : 'AM';
+
+  return `${displayHours}:${endMinutes} ${displayModifier}`;
+}
+
+
+const ReservationModal = ({ item, onClose, onReserve, date, time }) => {
+  const isBar = item.startsWith('Bar');
+  const [guestCount, setGuestCount] = useState(1);
+  const [specialRequests, setSpecialRequests] = useState('');
 
   const handleReserve = () => {
-    if (!selectedTime || !selectedDate) return;
-
-    const reservationInfo = {
-      item: label,
-      guests: isBarChair ? 1 : selectedGuestCount,
-      time: selectedTime,
-      date: selectedDate
-    };
-
-    onReserve(reservationInfo);
-    onClose();
+    if (!guestCount) return;
+    onReserve({
+      item,
+      guests: guestCount,
+      time,
+      date,
+      special_requests: specialRequests
+    });
   };
-
-  const getDayFromDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { weekday: 'long' });
-  };
-
-  const getTimeOptions = (day) => {
-    switch (day) {
-      case 'Sunday':
-        return ['5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM'];
-      case 'Monday':
-      case 'Tuesday':
-      case 'Wednesday':
-      case 'Thursday':
-        return ['5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM'];
-      case 'Friday':
-      case 'Saturday':
-        return ['5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM', '12:00 AM'];
-      default:
-        return [];
-    }
-  };
-
-  const todayStr = new Date().toISOString().split('T')[0];
-  const maxDate = new Date();
-  maxDate.setMonth(maxDate.getMonth() + 2);
-  const maxDateStr = maxDate.toISOString().split('T')[0];
-
-  const day = selectedDate ? getDayFromDate(selectedDate) : null;
-  const timeOptions = day ? getTimeOptions(day) : [];
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>{label}</h2>
-        {!isBarChair && (
+        <h2>{item}</h2>
+
+        {!isBar && (
           <>
-            <p>How many guests?</p>
-            <div className="guest-options">
-              {[5, 4, 3, 2].map(num => (
-                <button
-                  key={num}
-                  className={selectedGuestCount === num ? 'active' : ''}
-                  onClick={() => setSelectedGuestCount(num)}
-                >
-                  {num} people
-                </button>
-              ))}
-            </div>
+          <label>Number of Guests:</label>
+          <select value={guestCount} onChange={(e) => setGuestCount(Number(e.target.value))}>
+            {[1, 2, 3, 4, 5, 6].map((num) => (
+              <option key={num} value={num}>
+                {num} {num === 1 ? 'person' : 'people'}
+              </option>
+            ))}
+          </select>
           </>
         )}
 
-        <div className="date-time-section">
-          <p>Select a date:</p>
-          <input
-            type="date"
-            min={todayStr}
-            max={maxDateStr}
-            value={selectedDate}
-            onChange={(e) => {
-              setSelectedDate(e.target.value);
-              setSelectedTime('');
-            }}
-          />
-        </div>
+        {isBar && <p>1 person</p>}
 
-        {day && (
-          <div className="date-time-section">
-            <p>Select a time:</p>
-            <select value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)}>
-              <option value="">-- Select Time --</option>
-              {timeOptions.map((time, idx) => (
-                <option key={idx} value={time}>{time}</option>
-              ))}
-            </select>
-          </div>
-        )}
+        <p style={{ marginTop: '10px', fontSize: '0.9rem' }}>
+          Reservation for <strong>{date}</strong> from <strong>{time}</strong> to <strong>{getReservationEndTime(time)}</strong>
+        </p>
+
+        <label>Special Requests:</label>
+        <textarea
+          value={specialRequests}
+          onChange={(e) => setSpecialRequests(e.target.value)}
+          placeholder="Optional"
+        />
 
         <div className="modal-buttons">
           <button className="close-btn" onClick={onClose}>Close</button>
-          <button className="reserve-btn" onClick={handleReserve} disabled={!selectedDate || !selectedTime}>
-            Reserve
-          </button>
+          <button className="reserve-btn" onClick={handleReserve}>Reserve</button>
         </div>
       </div>
     </div>

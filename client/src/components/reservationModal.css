@@ -49,11 +49,12 @@
   }
   
   .guest-options button.active {
-    background-color: #ffd700;
+    background-color: white;
     color: #111;
     font-weight: bold;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
   }
+  
   
   .date-time-section p {
     margin: 10px 0 5px;
@@ -108,4 +109,4 @@
   .modal-buttons .reserve-btn:hover {
     background-color: #ffcc00;
   }
-  
+  /* removed global input class, moved to booktable, reservation looks unchanged  */

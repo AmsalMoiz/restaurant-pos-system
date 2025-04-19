@@ -1,0 +1,495 @@
+/* Transactions Styles order-config-section section-heade r*/
+.t-section-header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+.transactions-container {
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .t-back-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .t-back-btn:hover {
+    background-color: #2980b9;
+  }
+  .back-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .back-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Checkout Container Styles */
+  .checkout-container {
+    background-color: white;
+    margin:0;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin: 0;
+  }
+  
+  .checkout-form {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width:90%;
+  }
+  
+  .checkout-form h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .add-to-cart-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  .cart-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 90%;
+  }
+  
+  .cart-container h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .cart-table th, 
+  .cart-table td {
+    border: 1px solid #e1e1e1;
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .cart-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .cart-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .cart-table tfoot {
+    font-weight: bold;
+  }
+  
+  .subtotal-label {
+    text-align: right;
+  }
+  
+  .subtotal-value {
+    background-color: #e8f4fd;
+  }
+  
+  .remove-item-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .remove-item-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  .checkout-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .clear-cart-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .clear-cart-btn:hover {
+    background-color: #c0392b;
+  }
+  
+  .checkout-btn {
+    background-color: #32dc79;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .checkout-btn:hover {
+    background-color: #27ae60;
+  }
+  
+  .checkout-btn:disabled,
+  .add-to-cart-btn:disabled,
+  .clear-cart-btn:disabled,
+  .remove-item-btn:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+  }
+  
+  /* Review Order Styles */
+  .checkout-review {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .checkout-review h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .order-summary, .tip-section, .payment-info {
+    margin-bottom: 25px;
+  }
+  
+  .order-summary h4, .tip-section h4, .payment-info h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+  }
+  
+  .review-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .review-table th, 
+  .review-table td {
+    border: 1px solid #e1e1e1;
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .review-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .review-table tfoot {
+    font-weight: bold;
+  }
+  
+  .total-label {
+    text-align: right;
+  }
+  
+  .total-value {
+    background-color: #e8f4fd;
+  }
+  
+  .tip-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .tip-buttons button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .tip-buttons button:hover {
+    background-color: #2980b9;
+  }
+  
+  .total-with-tip {
+    background-color: #e8f4fd;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-top: 15px;
+    font-size: 18px;
+  }
+  
+  .payment-info {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #e1e1e1;
+  }
+  
+  /* Complete Order Styles */
+  .checkout-complete {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .success-message h3 {
+    margin-top: 0;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .new-order-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 25px;
+    font-size: 16px;
+  }
+  
+  .new-order-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Order Configuration Styles */
+  .order-config-section {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+    
+  }
+  
+  .order-config-section h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .order-config-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .order-config-form .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  /* Card Information Styles checkout-form cart-container*/
+  .card-info-container {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 15px;
+    width: 100%;
+  }
+  
+  .card-info-container h4 {
+    margin-top: 0;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  .card-details-row {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  .form-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .form-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .checkout-form,
+    .cart-container,
+    .checkout-review {
+      padding: 15px;
+    }
+    
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .section-header button {
+      margin-top: 10px;
+    }
+    
+    .cart-table th, 
+    .cart-table td,
+    .review-table th,
+    .review-table td {
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+    
+    .tip-buttons {
+      flex-wrap: wrap;
+    }
+    
+    .checkout-actions {
+      flex-direction: column;
+    }
+    
+    .checkout-actions button {
+      width: 100%;
+    }
+    
+    .order-config-form {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .card-details-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .success-message {
+      padding: 20px;
+    }
+  }
+  
+  /* Loading and Error States */
+  .loading {
+    text-align: center;
+    font-size: 20px;
+    padding: 50px;
+    color: #7f8c8d;
+  }
+  
+  .error-container {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 50px auto;
+    max-width: 500px;
+  }
+  
+  /* Card Info Field Styles */
+  .half-width {
+    width: 48%;
+  }

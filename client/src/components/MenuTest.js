@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './menu.css';
 import Navbar from './Navbar';
-const API_BASE = process.env.REACT_APP_API_BASE || '';
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 const MenuTest = ({ cartItems, setCartItems }) => {
   const [desserts, setDesserts] = useState([]);
@@ -10,13 +10,14 @@ const MenuTest = ({ cartItems, setCartItems }) => {
   const [selectedDessert, setSelectedDessert] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   // Fetch menu items from the server when component mounts
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE}/api/retrieve/menu`);
+        const response = await fetch(`${API_BASE}/api/menu`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -49,14 +50,18 @@ const MenuTest = ({ cartItems, setCartItems }) => {
   const handleAddToCart = () => {
     const itemToAdd = {
       ...selectedDessert,
-      price: Number(selectedDessert.price), 
-      quantity: Number(quantity),           
+      price: Number(selectedDessert.price),
+      quantity: Number(quantity),
       notes,
     };
-    
+  
     setCartItems([...cartItems, itemToAdd]);
     closeModal();
+  
+    setShowToast(true); // show toast
+    setTimeout(() => setShowToast(false), 3000); // auto-hide after 3s
   };
+  
 
   // Show loading state
   if (loading) {
@@ -110,7 +115,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
                 onClick={() => handleCardClick(item)}
               >
                 <img
-                  src={`/images/${item.image}`}
+                  src={item.image}
                   alt={item.name}
                   className="dessert-img"
                 />
@@ -150,6 +155,11 @@ const MenuTest = ({ cartItems, setCartItems }) => {
               <button onClick={closeModal} className="close-btn">Cancel</button>
             </div>
           </div>
+        </div>
+      )}
+      {showToast && (
+        <div className="toast-popup">
+          ✅ Added to your bag with love 💕        
         </div>
       )}
     </>

@@ -1,0 +1,414 @@
+/* ItemSalesReport.css */
+.admin-dashboard-itemsales-body {
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.admin-dashboard-itemsales {
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-section-itemsales-report {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-section-itemsales-report h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    /* Make the h2 a flex container */
+    align-items: center;
+    /* Vertically align items within the h2 */
+    justify-content: space-between;
+    /* Put space between title and button */
+}
+
+.admin-section-itemsales-report h2 .back-btn {
+    background-color: #ffd700;
+    color: #1b1b1b;
+    padding: 8px 12px;
+    /* Smaller padding for inline placement */
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    /* Smaller font size for inline */
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-left: 20px;
+    /* Add some space between the title and button */
+}
+
+.admin-section-itemsales-report h2 .back-btn:hover {
+    background-color: #ffcc00;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.admin-card button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.admin-card button:hover {
+    background-color: #2980b9;
+}
+
+.report-controls {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* Vertically align items */
+}
+
+.report-type-selector {
+    padding: 8px 12px;
+    /* 8px 24px 8px 12px; */
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    min-width: 150px;
+    /* Adjust width as needed */
+    margin-right: 15px;
+    /* Space between dropdown and buttons */
+}
+
+.employee-reports-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    /* Space above the table */
+}
+
+.employee-reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.employee-reports-table th,
+.employee-reports-table td {
+    padding: 10px 12px;
+    /* Smaller padding for table cells */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    /* Consistent font size in table */
+}
+
+.employee-reports-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.employee-reports-table td:last-child,
+.employee-reports-table td:nth-last-child(2),
+.employee-reports-table td:nth-last-child(3),
+.employee-reports-table td:nth-last-child(4) {
+    text-align: right;
+}
+
+
+.report-controls button {
+    padding: 8px 16px;
+    /*  as needed */
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background-color: #2c3e50;
+    color: white;
+    margin-left: 10px;
+    /* space between dropdown and export btn */
+}
+
+.report-controls button:hover {
+    background-color: #34495e;
+}
+
+.report-controls>div {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.report-controls label {
+    margin-right: 10px;
+}
+
+
+
+.filter-group h4 {
+    margin-bottom: 6px;
+}
+
+.filter-group>div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.filter-group label {
+    width: 100px;
+    /*  label width */
+    margin-right: 5px;
+    text-align: left;
+    flex-shrink: 0;
+    /* label from shrinking */
+}
+
+
+.filter-group input[type="text"],
+.filter-group input[type="number"],
+.filter-group input[type="date"] {
+    flex-grow: 1;
+    /* Allow input to take remaining space */
+    padding: 5px;
+    /* Reduce padding slightly */
+    font-size: 0.9em;
+}
+
+.filter-group input[type="date"] {
+    background-color: #2c3e50;
+    color: white;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.filter-group input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.filter-group input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    background-color: #2c3e50;
+    color: white;
+    font-size: 14px;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 10px;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.selected-items-container {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.selected-item-pill {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+}
+
+.selected-items-container .selected-item-pill .item-select-remove-item-btn {
+    background: #e74c3c; 
+    border: none;
+    color: white;
+    font-size: 0.8em;
+    margin-left: 5px;
+    cursor: pointer;
+    padding: 2px 5px;
+    line-height: 1;
+}
+
+.selected-items-container .selected-item-pill .item-select-remove-item-btn:hover {
+    color: #000;
+}
+
+.data-selection-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.data-selection-group {
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+}
+
+.data-selection-group h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.data-selection-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.generate-report-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.generate-report-btn:hover {
+    background-color: #45a049;
+}
+
+.view-mode-buttons {
+    margin-bottom: 20px;
+}
+
+.view-mode-buttons button {
+    padding: 8px 12px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    background-color: white;
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.view-mode-buttons button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.view-mode-buttons button:hover {
+    background-color: #f0f0f0;
+}
+
+.report-view h3 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.report-view .table-container {
+    max-height: 600px;
+    /*  */
+    overflow-y: auto;
+    overflow-x: auto;
+    /* horizontal scroll if the table gets too wide */
+    border: 1px solid #ccc;
+    /* Add a border for visual separation */
+}
+
+.report-view .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.report-view .table-container th,
+.report-view .table-container td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.report-view th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+/* Chart */
+.chart-container {
+    width: 80%; /* Adjust as needed */
+    margin: 20px auto;
+}
+
+
+/* search */
+.autocomplete-container {
+    position: relative;
+    /* For positioning the suggestions list */
+}
+
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    /* Position below the input */
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    z-index: 10;
+    /* Ensure it's above other elements */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}

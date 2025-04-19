@@ -50,14 +50,3 @@ async function connect() {
 
 module.exports = connect;
 
-// async function testConnection() {
-//     try {
-//       const connection = await connect();
-//       const [rows] = await connection.execute('SELECT 1');
-//       console.log('Database connection successful:', rows);
-//     } catch (error) {
-//       console.error('Database connection failed:', error);
-//     }
-//   }
-  
-// testConnection(); // Test the database connection

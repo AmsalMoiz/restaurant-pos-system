@@ -1,8 +1,11 @@
 import React from 'react';
 import './cart.css';
 import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ cartItems, setCartItems }) => {
+  const navigate = useNavigate();
+
   const handleRemove = (indexToRemove) => {
     const updatedCart = cartItems.filter((_, i) => i !== indexToRemove);
     setCartItems(updatedCart);
@@ -14,11 +17,17 @@ const Cart = ({ cartItems, setCartItems }) => {
       const qty = Number(item.quantity);
       return acc + (isNaN(price * qty) ? 0 : price * qty);
     }, 0);
+    return total;
+  };
 
-    return total.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+  const formattedTotal = calculateTotal().toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const handleCheckout = () => {
+    const total = calculateTotal();
+    navigate('/checkout', { state: { total } });
   };
 
   return (
@@ -64,11 +73,14 @@ const Cart = ({ cartItems, setCartItems }) => {
               </div>
 
               <div className="cart-checkout-box-row">
-                <span className="checkout-total">Total: ${calculateTotal()}</span>
-                <button className="checkout-btn">Proceed to Checkout</button>
+                <span className="checkout-total">Total: ${formattedTotal}</span>
+                <button
+                  className="checkout-btn"
+                  onClick={handleCheckout}
+                >
+                  Proceed to Checkout
+                </button>
               </div>
-
-
             </>
           )}
         </div>

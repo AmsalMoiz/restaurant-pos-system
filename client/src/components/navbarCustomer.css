@@ -1,0 +1,39 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: rgba(0, 0, 0, 0.9);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .navbar-left h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 32px;
+    color: #f8eacc;
+    font-weight: normal;
+    margin: 0;
+  }
+  
+  .navbar-right a {
+    font-family: 'Calibri', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 30px;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-right a:hover {
+    color: #e6cfa7;
+  }
+  
+  .logo-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: 32px;
+    color: #f8eacc;
+  }
+  
