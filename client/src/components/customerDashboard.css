@@ -203,14 +203,14 @@ html, body {
 }
 
 .menu-btn.filled {
-  background-color: #c4aa48;
+  background-color: #e1c666;
   color: #000;
   border: none;
 }
 
 .menu-btn.outlined {
-  border: 2px solid #c4aa48;
-  color: #c4aa48;
+  border: 2px solid #e1c666;
+  color: #e1c666;
   background: transparent;
 }
 
@@ -278,11 +278,11 @@ html, body {
 }
 
 .final-details span i {
-  color: #c4aa48;
+  color: #e1c666;
 }
 
 .final-button a {
-  background-color: #c4aa48;
+  background-color: #e1c666;
   padding: 12px 24px;
   border-radius: 30px;
   text-decoration: none;
@@ -327,6 +327,6 @@ html, body {
 }
 
 .final-details i {
-  color: #c4aa48;
+  color: #e1c666;
   font-size: 18px;
 }

@@ -139,8 +139,8 @@
 
 /* Receipt box: black, not white! */
 .receipt-box {
-  background: rgba(0,0,0,0.97) !important;
-  color: #FFD700;
+  background: #fff !important;  
+  color: #111;                  
   border-radius: 14px;
   padding: 28px 20px;
   text-align: left;
@@ -155,15 +155,16 @@
 }
 
 .success-popup {
-  background: rgba(0,0,0,0.97);
+  background: #fff;          
+  color: #111;               
   padding: 45px 35px;
   text-align: center;
   border-radius: 22px;
-  color: #FFD700;
-  box-shadow: 0 0 40px rgba(255, 215, 0, 0.13);
+  box-shadow: 0 0 40px rgba(0,0,0,0.13);
   max-width: 600px;
   width: 100%;
 }
+
 
 @media (max-width: 700px) {
   .checkout-glass, .success-popup {
