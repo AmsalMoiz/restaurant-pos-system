@@ -114,8 +114,18 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     const tax = Number((taxedSubtotal * taxRate).toFixed(2));
     const tip = Number((taxedSubtotal * getTipRate()).toFixed(2));
     const total = Number((taxedSubtotal + tax + tip).toFixed(2));
-
     const newOrderNum = generateOrderNumber();
+
+    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    orders.push({
+      orderNumber: newOrderNum,
+      date: new Date().toISOString(),
+      items: cartItems,
+      total: total,
+      address: `${form.street}, ${form.city}, ${form.state} ${form.zip}`,
+      holder: form.holder,
+    });
+    localStorage.setItem('orders', JSON.stringify(orders));
 
     setReceipt({
       orderNumber: newOrderNum,

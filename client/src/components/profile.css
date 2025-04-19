@@ -1,23 +1,69 @@
 :root {
     --soft-gold: #E7CD78;
+    --dark-bg: #181818;
+    --text-light: #f9f5dc;
+    --text-muted: #aaa;
+    --border-color: #333;
   }
   
   .profile-wrapper {
     display: flex;
     min-height: 100vh;
-    background: #181818;
+    background: var(--dark-bg);
   }
   
-  .profile-left {
+  .profile-content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 70px 40px 70px 8vw;
-    background: #181818;
     min-width: 340px;
+    background: var(--dark-bg);
+    padding: 40px 40px 40px 8vw;
+    color: var(--text-light);
+  }
+  
+  .profile-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .tab-button {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.2s;
     position: relative;
+  }
+  
+  .tab-button.active {
+    color: var(--soft-gold);
+    font-weight: 500;
+  }
+  
+  .tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--soft-gold);
+  }
+  
+  .tab-button:hover {
+    color: var(--text-light);
+  }
+  
+  .profile-info-tab {
+    padding: 20px 0;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
   }
   
   .profile-initials-circle {
@@ -33,18 +79,12 @@
     justify-content: center;
     border: 2.5px solid #fff;
     box-shadow: 0 0 8px rgba(0,0,0,0.10);
-    margin-bottom: 28px;
-  }
-  
-  .profile-info-section {
-    color: #f9f5dc;
-    width: 100%;
+    margin-right: 20px;
   }
   
   .profile-title {
     font-size: 2.2em;
     font-weight: bold;
-    margin-bottom: 16px;
     color: var(--soft-gold);
     letter-spacing: 0.5px;
   }
@@ -53,8 +93,9 @@
     margin-top: 18px;
     font-size: 1.09em;
     line-height: 1.9;
-    color: #f9f5dc;
+    color: var(--text-light);
   }
+  
   .profile-details-list span {
     color: var(--soft-gold);
     font-weight: 600;
@@ -66,6 +107,7 @@
     display: flex;
     gap: 18px;
   }
+  
   .profile-actions button {
     background: var(--soft-gold);
     color: #222;
@@ -78,13 +120,16 @@
     box-shadow: 0 0 12px rgba(231,205,120,0.16);
     transition: background 0.2s;
   }
+  
   .profile-actions button.delete {
     background: #e57373;
     color: #fff;
   }
+  
   .profile-actions button:hover {
     background: #f1e3a4;
   }
+  
   .profile-actions button.delete:hover {
     background: #d32f2f;
   }
@@ -98,6 +143,7 @@
     background: #444;
     overflow: hidden;
   }
+  
   .profile-side-img {
     width: 100%;
     height: 100vh;
@@ -111,7 +157,7 @@
     .profile-wrapper {
       flex-direction: column;
     }
-    .profile-right, .profile-left {
+    .profile-right, .profile-content {
       min-width: 0;
       width: 100%;
       padding: 40px 6vw;

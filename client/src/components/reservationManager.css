@@ -1,0 +1,245 @@
+.reservation-manager {
+    width: 100%;
+    color: var(--text-light);
+  }
+  
+  .reservation-manager h2 {
+    color: var(--soft-gold);
+    font-size: 2em;
+    margin-bottom: 25px;
+  }
+  
+  .reservation-manager h3 {
+    font-size: 1.4em;
+    margin: 30px 0 15px;
+    color: var(--text-light);
+  }
+  
+  .past-title {
+    opacity: 0.8;
+  }
+  
+  .loading, .no-reservations {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-muted);
+  }
+  
+  .book-now-btn, .view-menu-btn {
+    background: var(--soft-gold);
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .book-now-btn:hover, .view-menu-btn:hover {
+    background: #f1e3a4;
+  }
+  
+  .reservation-card {
+    background: rgba(40, 40, 40, 0.7);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+  
+  .reservation-card:hover {
+    background: rgba(50, 50, 50, 0.8);
+  }
+  
+  .reservation-card.past {
+    opacity: 0.7;
+  }
+  
+  .reservation-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  
+  .table-number {
+    font-weight: bold;
+    color: var(--soft-gold);
+  }
+  
+  .reservation-status {
+    background: #4caf50;
+    color: white;
+    border-radius: 12px;
+    padding: 3px 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+  }
+  
+  .reservation-status.completed {
+    background: #666;
+  }
+  
+  .reservation-details {
+    margin-bottom: 15px;
+  }
+  
+  .reservation-date, .reservation-time {
+    display: inline-block;
+    margin-right: 20px;
+  }
+  
+  .reservation-guests {
+    margin-top: 5px;
+    color: var(--text-muted);
+  }
+  
+  .reservation-notes {
+    margin-top: 10px;
+    font-size: 0.95em;
+    color: var(--text-muted);
+  }
+  
+  .reservation-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .modify-btn, .cancel-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .modify-btn {
+    background: #2196f3;
+    color: white;
+  }
+  
+  .cancel-btn {
+    background: transparent;
+    color: #ff5c5c;
+    border: 1px solid #ff5c5c;
+  }
+  
+  .modify-btn:hover {
+    background: #1976d2;
+  }
+  
+  .cancel-btn:hover {
+    background: rgba(255, 92, 92, 0.1);
+  }
+  
+  /* Modal styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modify-modal, .cancel-modal {
+    background: #222;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+  }
+  
+  .close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .modify-modal h3, .cancel-modal h3 {
+    color: var(--soft-gold);
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-light);
+  }
+  
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #333;
+    color: #fff;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+  }
+  
+  .save-changes, .confirm-cancel {
+    background: var(--soft-gold);
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .cancel-changes, .keep-reservation {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .confirm-cancel {
+    background: #ff5c5c;
+    color: white;
+  }
+  
+  .success-message, .error-message {
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .success-message {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+    border: 1px solid #4caf50;
+  }
+  
+  .error-message {
+    background: rgba(255, 92, 92, 0.1);
+    color: #ff5c5c;
+    border: 1px solid #ff5c5c;
+  }
+  
