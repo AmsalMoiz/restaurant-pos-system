@@ -207,7 +207,7 @@ router.post('/api/generate-sales-report/list', async (req, res) => {
             JOIN transaction_items ti ON t.transaction_id = ti.transaction_id
             JOIN items i ON ti.item_id = i.item_id
             WHERE t.transaction_id IN (${placeholders})
-            ORDER BY t.transaction_id, i.name
+            ORDER BY t.transaction_id DESC, i.name ASC
         `;
         console.log('Generated SQL Query:', query);
         console.log('Transaction IDs:', transactionIds);

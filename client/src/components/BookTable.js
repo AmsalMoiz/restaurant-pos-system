@@ -19,7 +19,7 @@ const barChairs = ['Bar1', 'Bar2', 'Bar3', 'Bar4', 'Bar5', 'Bar6', 'Bar7', 'Bar8
 
 const BookTable = () => {
 const [modalData, setModalData] = useState(null);
-const [reservations, setReservations] = useState([]); //comment out warnings
+//const [reservations, setReservations] = useState([]); //comment out warnings
 const [selectedDate, setSelectedDate] = useState('');
 const [selectedTime, setSelectedTime] = useState('');
 const [showConfirmation, setShowConfirmation] = useState(false);
@@ -157,20 +157,20 @@ const displayMessage = (newMessage, newMessageType, duration = 2500) => {
   
   
 
-  const getHour = (time) => {
-    // Handle MySQL 24-hour format (e.g., "19:00:00")
-    if (time.includes(":") && time.length === 8) {
-      const [h] = time.split(':').map(Number);
-      return h;
-    }
+  // const getHour = (time) => {
+  //   // Handle MySQL 24-hour format (e.g., "19:00:00")
+  //   if (time.includes(":") && time.length === 8) {
+  //     const [h] = time.split(':').map(Number);
+  //     return h;
+  //   }
   
-    // Handle 12-hour format (e.g., "7:00 PM")
-    const [hour, modifier] = time.split(' ');
-    let [h] = hour.split(':').map(Number);
-    if (modifier === 'PM' && h !== 12) h += 12;
-    if (modifier === 'AM' && h === 12) h = 0;
-    return h;
-  };
+  //   // Handle 12-hour format (e.g., "7:00 PM")
+  //   const [hour, modifier] = time.split(' ');
+  //   let [h] = hour.split(':').map(Number);
+  //   if (modifier === 'PM' && h !== 12) h += 12;
+  //   if (modifier === 'AM' && h === 12) h = 0;
+  //   return h;
+  // };
   
 
   const timeOptions = [

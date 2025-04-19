@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashCook.css"; // Reuse same styling for consistency
 
@@ -11,14 +11,14 @@ function LogHoursPage() {
     const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
     const [hoursWorked, setHoursWorked] = useState("");
     const navigate = useNavigate();
-    const timeoutId = useRef(null);
+    // const timeoutId = useRef(null);
 
-    const displayMessage = (newMessage, newMessageType, duration = 2500) => {
-        if (timeoutId.current) {
-            clearTimeout(timeoutId.current);
-        }
-        // Handle toast message here if implemented
-    };
+    // const displayMessage = (newMessage, newMessageType, duration = 2500) => {
+    //     if (timeoutId.current) {
+    //         clearTimeout(timeoutId.current);
+    //     }
+    //     // Handle toast message here if implemented
+    // };
 
     useEffect(() => {
         const userData = localStorage.getItem("user");
