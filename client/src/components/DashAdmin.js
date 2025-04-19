@@ -89,7 +89,7 @@ function DashAdmin() {
                                 
                                 {/* Reorder Alerts side */}
                                 <div className="admin-card">
-                                    <h3>Reoder Alerts</h3>
+                                    <h3>Reorder Alerts</h3>
                                     
                                     <button onClick={() => navigate('/reorder_alerts')}>View Reorder Alerts</button>
                                 </div>

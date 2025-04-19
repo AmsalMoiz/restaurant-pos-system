@@ -7,7 +7,7 @@ function ReorderAlerts() {
     //Back to Dashboard
     const navigate = useNavigate();
     const handleBackToDashboard = () => {
-        navigate('/admin-dashboard');
+        navigate(-1);
     };
     //const [adminData, setAdminData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ function ReorderAlerts() {
             const user = JSON.parse(userData);
             
             // Check if user has admin role
-            if (user.role !== 'Admin') {
+            if (user.role !== 'Admin' && user.role !== 'Manager') {
                 setError("Unauthorized access");
                 navigate('/users/login'); // Redirect to regular dashboard
                 return;
