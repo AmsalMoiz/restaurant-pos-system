@@ -20,6 +20,7 @@ router.get("/customer-report", async (req, res) => {
         const sortFieldValidated = validSortFields.includes(sortField) ? sortField : "name";
         const sortOrderValidated = validSortOrders.includes(sortOrder) ? sortOrder : "asc";
 
+        // If filter is "reservations"
         if (filter === "reservations") {
             query = `
                 SELECT 
@@ -37,6 +38,7 @@ router.get("/customer-report", async (req, res) => {
             `;
             if (hasDateRange) params.push(start, end);
 
+        // If filter is "total_spent"
         } else if (filter === "total_spent") {
             query = `
                 SELECT 
@@ -58,10 +60,9 @@ router.get("/customer-report", async (req, res) => {
                 ) AS transactions_summary ON customers.customer_id = transactions_summary.customer_id
                 ORDER BY ${sortFieldValidated} ${sortOrderValidated};
             `;
-            if (hasDateRange) {
-                params.push(start, end); // Add start and end dates for filtering
-            }
+            if (hasDateRange) params.push(start, end);
 
+        // If filter is "all"
         } else {
             query = `
                 SELECT 
@@ -78,7 +79,7 @@ router.get("/customer-report", async (req, res) => {
                         email, 
                         COUNT(reservation_id) AS reservations
                     FROM reservations
-                    ${hasDateRange ? "WHERE reservation_date BETWEEN ? AND ?" : ""}
+                    ${hasDateRange ? "WHERE date BETWEEN ? AND ?" : ""}
                     GROUP BY email
                 ) AS reservations_summary ON customers.email = reservations_summary.email
                 LEFT JOIN (
@@ -92,8 +93,10 @@ router.get("/customer-report", async (req, res) => {
                 ) AS transactions_summary ON customers.customer_id = transactions_summary.customer_id
                 ORDER BY ${sortFieldValidated} ${sortOrderValidated};
             `;
+
+            // If date range is provided, push params for both tables
             if (hasDateRange) {
-                params.push(start, end, start, end); // Add start and end dates for filtering
+                params.push(start, end, start, end); // Add start and end dates for both subqueries
             }
         }
 

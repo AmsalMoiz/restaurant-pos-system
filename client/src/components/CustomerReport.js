@@ -10,23 +10,24 @@ function CustomerReportPage() {
     const [sortField, setSortField] = useState("name");
     const [sortOrder, setSortOrder] = useState("asc");
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false); // Initially false
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
+    // Check user role on page load
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
         if (!storedUser || storedUser.role !== "Admin") {
             navigate("/users/login");
         } else {
             setUser(storedUser);
-            fetchFilteredReport();
         }
-    }, [navigate, filter]);
+    }, [navigate]); // Only run once on mount, no data fetching here
 
+    // Fetch filtered report when Generate button is clicked
     const fetchFilteredReport = async () => {
         try {
-            setLoading(true);
+            setLoading(true); // Start loading state
             const queryParams = new URLSearchParams({
                 filter,
                 ...(startDate && { start: startDate }),
@@ -48,13 +49,17 @@ function CustomerReportPage() {
             console.error(err);
             setError(err.message || "Error fetching filtered report.");
         } finally {
-            setLoading(false);
+            setLoading(false); // End loading state
         }
     };
 
     const handleLogout = () => {
         localStorage.removeItem("user");
         navigate("/users/login");
+    };
+
+    const handleGenerateClick = () => {
+        fetchFilteredReport(); // Trigger data fetch on button click
     };
 
     return (
@@ -85,27 +90,33 @@ function CustomerReportPage() {
 
                         <div className="filter-inputs">
                             {/* Start Date */}
-                            <input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                className="date-picker"
-                            />
+                            <div className="input-group">
+                                <label className="dropdown-label">From:</label>
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="date-picker"
+                                />
+                            </div>
 
                             {/* End Date */}
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                className="date-picker"
-                            />
+                            <div className="input-group">
+                                <label className="dropdown-label">To:</label>
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="date-picker"
+                                />
+                            </div>
 
-                            {/* Filter Label + Dropdown */}
+                            {/* Filter Dropdown */}
                             <div className="input-group">
                                 <label className="dropdown-label">Filter by</label>
                                 <select
                                     value={filter}
-                                    onChange={(e) => setFilter(e.target.value)}
+                                    onChange={(e) => setFilter(e.target.value)} // No API request triggered here
                                     className="filter-dropdown"
                                 >
                                     <option value="all">All</option>
@@ -114,12 +125,12 @@ function CustomerReportPage() {
                                 </select>
                             </div>
 
-                            {/* Sort Label + Dropdown */}
+                            {/* Sort Dropdown */}
                             <div className="input-group">
                                 <label className="dropdown-label">Sort by</label>
                                 <select
                                     value={sortField}
-                                    onChange={(e) => setSortField(e.target.value)}
+                                    onChange={(e) => setSortField(e.target.value)} // No API request triggered here
                                     className="sort-dropdown"
                                 >
                                     <option value="name">Last Name</option>
@@ -129,20 +140,26 @@ function CustomerReportPage() {
                                 </select>
                             </div>
 
-                            {/* Asc/Desc Dropdown */}
-                            <select
-                                value={sortOrder}
-                                onChange={(e) => setSortOrder(e.target.value)}
-                                className="sort-order-dropdown"
-                            >
-                                <option value="asc">Ascending</option>
-                                <option value="desc">Descending</option>
-                            </select>
+                            {/* Sort Order Dropdown */}
+                            <div className="input-group">
+                                <label className="dropdown-label">Order</label>
+                                <select
+                                    value={sortOrder}
+                                    onChange={(e) => setSortOrder(e.target.value)} // No API request triggered here
+                                    className="sort-order-dropdown"
+                                >
+                                    <option value="asc">Ascending</option>
+                                    <option value="desc">Descending</option>
+                                </select>
+                            </div>
 
                             {/* Generate Button */}
-                            <button onClick={fetchFilteredReport} className="generate-btn">
-                                Generate
-                            </button>
+                            <div className="input-group">
+                                <label className="dropdown-label invisible">.</label>
+                                <button onClick={handleGenerateClick} className="generate-btn">
+                                    Generate
+                                </button>
+                            </div>
                         </div>
                     </div>
 
