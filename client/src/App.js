@@ -70,6 +70,9 @@ function App() {
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
         <Route path="/profile" element={<Profile />} /> 
+
+        {/* catch all get and redirect to login, do not put routes below this */}
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );
