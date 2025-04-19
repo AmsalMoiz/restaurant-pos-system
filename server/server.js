@@ -49,15 +49,15 @@ app.get('/', (req, res) => {
   res.send('Hi, Node.js v22.14.0 backend! Connect via API to frontend!!!!!! :)');
 });
 
-app.get('/menu', async (req, res) => {
+app.get('/api/menu', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT name, description, image_name, price FROM items');
+    const [results] = await req.dbConnection.query('SELECT name, description, image_data, price FROM items');
     const menuItems = results.map(item => ({
       name: item.name,
       description: item.description,
       price: parseFloat(item.price),
-      image: item.image_name
+      image: item.image_data ? `data:image/jpeg;base64,${item.image_data.toString('base64')}` : null
     }));
     res.json(menuItems);
   } catch (err) {

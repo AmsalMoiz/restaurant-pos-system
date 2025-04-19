@@ -17,7 +17,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
     const fetchMenuItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/menu`);
+        const response = await fetch(`${API_URL}/api/menu`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -115,7 +115,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
                 onClick={() => handleCardClick(item)}
               >
                 <img
-                  src={`/images/${item.image}`}
+                  src={item.image}
                   alt={item.name}
                   className="dessert-img"
                 />
