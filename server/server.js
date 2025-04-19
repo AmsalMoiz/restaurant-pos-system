@@ -9,9 +9,11 @@ const employeeReportRoutes = require("./EmployeeReport");
 const app = express();
 const logHoursRoute = require("./logHours");
 const ItemSalesReportRoutes = require("./ItemSalesReportRoutes");
+const multer = require('multer');
+const path = require('path');
 
 app.use(cors());
-app.use(express.json()); // Middleware for JSON body parsing
+app.use(express.json({limit: '5mb' })); // Middleware for JSON body parsing, with a limit of 5mb
 app.use("/api/auth", authRoutes); // Include auth routes
 app.use("/api", logHoursRoute); // Include log hours routes
 app.use("/api/sales-report", ItemSalesReportRoutes); 
@@ -109,13 +111,14 @@ app.post('/users/login', async (req, res) => {
 app.get('/dashboard/inventory', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT items.item_id as item_id, items.name as item_name, price, quantity, reorder_threshold, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
+    const [results] = await req.dbConnection.query('SELECT items.item_id as item_id, items.name as item_name, price, quantity, reorder_threshold, image_name, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
     const inventory = results.map(item => ({
       item_id: item.item_id,
       dessert: item.item_name,
       price: parseFloat(item.price),
       quantity: item.quantity,
       limit: item.reorder_threshold,
+      image_name: item.image_name,
       supplier: item.supplier_name
     }));
     res.json(inventory);
@@ -401,31 +404,65 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.patch('/dashboard/items/:id', async (req, res) => {
-  const { id } = req.params;
-  const { dessert, price, quantity, limit, supplier } = req.body;
 
-  if (!dessert || !price || !quantity || !limit || !supplier) {
-    return res.status(400).json({ error: "All fields are required." });
-  }
+const storage = multer.memoryStorage();
+
+const upload = multer({ 
+  storage: storage, 
+  limits: { fileSize: 5 * 1024 * 1024 } // file size limit of 5MB
+});
+
+app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) => {
+  console.log('Received request to update item:', req.params.itemId);
+  const itemId = req.params.itemId;
+  const updatedItemData = req.body;
+  const newImage = req.file;
 
   try {
-    const connection = await db();
+    const connection = await req.dbConnection.getConnection();
+    let updateQuery = 'UPDATE items SET name = ?, price = ?, quantity = ?, reorder_threshold = ?, supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?) WHERE item_id = ?';
+    const updateValues = [
+      updatedItemData.dessert,
+      parseFloat(updatedItemData.price),
+      parseInt(updatedItemData.quantity),
+      parseInt(updatedItemData.limit),
+      updatedItemData.supplier,
+      itemId, // itemId for the WHERE 
+    ];
 
-    const [result] = await connection.execute(
-      `UPDATE items SET name = ?, price = ?, quantity = ?, reorder_threshold = ?, supplier_id = ?
-       WHERE item_id = ?`,
-      [dessert, price, quantity, limit, supplier, id]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Item not found." });
+    if (newImage) {
+      updateQuery = 'UPDATE items SET name = ?, price = ?, quantity = ?, reorder_threshold = ?, supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?), image_name = ?, image_data = ? WHERE item_id = ?';
+      updateValues.pop(); // Remove the itemId added earlier
+      updateValues.push(newImage.originalname, newImage.buffer, itemId); // Add image name, data, and then itemId
     }
 
-    res.json({ message: "Item updated successfully" });
+    const [updateResult] = await connection.execute(updateQuery, updateValues);
+
+    if (updateResult.affectedRows > 0) {
+      const [updatedRows] = await connection.execute(
+        'SELECT items.item_id as item_id, items.name as item_name, price, quantity, reorder_threshold, image_name, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id AND items.item_id = ?',
+        [itemId]
+      );
+      const updatedItem = updatedRows.map(item => ({
+        item_id: item.item_id,
+        dessert: item.item_name,
+        price: parseFloat(item.price),
+        quantity: item.quantity,
+        limit: item.reorder_threshold,
+        image_name: item.image_name,
+        supplier: item.supplier_name
+      }))[0];
+
+      connection.release();
+      res.json(updatedItem);
+    }
+    else {
+      connection.release();
+      return res.status(404).json({ error: 'Item not found or no changes made.' });
+    }
   } catch (error) {
-    console.error("Update item error:", error);
-    res.status(500).json({ error: "Failed to update item." });
+    console.error('Error updating item:', error);
+    res.status(500).json({ error: 'Failed to update item' });
   }
 });
 
@@ -464,20 +501,25 @@ app.delete('/dashboard/items/:id', async (req, res) => {
   }
 });
 
-app.post('/dashboard/items', async (req, res) => {
+app.post('/dashboard/items', upload.single('image'), async (req, res) => {
   const { dessert, price, quantity, limit, supplier } = req.body;
+  const newImage = req.file;
 
   if (!dessert || !price || !quantity || !limit || !supplier) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
   try {
-    const connection = await db(); // or however you connect
-    const [result] = await connection.execute(
-      `INSERT INTO items (name, price, quantity, reorder_threshold, supplier_id)
-       VALUES (?, ?, ?, ?, ?)`,
-      [dessert, price, quantity, limit, supplier]
-    );
+    const connection = await req.dbConnection.getConnection();
+    let insertQuery = `INSERT INTO items (name, price, quantity, reorder_threshold, supplier_id) VALUES (?, ?, ?, ?, (SELECT supplier_id FROM suppliers WHERE name = ?))`;
+    const insertValues = [dessert, price, quantity, limit, supplier];
+
+    if (newImage) {
+      insertQuery = `INSERT INTO items (name, price, quantity, reorder_threshold, supplier_id, image_name, image_data) VALUES (?, ?, ?, ?, (SELECT supplier_id FROM suppliers WHERE name = ?), ?, ?)`;
+      insertValues.push(newImage.originalname, newImage.buffer);
+    }
+
+    const [result] = await connection.execute(insertQuery, insertValues);
 
     const newItem = {
       item_id: result.insertId,
@@ -485,9 +527,11 @@ app.post('/dashboard/items', async (req, res) => {
       price: parseFloat(price),
       quantity,
       limit,
-      supplier
+      supplier,
+      image_name: newImage ? newImage.originalname : null,
     };
 
+    connection.release();
     res.status(201).json(newItem);
   } catch (error) {
     console.error("Add item error:", error);

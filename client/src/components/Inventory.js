@@ -15,6 +15,7 @@ function InventoryPage() {
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const addRowRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -29,20 +30,48 @@ function InventoryPage() {
     fetchInventory();
   }, []);
 
+  const handleImageChange = (event) => {
+    setSelectedImage(event.target.files[0]);
+  };
+
   const handleUpdateItem = async (itemId) => {
+    const formData = new FormData();
+  
+    // Append the text data from editedItemData
+    formData.append('dessert', editedItemData.dessert || '');
+    formData.append('price', editedItemData.price || '');
+    formData.append('quantity', editedItemData.quantity || '');
+    formData.append('limit', editedItemData.limit || '');
+    formData.append('supplier', editedItemData.supplier || '');
+  
+    // Append the selected image file (if any)
+    if (selectedImage) {
+      formData.append('image', selectedImage); // 'image' is the field name your backend will expect
+    }
+
     try {
       const response = await fetch(`${API_URL}/dashboard/items/${itemId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editedItemData),
+        body: formData, // Use FormData for file uploads
+        // Remove the Content-Type header, FormData sets it automatically
       });
-      if (!response.ok) throw new Error("Update failed");
-      setInventory((prev) => prev.map((item) => (item.item_id === itemId ? { ...item, ...editedItemData } : item)));
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Update failed with status:", response.status, "and message:", errorText);
+        throw new Error(`Update failed with status ${response.status}`);
+      }
+      const updatedItem = await response.json();
+      console.log("Updated Item Data:", updatedItem);
+      setInventory((prev) =>
+        prev.map((item) => (item.item_id === itemId ? updatedItem : item))
+      );
       setEditingItemId(null);
       setEditedItemData({});
+      setSelectedImage(null);
     } catch (err) {
       console.error("Update item error:", err);
-      alert("Failed to update item.");
+      alert("Failed to update item. Image file name may be too long or the image size is too big.");
     }
   };
 
@@ -51,24 +80,48 @@ function InventoryPage() {
       alert("All fields must be filled out.");
       return;
     }
+
+    const formData = new FormData();
+    formData.append('dessert', newItem.dessert);
+    formData.append('price', newItem.price);
+    formData.append('quantity', newItem.quantity);
+    formData.append('limit', newItem.limit);
+    formData.append('supplier', newItem.supplier);
+
+    if (selectedImage) {
+      formData.append('image', selectedImage);
+    }
+
     setShowConfirmPopup(true);
   };
 
   const confirmAddItem = async () => {
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('dessert', newItem.dessert);
+    formDataToSend.append('price', newItem.price);
+    formDataToSend.append('quantity', newItem.quantity);
+    formDataToSend.append('limit', newItem.limit);
+    formDataToSend.append('supplier', newItem.supplier);
+    if (selectedImage) {
+      formDataToSend.append('image', selectedImage);
+    }
+
     try {
       const response = await fetch(`${API_URL}/dashboard/items`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newItem),
+        // headers: { "Content-Type": "application/json" },
+        body: formDataToSend,
       });
       if (!response.ok) throw new Error("Add failed");
       const addedItem = await response.json();
       setInventory((prev) => [...prev, addedItem]);
       setNewItem(null);
       setShowConfirmPopup(false);
+      setSelectedImage(null);
     } catch (err) {
       console.error("Add item error:", err);
-      alert("Failed to add item.");
+      alert("Failed to add item. Image file name may be too long or the image size is too big.");
     }
   };
 
@@ -122,6 +175,7 @@ function InventoryPage() {
                       <th>Quantity</th>
                       <th>Limit</th>
                       <th>Supplier</th>
+                      <th>Image Name</th>
                       {editMode && <th>Actions</th>}
                     </tr>
                   </thead>
@@ -135,9 +189,10 @@ function InventoryPage() {
                             <td><input type="number" value={editedItemData.quantity || ''} onChange={(e) => setEditedItemData({ ...editedItemData, quantity: e.target.value })} /></td>
                             <td><input type="number" value={editedItemData.limit || ''} onChange={(e) => setEditedItemData({ ...editedItemData, limit: e.target.value })} /></td>
                             <td><input value={editedItemData.supplier || ''} onChange={(e) => setEditedItemData({ ...editedItemData, supplier: e.target.value })} /></td>
+                            <td><input type="file" accept="image/*" onChange={handleImageChange} /></td>
                             <td>
                               <button onClick={() => setEditingItemId(null)}>Cancel</button>
-                              <button onClick={() => handleUpdateItem(item.item_id)}>Save</button>
+                              <button onClick={() => {console.log("Save button clicked for item ID:", item.item_id); handleUpdateItem(item.item_id)}}>Save</button>
                             </td>
                           </>
                         ) : (
@@ -147,6 +202,7 @@ function InventoryPage() {
                             <td>{item.quantity}</td>
                             <td>{item.limit}</td>
                             <td>{item.supplier}</td>
+                            <td>{item.image_name}</td> 
                             {editMode && (
                               <td style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <button className="delete-btn" onClick={() => { setItemToDelete(item); setShowDeletePopup(true); }}>
@@ -166,6 +222,7 @@ function InventoryPage() {
                         <td><input type="number" placeholder="Qty" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} /></td>
                         <td><input type="number" placeholder="Limit" value={newItem.limit} onChange={(e) => setNewItem({ ...newItem, limit: e.target.value })} /></td>
                         <td><input placeholder="Supplier" value={newItem.supplier} onChange={(e) => setNewItem({ ...newItem, supplier: e.target.value })} /></td>
+                        <td><input type="file" accept="image/*" onChange={handleImageChange} /></td>
                         <td>
                           <button onClick={() => setNewItem(null)}>Cancel</button>
                           <button onClick={handleAddItem}>Submit</button>
