@@ -14,12 +14,21 @@ function getInitials(name) {
 }
 
 const Profile = () => {
-  const user = JSON.parse(localStorage.getItem('user')) || {
-    name: 'Guest User',
-    phone: '+1 (555) 123-4567',
-    address: '123 Main St, Anytown, NY 12345',
-    email: 'guest@example.com',
-  };
+    const user = JSON.parse(localStorage.getItem('user')) || {
+        name: 'Guest User',
+        phone: '+1 (555) 123-4567',
+        address: '123 Main St, Anytown, NY 12345',
+        email: 'guest@example.com',
+        street: '',
+        city: '',
+        state: '',
+        zip: ''
+      };
+      
+      const address =
+        user.address ||
+        [user.street, user.city, user.state, user.zip].filter(Boolean).join(', ');
+            
 
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -66,8 +75,8 @@ const Profile = () => {
                 <div><span>Name:</span>{user.name}</div>
                 <div><span>Email:</span>{user.email}</div>
                 <div><span>Phone:</span>{user.phone}</div>
-                <div><span>Address:</span>{user.address}</div>
-              </div>
+                <div><span>Address:</span> {address}</div>
+                </div>
               <div className="profile-actions">
                 <button onClick={() => setShowEdit(true)}>Edit Profile</button>
                 <button className="delete" onClick={() => setShowDelete(true)}>Delete Account</button>

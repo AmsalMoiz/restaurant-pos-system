@@ -24,13 +24,19 @@ import CustomerReport from './components/CustomerReport';
 import Suppliers from './components/Suppliers';
 import EmployeeSalesReports from './components/EmployeeSalesReports';
 import ReorderAlerts from './components/ReorderAlerts';
-import Profile from './components/Profile'; 
+import Profile from './components/Profile';
+import ProfileCreateAccount from './components/ProfileCreateAccount'; // Added this import
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
+  const [showSignupModal, setShowSignupModal] = useState(false);
 
   const handleUserLogin = (userData) => {
     console.log('User logged in:', userData);
+  };
+
+  const handleOpenSignupModal = () => {
+    setShowSignupModal(true);
   };
 
   return (
@@ -69,7 +75,16 @@ function App() {
         <Route path="/suppliers" element={<Suppliers />} />
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
-        <Route path="/profile" element={<Profile />} /> 
+        
+
+        <Route 
+          path="/profile" 
+          element={
+            localStorage.getItem("user") 
+              ? <Profile /> 
+              : <ProfileCreateAccount onOpenSignupModal={handleOpenSignupModal} />
+          } 
+        />
       </Routes>
     </Router>
   );

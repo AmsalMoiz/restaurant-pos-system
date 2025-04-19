@@ -6,7 +6,6 @@ import NavbarCustomer from './NavbarCustomer';
 const CustomerDashboard = ({ customerName }) => {
   const navigate = useNavigate();
 
-  // Safe parsing of user from localStorage
   let user = null;
   try {
     user = JSON.parse(localStorage.getItem("user"));
@@ -16,7 +15,6 @@ const CustomerDashboard = ({ customerName }) => {
 
   const firstName = user?.name?.split(" ")[0] || "Guest";
 
-  // Optional redirect if no user found
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -36,7 +34,6 @@ const CustomerDashboard = ({ customerName }) => {
             <div className="hero-content">
               <p className="subtitle">Intimate dining restaurant</p>
               <h1 className="main-title">Sweet Heaven</h1>
-
               <div className="hours-section">
                 <div className="hours-grid">
                   {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, idx) => (
@@ -63,7 +60,6 @@ const CustomerDashboard = ({ customerName }) => {
               </div>
             </div>
           </div>
-
           {/* SECTION 2 */}
           <div className="menu-preview-section">
             <div className="menu-preview-overlay">
@@ -87,7 +83,6 @@ const CustomerDashboard = ({ customerName }) => {
               </div>
             </div>
           </div>
-
           {/* SECTION 3 */}
           <div className="hero-final-band">
             <h2 className="final-title">We look forward to having you dine with us</h2>

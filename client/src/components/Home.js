@@ -1,12 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './home.css';
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from './Navbar'; 
+import UserSignupModal from './UserSignupModal';
 
 const Home = () => {
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSignup = (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    setShowSignupModal(false);
+    setErrorMessage('');
+    window.location.reload();
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar onOpenSignupModal={() => setShowSignupModal(true)} />
+      {showSignupModal && (
+        <UserSignupModal
+          onSignup={handleSignup}
+          onClose={() => setShowSignupModal(false)}
+          showSignupModal={showSignupModal}
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
+        />
+      )}
       <div
         className="home-background"
         style={{
@@ -19,7 +39,6 @@ const Home = () => {
             <div className="hero-content">
               <p className="subtitle">Intimate dining restaurant</p>
               <h1 className="main-title">Sweet Heaven</h1>
-
               <div className="hours-section">
                 <div className="hours-grid">
                   {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, idx) => (
@@ -46,7 +65,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
           {/* SECTION 2 */}
           <div className="menu-preview-section">
             <div className="menu-preview-overlay">
@@ -60,7 +78,7 @@ const Home = () => {
                     signature libations, and impeccable service in a setting of understated elegance.
                   </p>
                   <div className="menu-buttons">
-                    <Link to="/Book-Table" className="menu-btn outlined">Reserve your table</Link>
+                    <Link to="/book-table" className="menu-btn outlined">Reserve your table</Link>
                     <Link to="/menu" className="menu-btn filled">View Menu</Link>
                   </div>
                 </div>
@@ -70,7 +88,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
           {/* SECTION 3 */}
           <div className="hero-final-band">
             <h2 className="final-title">We look forward to having you dine with us</h2>
