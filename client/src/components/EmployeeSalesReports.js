@@ -148,10 +148,10 @@ function EmployeeSalesReports() {
 
     return (
     <div className="admin-section">
-        <div className="section-header">
-            <h2>Employee Sales Reports</h2>
-            <button className="back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
-        </div>
+        <header className="section-header">
+            <h1>Employee Sales Reports</h1>
+            <button className="t-back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
+        </header>
         
         <div className="report-controls">
             <label htmlFor="report-type">Select Report Type:</label>
@@ -290,7 +290,7 @@ function EmployeeSalesReports() {
                             <div className="form-group">
                                 <label htmlFor="start_date">Start Date:</label>
                                 <input 
-                                    className="date-input" 
+                                    className="esr-date-input" 
                                     id="start_date" 
                                     type="date" 
                                     required
@@ -298,13 +298,14 @@ function EmployeeSalesReports() {
                             
                                 <label htmlFor="end_date">End Date:</label>
                                 <input 
-                                    className="date-input" 
+                                    className="esr-date-input" 
                                     id="end_date" 
                                     type="date" 
                                     required
                                 />
-                            
+                                <div>
                                 <button type="submit" className="generate-btn">Generate Report</button>
+                                </div>
                             </div>
                         </div>
                     </form>

@@ -28,7 +28,7 @@ const dbErrorHandler = async (req, res, next) => {
   try {
     req.dbConnection = await db(); // Get database connection
     // Sets timezone to Central Time Zone
-    //await req.dbConnection.query("SET time_zone = '-10:00'");
+    await req.dbConnection.query("SET time_zone = '-10:00'");
     next();
   } catch (error) {
     console.error('Database connection error in middleware:', error);

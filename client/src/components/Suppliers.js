@@ -233,16 +233,16 @@ function Suppliers() {
     
     return (
         <div className="admin-section">
-                                <div className="section-header">
-                                <h2>Supplier Management</h2>
-                                <button className="back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
-                                </div>
+                                <header className="section-header">
+                                <h1>Supplier Management</h1>
+                                <button className="t-back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
+                                </header>
         
                                 <div className="suppliers-management-container">
                                 <div className="suppliers-controls">
                                     <h3>Suppliers</h3>
                                     <button 
-                                    className="add-supplier-btn"
+                                    className={`add-supplier-btn ${showAddSupplierForm ? 'cancel-mode' : ''}`}
                                     onClick={() => {
                                         setShowAddSupplierForm(!showAddSupplierForm);
                                         setSupplierFormData({
