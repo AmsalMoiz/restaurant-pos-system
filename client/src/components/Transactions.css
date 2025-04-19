@@ -1,5 +1,14 @@
-/* Transactions Styles order-config-section*/
-
+/* Transactions Styles order-config-section section-heade r*/
+.t-section-header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
 
 .transactions-container {
     font-family: Arial, sans-serif;
@@ -7,6 +16,19 @@
     margin: 0 auto;
   }
   
+  .t-back-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .t-back-btn:hover {
+    background-color: #2980b9;
+  }
   .back-btn {
     background-color: #3498db;
     color: white;

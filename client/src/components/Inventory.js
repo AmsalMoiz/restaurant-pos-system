@@ -138,7 +138,7 @@ function InventoryPage() {
   };
 
   return (
-    <div className="admin-dashboard-body">
+    <div className="i-admin-dashboard-body">
       <div className="admin-dashboard">
         <header className="admin-header">
           <h1>Inventory Management</h1>

@@ -21,6 +21,8 @@ import ItemSalesReport from './components/ItemSalesReport';
 import CustomerDashboard from './components/CustomerDashboard';
 import Transactions from './components/Transactions';
 import CustomerReport from './components/CustomerReport'; // Import the CustomerReport component
+import Suppliers from './components/Suppliers';
+import EmployeeSalesReports from './components/EmployeeSalesReports';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -62,6 +64,8 @@ function App() {
         <Route path="/employees" element={<EmployeesPage />} />
         <Route path="/customer-dashboard" element={<CustomerDashboard />} />
         <Route path="/customer-report" element={<CustomerReport />} /> {/* Add the route for Customer Reports */}
+        <Route path="/suppliers" element={<Suppliers />} />
+        <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
       </Routes>
     </Router>
   );

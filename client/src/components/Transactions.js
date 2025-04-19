@@ -276,10 +276,10 @@ function Transactions() {
     
     return (
         <div className="admin-section">
-                        <div className="section-header">
-                        <h2>Checkout</h2>
-                        <button className="back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
-                        </div>
+                        <header className="t-section-header">
+                        <h1>Checkout</h1>
+                        <button className="t-back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
+                        </header>
                         
                         <div className="checkout-container">
                         {checkoutStep === 'items' && (
