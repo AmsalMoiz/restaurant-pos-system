@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CustomerReport.css";
 
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+
 function CustomerReportPage() {
     const [filteredCustomers, setFilteredCustomers] = useState([]);
     const [filter, setFilter] = useState("all");
@@ -36,7 +38,7 @@ function CustomerReportPage() {
                 sortOrder,
             });
 
-            const res = await fetch(`http://localhost:3001/api/customer-report?${queryParams.toString()}`);
+            const res = await fetch(`${API_BASE}/api/customer-report?${queryParams.toString()}`);
             const data = await res.json();
 
             if (!res.ok) {

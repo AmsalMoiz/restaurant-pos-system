@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Inventory.css";
 
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 function InventoryPage() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function InventoryPage() {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await fetch(`${API_URL}/dashboard/inventory`);
+        const response = await fetch(`${API_BASE}/dashboard/inventory`);
         const data = await response.json();
         setInventory(data);
       } catch (err) {
@@ -50,7 +50,7 @@ function InventoryPage() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/dashboard/items/${itemId}`, {
+      const response = await fetch(`${API_BASE}/dashboard/items/${itemId}`, {
         method: "PATCH",
         body: formData, // Use FormData for file uploads
         // Remove the Content-Type header, FormData sets it automatically
@@ -108,7 +108,7 @@ function InventoryPage() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/dashboard/items`, {
+      const response = await fetch(`${API_BASE}/dashboard/items`, {
         method: "POST",
         // headers: { "Content-Type": "application/json" },
         body: formDataToSend,
@@ -127,7 +127,7 @@ function InventoryPage() {
 
   const confirmDeleteItem = async () => {
     try {
-      const response = await fetch(`${API_URL}/dashboard/items/${itemToDelete.item_id}`, { method: "DELETE" });
+      const response = await fetch(`${API_BASE}/dashboard/items/${itemToDelete.item_id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Delete failed");
       setInventory((prev) => prev.filter((item) => item.item_id !== itemToDelete.item_id));
       setItemToDelete(null);

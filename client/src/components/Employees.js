@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Employees.css";
 
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 function EmployeesPage() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function EmployeesPage() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const res = await fetch(`${API_URL}/dashboard/users`);
+        const res = await fetch(`${API_BASE}/dashboard/users`);
         const data = await res.json();
         setEmployees(data);
       } catch (err) {
@@ -30,7 +30,7 @@ function EmployeesPage() {
 
   const handleUpdateEmployee = async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/dashboard/users/update/${userId}`, {
+      const response = await fetch(`${API_BASE}/dashboard/users/update/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedEmployeeData),
@@ -54,7 +54,7 @@ function EmployeesPage() {
 
   const confirmAddEmployee = async () => {
     try {
-      const response = await fetch(`${API_URL}/dashboard/users/insert`, {
+      const response = await fetch(`${API_BASE}/dashboard/users/insert`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newEmployee),
@@ -71,7 +71,7 @@ function EmployeesPage() {
 
   const handleDeleteEmployee = async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/dashboard/users/delete/${userId}`, { method: "DELETE" });
+      const response = await fetch(`${API_BASE}/dashboard/users/delete/${userId}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Delete failed");
       setEmployees((prev) => prev.filter((emp) => emp.user_id !== userId));
       setEmployeeToDelete(null);

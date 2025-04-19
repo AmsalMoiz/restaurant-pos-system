@@ -3,6 +3,7 @@ import './bookTable.css';
 import ReservationModal from './ReservationModal';
 import Navbar from './Navbar';
 
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 const tables = [
   ['A1', 'A2', 'A3', 'A4', 'A5'],
@@ -18,7 +19,7 @@ const barChairs = ['Bar1', 'Bar2', 'Bar3', 'Bar4', 'Bar5', 'Bar6', 'Bar7', 'Bar8
 
 const BookTable = () => {
 const [modalData, setModalData] = useState(null);
-const [reservations, setReservations] = useState([]);
+const [reservations, setReservations] = useState([]); //comment out warnings
 const [selectedDate, setSelectedDate] = useState('');
 const [selectedTime, setSelectedTime] = useState('');
 const [showConfirmation, setShowConfirmation] = useState(false);
@@ -93,7 +94,7 @@ const displayMessage = (newMessage, newMessageType, duration = 2500) => {
     };
   
     try {
-      const response = await fetch("http://localhost:3001/api/reservations", {
+      const response = await fetch(`${API_BASE}/api/reservations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -207,7 +208,7 @@ const displayMessage = (newMessage, newMessageType, duration = 2500) => {
   
     const fetchReservations = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/reservations?date=${selectedDate}`);
+        const res = await fetch(`${API_BASE}/api/reservations?date=${selectedDate}`);
         const data = await res.json();
         setBookedTables(data);
         console.log("Fetched reservations from DB:", data);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ReorderAlerts.css";
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 function ReorderAlerts() {
     //Back to Dashboard
@@ -21,7 +21,7 @@ function ReorderAlerts() {
     // FETCH REORDER ALERTS
     const fetchReorderAlerts = async () => {
         try {
-            const response = await fetch(`${API_URL}/dashboard/reorder_alerts`);
+            const response = await fetch(`${API_BASE}/dashboard/reorder_alerts`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashCook.css"; // Reuse same styling for consistency
 
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+
 function LogHoursPage() {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ function LogHoursPage() {
         }
 
         try {
-            const res = await fetch("http://localhost:3001/api/log-hours", {
+            const res = await fetch(`${API_BASE}/api/log-hours`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

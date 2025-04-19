@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Suppliers.css";
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 function Suppliers() {
     //Back to Dashboard
@@ -46,7 +46,7 @@ function Suppliers() {
         // FETCH SUPPLIERS
         const fetchSuppliers = async () => {
             try {
-                const response = await fetch(`${API_URL}/dashboard/suppliers`);
+                const response = await fetch(`${API_BASE}/dashboard/suppliers`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -69,7 +69,7 @@ function Suppliers() {
             setSupplierSubmitLoading(true);
             
             try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/insert`, {
+            const response = await fetch(`${API_BASE}/dashboard/suppliers/insert`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ function Suppliers() {
             setSupplierSubmitLoading(true);
             
             try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/delete`, {
+            const response = await fetch(`${API_BASE}/dashboard/suppliers/delete`, {
                 method: 'DELETE',
                 headers: {
                 'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ function Suppliers() {
             setUpdateSupplierSubmitLoading(true);
             
             try {
-            const response = await fetch(`${API_URL}/dashboard/suppliers/update`, {
+            const response = await fetch(`${API_BASE}/dashboard/suppliers/update`, {
                 method: 'PATCH',
                 headers: {
                 'Content-Type': 'application/json',

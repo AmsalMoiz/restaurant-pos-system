@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./EmployeeSalesReports.css";
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 function EmployeeSalesReports() {
     //Back to Dashboard
@@ -24,7 +24,7 @@ function EmployeeSalesReports() {
     // FETCH EMPLOYEE MONTHLY SALES REPORT
     const fetchEmployeeMonthlyReport = async () => {
         try {
-            const reponse = await fetch(`${API_URL}/dashboard/monthly`);
+            const reponse = await fetch(`${API_BASE}/dashboard/monthly`);
             if (!reponse.ok) {
                 throw new Error(`HTTP error! Status: ${reponse.status}`);
             }
@@ -41,7 +41,7 @@ function EmployeeSalesReports() {
     // FETCH EMPLOYEE WEEKLY SALES REPORT
     const fetchEmployeeWeeklyReport = async () => {
         try {
-            const reponse = await fetch(`${API_URL}/dashboard/weekly`);
+            const reponse = await fetch(`${API_BASE}/dashboard/weekly`);
             if (!reponse.ok) {
                 throw new Error(`HTTP error! Status: ${reponse.status}`);
             }
@@ -58,7 +58,7 @@ function EmployeeSalesReports() {
     // FETCH EMPLOYEE DAILY SALES REPORT
     const fetchEmployeeDailyReport = async () => {
         try {
-            const reponse = await fetch(`${API_URL}/dashboard/daily`);
+            const reponse = await fetch(`${API_BASE}/dashboard/daily`);
             if (!reponse.ok) {
                 throw new Error(`HTTP error! Status: ${reponse.status}`);
             }
@@ -84,7 +84,7 @@ function EmployeeSalesReports() {
             return;
         }
         try {
-            const reponse = await fetch(`${API_URL}/dashboard/custom`, {
+            const reponse = await fetch(`${API_BASE}/dashboard/custom`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

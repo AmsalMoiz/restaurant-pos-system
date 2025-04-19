@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import "./login.css";
 import UserSignupModal from "./UserSignupModal"; 
 
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +37,7 @@ const Login = () => {
     e.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:3001/api/auth/login", {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -66,7 +68,7 @@ const Login = () => {
   const [modalErrorMessage, setModalErrorMessage] = useState("")
   const handleSignup = async (formData) => {
     try {
-      const response = await fetch("http://localhost:3001/api/auth/register", {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
