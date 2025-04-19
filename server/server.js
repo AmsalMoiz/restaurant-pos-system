@@ -10,13 +10,14 @@ const app = express();
 const logHoursRoute = require("./logHours");
 const ItemSalesReportRoutes = require("./ItemSalesReportRoutes");
 const multer = require('multer');
-const path = require('path');
+const customerReportRoutes = require("./CustomerReport");
 
 app.use(cors());
 app.use(express.json({limit: '5mb' })); // Middleware for JSON body parsing, with a limit of 5mb
 app.use("/api/auth", authRoutes); // Include auth routes
 app.use("/api", logHoursRoute); // Include log hours routes
 app.use("/api/sales-report", ItemSalesReportRoutes); 
+app.use("/api", customerReportRoutes); // Add this line to include customer report routes
 
 
 

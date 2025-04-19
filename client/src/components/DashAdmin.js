@@ -433,6 +433,13 @@ function DashAdmin() {
                                     <p>View daily, weekly, and monthly employee sales</p>
                                     <button onClick={() => handleSectionClick('employee-reports')}>View Reports</button>
                                 </div>
+
+                                {/* Customer Reports */}
+                                <div className="admin-card">
+                                    <h3>Customer Reports</h3>
+                                    <p>Analyze customer behavior and trends</p>
+                                    <button onClick={() => navigate('/customer-report')}>View Reports</button>
+                                </div>
                             </div>
                         </div>
                     )}
