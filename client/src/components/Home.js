@@ -1,9 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './home.css';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+
 const Home = () => {
+  const [itemName, setItemName] = useState('');
+  const [itemImage, setItemImage] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSingleItemImage = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE}/api/customer/image`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setItemName(data.name);
+        setItemImage(data.image);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching single item name and image:", err);
+        setError("Failed to load item image. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSingleItemImage();
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -65,7 +96,10 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="menu-image">
-                  <img src="/images/tiramisuNoir.jpg" alt="Tiramisu Noir" />
+                  {itemImage && <img src={itemImage} alt={itemName} />} {/* conflicted because this is a DB project, but for one image on a page that just sits there, it almost makes sense to statically get it, i will do db approach tho as db will have under 100 item images and img is in KBs */}
+                  {!itemImage && error && <p className="error-message">{error}</p>}
+                  {!itemImage && !error && loading && <p>Loading image...</p>}
+                  {!itemImage && !error && !loading && <p>Image could not be loaded</p>}
                 </div>
               </div>
             </div>
