@@ -1,0 +1,209 @@
+.report-dashboard-body {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.report-dashboard {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.report-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.report-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.report-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.date-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.date-inputs input[type="date"],
+.date-inputs button,
+.filter-dropdown,
+.sort-dropdown,
+.date-picker,
+.sort-order-dropdown {
+    padding: 8px 12px; /* Keep padding consistent */
+    font-size: 16px; /* Adjust font size for uniformity */
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 160px; /* Set a consistent width */
+    height: 40px; /* Set a consistent height */
+}
+
+.date-inputs button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.date-inputs button:hover {
+    background-color: #2980b9;
+}
+
+.report-table-container {
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.report-table th,
+.report-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.report-table th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.loading {
+    text-align: center;
+    font-size: 18px;
+    padding: 40px;
+    color: #7f8c8d;
+}
+
+.error-container {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* Back Button */
+.back-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 16px; /* Smaller padding */
+    width: auto; /* Allow the button to shrink dynamically */
+    max-width: 120px; /* Optional: Set a maximum width */
+    border-radius: 6px;
+    border: none;
+    font-size: 16px; /* Slightly smaller font size */
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: #c0392b;
+}
+
+.filter-inputs {
+    display: flex; /* Use flexbox to align items horizontally */
+    gap: 10px; /* Add spacing between elements */
+    align-items: center; /* Vertically align items */
+}
+
+.filter-inputs .input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-picker,
+.sort-order-dropdown,
+.filter-dropdown,
+.sort-dropdown {
+    width: 160px; /* Set the same width for all inputs */
+    height: 40px; /* Set the same height for all inputs */
+    padding: 8px 12px; /* Keep padding consistent */
+    font-size: 16px;
+}
+
+.input-group .dropdown-label {
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    text-align: center; /* Center the label */
+}
+
+@media (max-width: 768px) {
+    .date-inputs {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .date-inputs input,
+    .date-inputs button,
+    .filter-dropdown,
+    .sort-dropdown,
+    .date-picker,
+    .sort-order-dropdown {
+        width: 100%; /* Ensure they take full width on smaller screens */
+        max-width: 300px; /* Optional: limit max-width for better appearance */
+    }
+
+    .report-table th,
+    .report-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* moves the button to the right */
+    margin-top: 15px;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between; /* Space between the placeholder, heading, and button */
+    align-items: center; /* Vertically align items */
+    margin-bottom: 15px;
+    position: relative; /* Allow absolute positioning for the heading */
+}
+
+.filter-header h2 {
+    position: absolute; /* Position the heading absolutely */
+    left: 50%; /* Move the heading to the center horizontally */
+    transform: translateX(-50%); /* Adjust for the heading's width */
+    margin: 0; /* Remove default margin */
+    font-size: 20px; /* Optional: Adjust font size */
+}
+
+.filter-header .back-btn {
+    margin: 0; /* Remove default margin */
+    position: relative; /* Keep the button in the normal flow */
+}

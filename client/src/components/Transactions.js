@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Transactions.css";
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 function Transactions() {
     //Back to Dashboard
     const navigate = useNavigate();
     const handleBackToDashboard = () => {
-        navigate('/admin-dashboard');
+        navigate(-1);
     };
     const [adminData, setAdminData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -109,7 +109,7 @@ function Transactions() {
                 const userId = adminData.user_id; 
                 
                 // 1. Create initial transaction
-                const createTransactionResponse = await fetch(`${API_URL}/dashboard/initial/transaction`, {
+                const createTransactionResponse = await fetch(`${API_BASE}/dashboard/initial/transaction`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ function Transactions() {
                 
                 // 2. Add each item to the transaction_items table
                 for (const item of cart) {
-                const addItemResponse = await fetch(`${API_URL}/dashboard/transaction_items`, {
+                const addItemResponse = await fetch(`${API_BASE}/dashboard/transaction_items`, {
                     method: 'POST',
                     headers: {
                     'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ function Transactions() {
             
             try {
                 // Finalize the transaction with tip amount
-                const finalizeResponse = await fetch(`${API_URL}/dashboard/end/transaction`, {
+                const finalizeResponse = await fetch(`${API_BASE}/dashboard/end/transaction`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -220,7 +220,7 @@ function Transactions() {
             useEffect(() => {
                 const fetchInventory = async () => {
                   try {
-                    const response = await fetch(`${API_URL}/dashboard/inventory`);
+                    const response = await fetch(`${API_BASE}/dashboard/inventory`);
                     
                     if (!response.ok) {
                       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -251,13 +251,6 @@ function Transactions() {
                 try {
                     const user = JSON.parse(userData);
                     
-                    // Check if user has admin role
-                    if (user.role !== 'Admin') {
-                        setError("Unauthorized access");
-                        navigate('/users/login'); // Redirect to regular dashboard
-                        return;
-                    }
-                    
                     setAdminData(user);
                     setLoading(false);
                 } catch (err) {
@@ -276,10 +269,10 @@ function Transactions() {
     
     return (
         <div className="admin-section">
-                        <div className="section-header">
-                        <h2>Checkout</h2>
-                        <button className="back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
-                        </div>
+                        <header className="t-section-header">
+                        <h1>Checkout</h1>
+                        <button className="t-back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
+                        </header>
                         
                         <div className="checkout-container">
                         {checkoutStep === 'items' && (

@@ -8,6 +8,14 @@ body {
   padding: 20px;
   font-family: 'Segoe UI', sans-serif;
 }
+/*Fixed the way the it was all black when trying to edit inventory before*/
+.i-admin-dashboard-body {
+  background-color: rgb(255, 255, 255);
+  width:100%;
+  min-height: 100vh;
+  height:auto;
+  position: relative;
+}
 
 .inventory-section {
   background-color: #fff;

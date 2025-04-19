@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './menu.css';
 import Navbar from './Navbar';
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 const MenuTest = ({ cartItems, setCartItems }) => {
   const [desserts, setDesserts] = useState([]);
@@ -17,7 +17,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
     const fetchMenuItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/menu`);
+        const response = await fetch(`${API_BASE}/api/menu`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -115,7 +115,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
                 onClick={() => handleCardClick(item)}
               >
                 <img
-                  src={`/images/${item.image}`}
+                  src={item.image}
                   alt={item.name}
                   className="dessert-img"
                 />

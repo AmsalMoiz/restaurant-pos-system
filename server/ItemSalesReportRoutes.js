@@ -1,5 +1,6 @@
 const express = require('express');
 const connect = require('./db');
+const moment = require('moment-timezone');
 
 const router = express.Router();
 
@@ -159,16 +160,110 @@ router.post('/api/generate-sales-report', async (req, res) => {
         }
 
         query += ' GROUP BY t.transaction_id';
+        query += ' ORDER BY t.created_at DESC';
 
         console.log('Generated SQL Query:', query);
         console.log('Query Values:', values);
 
         const [rows] = await pool.execute(query, values);
-        res.json(rows);
+
+        //console.log('Database created_at:', row.created_at);
+        const reportData = rows.map(row => {
+            const utcTime = moment.utc(row.created_at);
+            const localTime = utcTime.subtract(10, 'hours').format('YYYY-MM-DD HH:mm:ss');
+            return {
+                ...row,
+                created_at: localTime,
+            };
+        });
+
+        res.json(reportData);
     } catch (error) {
         console.error('Error generating sales report:', error);
         res.status(500).json({ error: 'Failed to generate sales report' });
     }
 });
-      
+
+
+router.post('/api/generate-sales-report/list', async (req, res) => {
+    try {   
+        const { transactionIds } = req.body;
+        const pool = await connect();
+        if (!pool) {
+            return res.status(500).json({ error: 'Database connection error' });
+        }
+
+        if (!transactionIds || transactionIds.length === 0) {
+            return res.json([]); // Return empty if no transaction IDs
+        }
+
+        const placeholders = transactionIds.map(() => '?').join(',');
+        let query = `
+            SELECT
+                t.transaction_id,
+                i.name AS item_name,
+                ti.quantity_purchased
+            FROM transactions t
+            JOIN transaction_items ti ON t.transaction_id = ti.transaction_id
+            JOIN items i ON ti.item_id = i.item_id
+            WHERE t.transaction_id IN (${placeholders})
+            ORDER BY t.transaction_id DESC, i.name ASC
+        `;
+        console.log('Generated SQL Query:', query);
+        console.log('Transaction IDs:', transactionIds);
+
+        const [rows] = await pool.execute(query, transactionIds);
+        console.log('Query executed successfully:', rows);
+        const reportData = rows.map(row => ({
+            transaction_id: row.transaction_id,
+            item_name: row.item_name,
+            quantity_purchased: row.quantity_purchased,
+        }));
+
+        res.json(reportData);
+    } catch (error) {
+        console.error('Error generating 2nd sales report:', error);
+        res.status(500).json({ error: 'Failed to generate sales report' });
+    }
+});
+
+router.post('/api/generate-sales-report/chart', async (req, res) => {
+    try {   
+        const { transactionIds } = req.body;
+        const pool = await connect();
+        if (!pool) {
+            return res.status(500).json({ error: 'Database connection error' });
+        }
+
+        if (!transactionIds || transactionIds.length === 0) {
+            return res.json([]); // Return empty if no transaction IDs
+        }
+
+        const placeholders = transactionIds.map(() => '?').join(',');
+        let query = `
+            SELECT
+                i.name AS item_name,
+                SUM(ti.subtotal) AS total_sales
+            FROM transactions t
+            JOIN transaction_items ti ON t.transaction_id = ti.transaction_id
+            JOIN items i ON ti.item_id = i.item_id
+            WHERE t.transaction_id IN (${placeholders})
+            GROUP BY i.name
+            ORDER BY total_sales DESC;
+        `;
+
+        const [rows] = await pool.execute(query, transactionIds);
+
+        const reportData = rows.map(row => ({
+            item_name: row.item_name,
+            total_sales: parseFloat(row.total_sales),
+        }));
+
+        res.json(reportData);
+    } catch (error) {
+        console.error('Error generating chart report:', error);
+        res.status(500).json({ error: 'Failed to generate sales report' });
+    }
+});
+
 module.exports = router;

@@ -239,4 +239,17 @@
       transform: translate(-50%, 20px);
     }
   }
+  /* previous globaller classes */
+  .datetime-selectors input[type="date"] {
+    background-color: #1a1a1a;
+    color: white;
+    border: 1px solid white;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+  }
   
+  .datetime-selectors input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); 
+    cursor: pointer;
+  }

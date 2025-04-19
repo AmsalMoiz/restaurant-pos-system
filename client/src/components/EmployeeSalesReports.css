@@ -1,0 +1,230 @@
+/* Employee Sales Reports Styles */
+.section-header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .section-header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .t-back-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .t-back-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Report Controls */
+  .report-controls {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .report-controls label {
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  
+  .report-type-selector {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    min-width: 200px;
+  }
+  
+  .report-type-selector:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  /* Report Container */
+  .employee-reports-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .employee-reports-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+  }
+  
+  /* Reports Table */
+  .employee-reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .employee-reports-table th, 
+  .employee-reports-table td {
+    border: 1px solid #e1e1e1;
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  .employee-reports-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+  }
+  
+  .employee-reports-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .employee-reports-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .employee-reports-table td:last-child,
+  .employee-reports-table td:nth-last-child(2),
+  .employee-reports-table td:nth-last-child(3) {
+    text-align: right;
+  }
+  
+  /* Custom Report Form */
+  .custom-report-form {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .custom-report-form .form-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+  }
+  
+  .custom-report-form .form-group {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .esr-date-input {
+    width: 10% !important;
+    padding: 10px;
+    background-color: #000000 !important; /* Force black background */
+    color: white !important; /* Force white text */
+    border-radius: 5px !important;
+    font-size: 16px;
+    margin-bottom: 15px;
+    margin-top: 5px;
+  }
+  
+  .esr-date-input:focus {
+    border-color: #3498db;
+    
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  
+  .generate-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+  
+  .generate-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  .report-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  /* Loading and Error States */
+  .loading {
+    text-align: center;
+    font-size: 20px;
+    padding: 50px;
+    color: #7f8c8d;
+  }
+  
+  .error-container {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 50px auto;
+    max-width: 500px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .section-header button {
+      margin-top: 10px;
+    }
+    
+    .report-controls {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .report-type-selector {
+      width: 100%;
+    }
+    
+    .custom-report-form .form-row {
+      flex-direction: column;
+    }
+    
+    .employee-reports-table th, 
+    .employee-reports-table td {
+      padding: 8px 10px;
+      font-size: 14px;
+    }
+    
+    .employee-reports-table {
+      font-size: 14px;
+    }
+  }

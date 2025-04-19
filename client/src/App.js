@@ -20,6 +20,11 @@ import LogHoursPage from './components/LogHoursPage';
 import ItemSalesReport from './components/ItemSalesReport';
 import CustomerDashboard from './components/CustomerDashboard';
 import Transactions from './components/Transactions';
+import CustomerReport from './components/CustomerReport'; // Import the CustomerReport component
+import Suppliers from './components/Suppliers';
+import EmployeeSalesReports from './components/EmployeeSalesReports';
+import ReorderAlerts from './components/ReorderAlerts';
+
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -53,12 +58,16 @@ function App() {
         <Route path="/manager-dashboard" element={<DashManager />} />
         <Route path="/waiter-dashboard" element={<DashWaiter />} />
         <Route path="/cook-dashboard" element={<DashCook />} />
-        <Route path="/log-hours" element={<LogHoursPage />} /> {/* Add the new route */}
+        <Route path="/log-hours" element={<LogHoursPage />} />
         <Route path="/book-table" element={<BookTable />} />
         <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
         <Route path="/inventory" element={<InventoryPage />} />
         <Route path="/employees" element={<EmployeesPage />} />
         <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+        <Route path="/customer-report" element={<CustomerReport />} /> {/* Add the route for Customer Reports */}
+        <Route path="/suppliers" element={<Suppliers />} />
+        <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
+        <Route path="/reorder_alerts" element={<ReorderAlerts />} />
       </Routes>
     </Router>
   );

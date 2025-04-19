@@ -2,8 +2,9 @@
 .admin-dashboard-body{
     background-color: rgb(255, 255, 255);
     width:100%;
-    height:200%;
-    position: absolute;
+    min-height: 100vh;
+    height:auto;
+    position: relative;
 }
 
 .admin-dashboard {

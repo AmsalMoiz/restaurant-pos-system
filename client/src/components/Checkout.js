@@ -33,7 +33,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
   const [taxRate] = useState(0.0825);
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
-  const [orderNumber, setOrderNumber] = useState('');
+  //const [orderNumber, setOrderNumber] = useState('');
   const [receipt, setReceipt] = useState(null); // Store all receipt values together
   const [itemsPurchased, setItemsPurchased] = useState([]);
 
