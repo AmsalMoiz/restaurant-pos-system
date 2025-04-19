@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './profile.css';
+import EditProfileModal from './EditProfileModal';
+import DeleteAccountModal from './DeleteAccountModal';
 
 function getInitials(name) {
   if (!name) return '';
@@ -37,12 +39,6 @@ const Profile = () => {
             <button onClick={() => setShowEdit(true)}>Edit Profile</button>
             <button className="delete" onClick={() => setShowDelete(true)}>Delete Account</button>
           </div>
-          {showEdit && (
-            <div style={{marginTop: 18, color: '#ffd700'}}>Edit Profile modal goes here...</div>
-          )}
-          {showDelete && (
-            <div style={{marginTop: 18, color: '#ff5c5c'}}>Delete Account modal goes here...</div>
-          )}
         </div>
       </div>
       <div className="profile-right">
@@ -52,6 +48,12 @@ const Profile = () => {
           className="profile-side-img"
         />
       </div>
+      {showEdit && (
+        <EditProfileModal user={user} onClose={() => setShowEdit(false)} />
+      )}
+      {showDelete && (
+        <DeleteAccountModal user={user} onClose={() => setShowDelete(false)} />
+      )}
     </div>
   );
 };
