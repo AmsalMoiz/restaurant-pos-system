@@ -69,6 +69,25 @@ app.get('/api/menu', async (req, res) => {
   }
 });
 
+app.get('/api/customer/image', async (req, res) => {
+  try {
+    const [results] = await req.dbConnection.query('SELECT name, image_data FROM items WHERE item_id = 2');
+    const item = results[0];
+    if (item) {
+      const image = item.image_data ? `data:image/jpeg;base64,${item.image_data.toString('base64')}` : null;
+      res.json({ name: item.name, image });
+    } else {
+      res.status(404).json({ error: 'Item not found' });
+    }
+  } catch (err) {
+    console.error('Error fetching item image:', err);
+    return res.status(500).json({ 
+      error: 'Database query error', 
+      message: 'Failed to fetch item image.' 
+    });
+  }
+});
+
 app.post('/users/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
