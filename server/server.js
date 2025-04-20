@@ -143,7 +143,8 @@ app.get('/dashboard/inventory', async (req, res) => {
         items.price, 
         items.supplier_price,
         items.quantity, 
-        items.reorder_threshold, 
+        items.reorder_threshold,
+        items.description, 
         items.image_name, 
         suppliers.name AS supplier_name 
       FROM items 
@@ -157,6 +158,7 @@ app.get('/dashboard/inventory', async (req, res) => {
       supplier_price: parseFloat(item.supplier_price),
       quantity: item.quantity,
       limit: item.reorder_threshold,
+      description: item.description,
       image_name: item.image_name,
       supplier: item.supplier_name
     }));
@@ -462,7 +464,7 @@ app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) =
 
     let updateQuery = `
       UPDATE items 
-      SET name = ?, price = ?, supplier_price = ?, quantity = ?, reorder_threshold = ?, 
+      SET name = ?, price = ?, supplier_price = ?, quantity = ?, reorder_threshold = ?, description = ?, 
           supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?)
       WHERE item_id = ?
     `;
@@ -472,6 +474,7 @@ app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) =
       parseFloat(updatedItemData.supplier_price),
       parseInt(updatedItemData.quantity),
       parseInt(updatedItemData.limit),
+      updatedItemData.description,
       updatedItemData.supplier,
       itemId,
     ];
@@ -479,7 +482,7 @@ app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) =
     if (newImage) {
       updateQuery = `
         UPDATE items 
-        SET name = ?, price = ?, supplier_price = ?, quantity = ?, reorder_threshold = ?, 
+        SET name = ?, price = ?, supplier_price = ?, quantity = ?, reorder_threshold = ?, description = ?,
             supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?), 
             image_name = ?, image_data = ?
         WHERE item_id = ?
@@ -498,7 +501,8 @@ app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) =
             price, 
             supplier_price,
             quantity, 
-            reorder_threshold, 
+            reorder_threshold,
+            items.description, 
             image_name, 
             suppliers.name as supplier_name 
          FROM items, suppliers 
@@ -513,6 +517,7 @@ app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) =
         supplier_price: parseFloat(item.supplier_price),
         quantity: item.quantity,
         limit: item.reorder_threshold,
+        description: item.description,
         image_name: item.image_name,
         supplier: item.supplier_name
       }))[0];
@@ -565,10 +570,10 @@ app.delete('/dashboard/items/:id', async (req, res) => {
 });
 
 app.post('/dashboard/items', upload.single('image'), async (req, res) => {
-  const { dessert, price, supplier_price, quantity, limit, supplier } = req.body;
+  const { dessert, price, supplier_price, quantity, limit, supplier, description } = req.body;
   const newImage = req.file;
 
-  if (!dessert || !price || !supplier_price || !quantity || !limit || !supplier) {
+  if (!dessert || !price || !supplier_price || !quantity || !limit || !supplier || !description) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
@@ -597,17 +602,17 @@ app.post('/dashboard/items', upload.single('image'), async (req, res) => {
     if (newImage) {
       insertQuery = `
         INSERT INTO items 
-        (name, price, supplier_price, quantity, reorder_threshold, supplier_id, image_name, image_data)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (name, price, supplier_price, quantity, reorder_threshold, supplier_id, description, image_name, image_data)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-      insertValues = [dessert, price, supplier_price, quantity, limit, supplierId, newImage.originalname, newImage.buffer];
+      insertValues = [dessert, price, supplier_price, quantity, limit, supplierId, description, newImage.originalname, newImage.buffer];
     } else {
       insertQuery = `
         INSERT INTO items 
         (name, price, supplier_price, quantity, reorder_threshold, supplier_id)
         VALUES (?, ?, ?, ?, ?, ?)
       `;
-      insertValues = [dessert, price, supplier_price, quantity, limit, supplierId];
+      insertValues = [dessert, price, supplier_price, quantity, limit, supplierId, description];
     }
 
     console.log("Insert values:", insertValues);
@@ -623,6 +628,7 @@ app.post('/dashboard/items', upload.single('image'), async (req, res) => {
       quantity: parseInt(quantity),
       limit: parseInt(limit),
       supplier,
+      description,
       image_name: newImage ? newImage.originalname : null,
     };
 

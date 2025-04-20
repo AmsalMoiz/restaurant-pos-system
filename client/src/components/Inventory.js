@@ -57,6 +57,7 @@ function InventoryPage() {
     formData.append('quantity', editedItemData.quantity || '');
     formData.append('limit', editedItemData.limit || '');
     formData.append('supplier', editedItemData.supplier || '');
+    formData.append('description', editedItemData.description || '');
     if (selectedImage) {
       formData.append('image', selectedImage);
     }
@@ -87,7 +88,7 @@ function InventoryPage() {
   };
 
   const handleAddItem = () => {
-    if (!newItem.dessert || !newItem.price || !newItem.quantity || !newItem.limit || !newItem.supplier) {
+    if (!newItem.dessert || !newItem.price || !newItem.quantity || !newItem.limit || !newItem.supplier, !newItem.description ) {
       alert("All fields must be filled out.");
       return;
     }
@@ -102,6 +103,7 @@ function InventoryPage() {
     formDataToSend.append('quantity', newItem.quantity);
     formDataToSend.append('limit', newItem.limit);
     formDataToSend.append('supplier', newItem.supplier);
+    formDataToSend.append('description', newItem.description || '');
     if (selectedImage) {
       formDataToSend.append('image', selectedImage);
     }
@@ -219,7 +221,7 @@ function InventoryPage() {
               <div className="add-item-button-wrapper" style={{ display: 'flex', gap: '10px' }}>
                 {editMode && (
                   <button className="add-item-btn" onClick={() => {
-                    setNewItem({ dessert: "", price: "", supplier_price: "", quantity: "", limit: "", supplier: "" });
+                    setNewItem({ dessert: "", price: "", supplier_price: "", quantity: "", limit: "", supplier: "", description: "" });
                     setTimeout(() => {
                       addRowRef.current?.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
@@ -242,6 +244,7 @@ function InventoryPage() {
                       <th>Quantity</th>
                       <th>Limit</th>
                       <th>Supplier</th>
+                      <th>Description</th>
                       <th>Image Name</th>
                       {editMode && <th>Actions</th>}
                     </tr>
@@ -258,7 +261,8 @@ function InventoryPage() {
                           <td><input type="number" value={editedItemData.quantity || ''} onChange={(e) => setEditedItemData({ ...editedItemData, quantity: e.target.value })} /></td>
                           <td><input type="number" value={editedItemData.limit || ''} onChange={(e) => setEditedItemData({ ...editedItemData, limit: e.target.value })} /></td>
                           <td><input value={editedItemData.supplier || ''} onChange={(e) => setEditedItemData({ ...editedItemData, supplier: e.target.value })} /></td>
-                          <td><input type="file" accept="image/*" onChange={handleImageChange} /></td>
+                          <td><textarea value={editedItemData.description || ''} onChange={(e) => setEditedItemData({ ...editedItemData, description: e.target.value })} /></td>
+                          <td><input type="file" accept="image/*" onChange={handleImageChange} /></td> 
                           <td>
                             <button onClick={() => setEditingItemId(null)}>Cancel</button>
                             <button onClick={() => {console.log("Save button clicked for item ID:", item.item_id); handleUpdateItem(item.item_id)}}>Save</button>
@@ -272,6 +276,7 @@ function InventoryPage() {
                           <td>{item.quantity}</td>
                           <td>{item.limit}</td>
                           <td>{item.supplier}</td>
+                          <td>{item.description}</td>
                           <td>{item.image_name}</td> 
                           {editMode && (
                             <td style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -294,8 +299,9 @@ function InventoryPage() {
                         <td><input type="number" placeholder="Qty" value={newItem.quantity} onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })} /></td>
                         <td><input type="number" placeholder="Limit" value={newItem.limit} onChange={(e) => setNewItem({ ...newItem, limit: e.target.value })} /></td>
                         <td><input placeholder="Supplier" value={newItem.supplier} onChange={(e) => setNewItem({ ...newItem, supplier: e.target.value })} /></td>
+                        <td><textarea placeholder="Description" value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })} /></td>
                         <td><input ref={imageInputRef} type="file" accept="image/*" onChange={handleImageChange} /></td>
-                        <td>
+                        <td style={{ textAlign: 'right' }}>
                           <button onClick={() => { setNewItem(null); clearImageInput(); }}>Cancel</button>
                           <button onClick={handleAddItem}>Submit</button>
                         </td>
@@ -357,6 +363,7 @@ function InventoryPage() {
               <p><strong>Quantity:</strong> {newItem.quantity}</p>
               <p><strong>Limit:</strong> {newItem.limit}</p>
               <p><strong>Supplier:</strong> {newItem.supplier}</p>
+              <p><strong>Description:</strong> {newItem.description}</p>
               <div className="confirm-buttons">
                 <button onClick={() => setShowConfirmPopup(false)}>Cancel</button>
                 <button onClick={confirmAddItem}>Confirm</button>
@@ -375,6 +382,7 @@ function InventoryPage() {
               <p><strong>Quantity:</strong> {itemToDelete.quantity}</p>
               <p><strong>Limit:</strong> {itemToDelete.limit}</p>
               <p><strong>Supplier:</strong> {itemToDelete.supplier}</p>
+              <p><strong>Description:</strong> {itemToDelete.description}</p>
               <div className="confirm-buttons">
                 <button onClick={() => setShowDeletePopup(false)}>Cancel</button>
                 <button onClick={confirmDeleteItem}>Delete</button>
