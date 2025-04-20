@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './reservationManager.css';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 const ReservationManager = ({ userId }) => {
   const [reservations, setReservations] = useState([]);

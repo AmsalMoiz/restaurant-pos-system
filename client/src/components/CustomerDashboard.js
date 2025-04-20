@@ -3,7 +3,7 @@ import './customerDashboard.css';
 import { Link, useNavigate } from 'react-router-dom';
 import NavbarCustomer from './NavbarCustomer';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 const CustomerDashboard = ({ customerName }) => {
   const navigate = useNavigate();

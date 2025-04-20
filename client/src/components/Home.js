@@ -3,7 +3,7 @@ import './home.css';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 const Home = () => {
   const [itemName, setItemName] = useState('');
