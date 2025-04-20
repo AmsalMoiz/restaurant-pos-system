@@ -11,6 +11,8 @@ const logHoursRoute = require("./logHours");
 const ItemSalesReportRoutes = require("./ItemSalesReportRoutes");
 const multer = require('multer');
 const customerReportRoutes = require("./CustomerReport");
+const OrderInventoryRoute = require("./OrderInventory");
+const SupplierReports = require("./SupplierReports");
 
 app.use(cors());
 app.use(express.json({limit: '5mb' })); // Middleware for JSON body parsing, with a limit of 5mb
@@ -18,6 +20,8 @@ app.use("/api/auth", authRoutes); // Include auth routes
 app.use("/api", logHoursRoute); // Include log hours routes
 app.use("/api/sales-report", ItemSalesReportRoutes); 
 app.use("/api", customerReportRoutes); // Add this line to include customer report routes
+app.use("/api", OrderInventoryRoute); // Add this line to include supplier orders routes
+app.use("/api", SupplierReports); // Add this line to include supplier reports routes
 
 
 
@@ -132,16 +136,31 @@ app.post('/users/login', async (req, res) => {
 app.get('/dashboard/inventory', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT items.item_id as item_id, items.name as item_name, price, quantity, reorder_threshold, image_name, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id');
+    const [results] = await req.dbConnection.query(`
+      SELECT 
+        items.item_id AS item_id, 
+        items.name AS item_name, 
+        items.price, 
+        items.supplier_price,
+        items.quantity, 
+        items.reorder_threshold, 
+        items.image_name, 
+        suppliers.name AS supplier_name 
+      FROM items 
+      JOIN suppliers ON items.supplier_id = suppliers.supplier_id
+    `);
+
     const inventory = results.map(item => ({
       item_id: item.item_id,
       dessert: item.item_name,
       price: parseFloat(item.price),
+      supplier_price: parseFloat(item.supplier_price),
       quantity: item.quantity,
       limit: item.reorder_threshold,
       image_name: item.image_name,
       supplier: item.supplier_name
     }));
+
     res.json(inventory);
   } catch (err) {
     console.error('Error fetching inventory:', err);
@@ -151,7 +170,6 @@ app.get('/dashboard/inventory', async (req, res) => {
     });
   }
 });
-
 
 //USERS
 
@@ -441,33 +459,58 @@ app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) =
 
   try {
     const connection = await req.dbConnection.getConnection();
-    let updateQuery = 'UPDATE items SET name = ?, price = ?, quantity = ?, reorder_threshold = ?, supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?) WHERE item_id = ?';
+
+    let updateQuery = `
+      UPDATE items 
+      SET name = ?, price = ?, supplier_price = ?, quantity = ?, reorder_threshold = ?, 
+          supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?)
+      WHERE item_id = ?
+    `;
     const updateValues = [
       updatedItemData.dessert,
       parseFloat(updatedItemData.price),
+      parseFloat(updatedItemData.supplier_price),
       parseInt(updatedItemData.quantity),
       parseInt(updatedItemData.limit),
       updatedItemData.supplier,
-      itemId, // itemId for the WHERE 
+      itemId,
     ];
 
     if (newImage) {
-      updateQuery = 'UPDATE items SET name = ?, price = ?, quantity = ?, reorder_threshold = ?, supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?), image_name = ?, image_data = ? WHERE item_id = ?';
-      updateValues.pop(); // Remove the itemId added earlier
-      updateValues.push(newImage.originalname, newImage.buffer, itemId); // Add image name, data, and then itemId
+      updateQuery = `
+        UPDATE items 
+        SET name = ?, price = ?, supplier_price = ?, quantity = ?, reorder_threshold = ?, 
+            supplier_id = (SELECT supplier_id FROM suppliers WHERE name = ?), 
+            image_name = ?, image_data = ?
+        WHERE item_id = ?
+      `;
+      updateValues.splice(6, 1); // remove itemId (to push it later)
+      updateValues.push(newImage.originalname, newImage.buffer, itemId);
     }
 
     const [updateResult] = await connection.execute(updateQuery, updateValues);
 
     if (updateResult.affectedRows > 0) {
       const [updatedRows] = await connection.execute(
-        'SELECT items.item_id as item_id, items.name as item_name, price, quantity, reorder_threshold, image_name, suppliers.name as supplier_name FROM items, suppliers WHERE items.supplier_id = suppliers.supplier_id AND items.item_id = ?',
+        `SELECT 
+            items.item_id as item_id, 
+            items.name as item_name, 
+            price, 
+            supplier_price,
+            quantity, 
+            reorder_threshold, 
+            image_name, 
+            suppliers.name as supplier_name 
+         FROM items, suppliers 
+         WHERE items.supplier_id = suppliers.supplier_id AND items.item_id = ?`,
         [itemId]
       );
+
       const updatedItem = updatedRows.map(item => ({
         item_id: item.item_id,
         dessert: item.item_name,
         price: parseFloat(item.price),
+        supplier_price: parseFloat(item.supplier_price),
         quantity: item.quantity,
         limit: item.reorder_threshold,
         image_name: item.image_name,
@@ -476,8 +519,7 @@ app.patch('/dashboard/items/:itemId', upload.single('image'), async (req, res) =
 
       connection.release();
       res.json(updatedItem);
-    }
-    else {
+    } else {
       connection.release();
       return res.status(404).json({ error: 'Item not found or no changes made.' });
     }
@@ -523,31 +565,63 @@ app.delete('/dashboard/items/:id', async (req, res) => {
 });
 
 app.post('/dashboard/items', upload.single('image'), async (req, res) => {
-  const { dessert, price, quantity, limit, supplier } = req.body;
+  const { dessert, price, supplier_price, quantity, limit, supplier } = req.body;
   const newImage = req.file;
 
-  if (!dessert || !price || !quantity || !limit || !supplier) {
+  if (!dessert || !price || !supplier_price || !quantity || !limit || !supplier) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
+
   try {
     const connection = await req.dbConnection.getConnection();
-    let insertQuery = `INSERT INTO items (name, price, quantity, reorder_threshold, supplier_id) VALUES (?, ?, ?, ?, (SELECT supplier_id FROM suppliers WHERE name = ?))`;
-    const insertValues = [dessert, price, quantity, limit, supplier];
 
-    if (newImage) {
-      insertQuery = `INSERT INTO items (name, price, quantity, reorder_threshold, supplier_id, image_name, image_data) VALUES (?, ?, ?, ?, (SELECT supplier_id FROM suppliers WHERE name = ?), ?, ?)`;
-      insertValues.push(newImage.originalname, newImage.buffer);
+    // Step 1: Get supplier_id from supplier name
+    const [supplierRows] = await connection.execute(
+      'SELECT supplier_id FROM suppliers WHERE name = ?',
+      [supplier]
+    );
+
+    if (supplierRows.length === 0) {
+      connection.release();
+      return res.status(400).json({ error: "Supplier not found." });
     }
 
+    const supplierId = supplierRows[0].supplier_id;
+
+
+    // Step 2: Prepare insert query depending on image
+    let insertQuery;
+    let insertValues;
+
+    if (newImage) {
+      insertQuery = `
+        INSERT INTO items 
+        (name, price, supplier_price, quantity, reorder_threshold, supplier_id, image_name, image_data)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      insertValues = [dessert, price, supplier_price, quantity, limit, supplierId, newImage.originalname, newImage.buffer];
+    } else {
+      insertQuery = `
+        INSERT INTO items 
+        (name, price, supplier_price, quantity, reorder_threshold, supplier_id)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+      insertValues = [dessert, price, supplier_price, quantity, limit, supplierId];
+    }
+
+    console.log("Insert values:", insertValues);
+
     const [result] = await connection.execute(insertQuery, insertValues);
+
 
     const newItem = {
       item_id: result.insertId,
       dessert,
       price: parseFloat(price),
-      quantity,
-      limit,
+      supplier_price: parseFloat(supplier_price),
+      quantity: parseInt(quantity),
+      limit: parseInt(limit),
       supplier,
       image_name: newImage ? newImage.originalname : null,
     };
@@ -559,6 +633,7 @@ app.post('/dashboard/items', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: "Failed to add item." });
   }
 });
+
 
 //reservations
 

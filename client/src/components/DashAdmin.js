@@ -66,7 +66,7 @@ function DashAdmin() {
         <div className="admin-dashboard-body">
             <div className="admin-dashboard">
                 <header className="admin-header">
-                    <h1>Dashboard</h1>
+                    <h1>Admin Dashboard</h1>
                     <div className="admin-info">
                         <p>Welcome, <span className="admin-name">{adminData.name}</span></p>
                         <p className="admin-role">Role: {adminData.role}</p>
@@ -134,6 +134,13 @@ function DashAdmin() {
                                     <p>Analyze customer behavior and trends</p>
                                     <button onClick={() => navigate('/customer-report')}>View Reports</button>
                                 </div>
+                                {/* Supplier Reports */}
+                                <div className="admin-card">
+                                    <h3>Supplier Reports</h3>
+                                    <p>Analyze supplier orders and spending</p>
+                                    <button onClick={() => navigate('/supplier-report')}>View Reports</button>
+                                </div>
+
                             </div>
                         </div>
                     )}
