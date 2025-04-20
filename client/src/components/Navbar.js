@@ -22,8 +22,8 @@ const Navbar = ({ onOpenSignupModal }) => {
         <Link to="/menu">Menu</Link>
         <Link to="/book-table">Reservations</Link>
         <Link to="/cart">Bag</Link>
-        {/* IMPORTANT: Profile link for guests */}
-        <Link to="/profile-create-account">Profile</Link>
+        <Link to="/profile">Profile</Link>
+        {/* Show Create Account button only if NOT logged in */}
         {!isLoggedIn && (
           <button
             className="create-account-btn"

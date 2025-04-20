@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './home.css';
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from './Navbar'; 
+import UserSignupModal from './UserSignupModal';
 
 const Home = () => {
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  // Add these if you need them for image preview
+  const [itemImage] = useState('/images/tiramisuNoir.jpg');
+  const [itemName] = useState('Tiramisu Noir');
+  const [error] = useState(null);
+  const [loading] = useState(false);
+
+  const handleSignup = (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    setShowSignupModal(false);
+    setErrorMessage('');
+    window.location.href = '/customer-dashboard';
+  };
+
   return (
     <>
       <Navbar onOpenSignupModal={() => setShowSignupModal(true)} />
@@ -62,7 +79,7 @@ const Home = () => {
                   <p className="menu-subtitle">Taste the mood</p>
                   <h2 className="menu-heading">Our Menu</h2>
                   <p className="menu-description">
-                    Reserve now at Sweet Heaven — an indulgent dessert and cocktail experience
+                    Reserve now at Sweet Heaven — an indulgent dessert experience
                     inspired by timeless international flavors. Delight in artisanal sweets,
                     signature libations, and impeccable service in a setting of understated elegance.
                   </p>
@@ -72,7 +89,8 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="menu-image">
-                  {itemImage && <img src={itemImage} alt={itemName} />} {/* conflicted because this is a DB project, but for one image on a page that just sits there, it almost makes sense to statically get it, i will do db approach tho as db will have under 100 item images and img is in KBs */}
+                  {itemImage && <img src={itemImage} alt={itemName} />} 
+                  {itemImage && <img src={itemImage} alt={itemName} />}
                   {!itemImage && error && <p className="error-message">{error}</p>}
                   {!itemImage && !error && loading && <p>Loading image...</p>}
                   {!itemImage && !error && !loading && <p>Image could not be loaded</p>}
