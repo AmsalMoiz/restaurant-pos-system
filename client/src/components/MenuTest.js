@@ -132,7 +132,7 @@ const MenuTest = ({ cartItems, setCartItems }) => {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <img
-              src={`/images/${selectedDessert.image}`}
+              src={`${selectedDessert.image}`}
               alt={selectedDessert.name}
               className="modal-img"
             />

@@ -1,20 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './home.css';
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar'; 
-import UserSignupModal from './UserSignupModal';
+import Navbar from './Navbar';
 
 const Home = () => {
-  const [showSignupModal, setShowSignupModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleSignup = (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    setShowSignupModal(false);
-    setErrorMessage('');
-    window.location.reload();
-  };
-
   return (
     <>
       <Navbar onOpenSignupModal={() => setShowSignupModal(true)} />
@@ -83,7 +72,10 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="menu-image">
-                  <img src="/images/tiramisuNoir.jpg" alt="Tiramisu Noir" />
+                  {itemImage && <img src={itemImage} alt={itemName} />} {/* conflicted because this is a DB project, but for one image on a page that just sits there, it almost makes sense to statically get it, i will do db approach tho as db will have under 100 item images and img is in KBs */}
+                  {!itemImage && error && <p className="error-message">{error}</p>}
+                  {!itemImage && !error && loading && <p>Loading image...</p>}
+                  {!itemImage && !error && !loading && <p>Image could not be loaded</p>}
                 </div>
               </div>
             </div>

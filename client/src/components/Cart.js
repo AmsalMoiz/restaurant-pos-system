@@ -50,7 +50,7 @@ const Cart = ({ cartItems, setCartItems }) => {
                 {cartItems.map((item, index) => (
                   <div className="cart-item" key={index}>
                     <img
-                      src={`/images/${item.image}`}
+                      src={`${item.image}`}
                       alt={item.name}
                       className="cart-img-small"
                     />

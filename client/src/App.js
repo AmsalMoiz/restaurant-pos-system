@@ -75,16 +75,7 @@ function App() {
         <Route path="/suppliers" element={<Suppliers />} />
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
-        
-
-        <Route 
-          path="/profile" 
-          element={
-            localStorage.getItem("user") 
-              ? <Profile /> 
-              : <ProfileCreateAccount onOpenSignupModal={handleOpenSignupModal} />
-          } 
-        />
+        <Route path="/profile" element={<Profile />} /> 
       </Routes>
     </Router>
   );
