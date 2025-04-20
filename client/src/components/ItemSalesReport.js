@@ -49,21 +49,21 @@ const ItemSalesReport = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const headerMapping = {
-    //add mappings to rename headers
-    transaction_id: 'Transaction ID',
-    created_at: 'Creation Date & Time',
-    subtotal: 'Subtotal',
-    sales_tax: 'Sales Tax',
-    total_amount: 'Total Amount',
-    payment_method: 'Payment Method',
-    status: 'Status',
-    order_type: 'Order Type',
-    tip_amount: 'Tip Amount',
-    item_names: 'Items',
-    customer_name: 'Customer Name',
-    discount_code: 'Discount Code',
-  };
+  // const headerMapping = {
+  //   //add mappings to rename headers
+  //   transaction_id: 'Transaction ID',
+  //   created_at: 'Creation Date & Time',
+  //   subtotal: 'Subtotal',
+  //   sales_tax: 'Sales Tax',
+  //   total_amount: 'Total Amount',
+  //   payment_method: 'Payment Method',
+  //   status: 'Status',
+  //   order_type: 'Order Type',
+  //   tip_amount: 'Tip Amount',
+  //   item_names: 'Items',
+  //   customer_name: 'Customer Name',
+  //   discount_code: 'Discount Code',
+  // };
 
 
   const [transactionFilters, setTransactionFilters] = useState({
@@ -101,7 +101,7 @@ const ItemSalesReport = () => {
     }
   };
 
-  const [filteredReportData, setFilteredReportData] = useState([]);
+  //const [filteredReportData, setFilteredReportData] = useState([]);
   const [detailedListReportData, setDetailedListReportData] = useState([]);
   const [viewMode, setViewMode] = useState('list');
 
@@ -230,19 +230,20 @@ const ItemSalesReport = () => {
       if (!responseFullList.ok) {
         throw new Error(`HTTP error! status: ${responseFullList.status}`);
       }
-      const fullListData = await  responseFullList.json();
-      setFilteredReportData(fullListData);
+      const fullListData = await responseFullList.json();
+      //setFilteredReportData(fullListData);
 
+      // step 2
       const transactionIds = fullListData.map(transaction => transaction.transaction_id);
 
       const responseDetailedList = await fetch(`${API_BASE}/api/sales-report/api/generate-sales-report/list`, {
         method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ transactionIds }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionIds, selectedItems }),
       });
 
       if (!responseDetailedList.ok) throw new Error(`HTTP error! status: ${responseDetailedList.status}`);
-      
+
       const detailedListData = await responseDetailedList.json();
       setDetailedListReportData(detailedListData);
 
@@ -250,7 +251,7 @@ const ItemSalesReport = () => {
       const responseChartData = await fetch(`${API_BASE}/api/sales-report/api/generate-sales-report/chart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transactionIds }),
+        body: JSON.stringify({ transactionIds, selectedItems }),
       });
 
       if (!responseChartData.ok) throw new Error(`HTTP error! status: ${responseChartData.status}`);
@@ -260,7 +261,7 @@ const ItemSalesReport = () => {
 
     } catch (error) {
       console.error('Error generating report:', error);
-      setFilteredReportData([]);
+      //setFilteredReportData([]);
       setDetailedListReportData([]);
       setChartData(null);
     }
@@ -272,214 +273,219 @@ const ItemSalesReport = () => {
   };
 
   return (
-    <div className="admin-dashboard-itemsales-body">
-      <div className="admin-dashboard-itemsales">
-        <div className="admin-section-itemsales-report">
-          <h2 className="item-sales-report-section-header">
-            Sales Report
-            <button className="back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
-          </h2>
-          <h3>Filter Options:</h3>
-          <div className="filter-container">
-            <div className="filter-group">
-              <h4>Transactions</h4>
-              <div>
-                <label>Start Date:</label>
-                <input type="date" name="startDate" value={startDate} onChange={handleDateChange} />
-              </div>
-              <div>
-                <label>End Date:</label>
-                <input type="date" name="endDate" value={endDate} onChange={handleDateChange} />
-              </div>
-              <div>
-                <label>Min Amount:</label>
-                <input type="number" name="minAmount" value={transactionFilters.minAmount} onChange={(e) => handleFilterChange('transactions', 'minAmount', e.target.value)} placeholder="Min" />
-              </div>
-              <div>
-                <label>Max Amount:</label>
-                <input type="number" name="maxAmount" value={transactionFilters.maxAmount} onChange={(e) => handleFilterChange('transactions', 'maxAmount', e.target.value)} placeholder="Max" />
-              </div>
-              <div>
-                <label>Payment Method:</label>
-                <select
-                  name="paymentMethod"
-                  value={transactionFilters.paymentMethod}
-                  onChange={(e) => handleFilterChange('transactions', 'paymentMethod', e.target.value)}
-                >
-                  <option value="">--Select Payment Method--</option>
-                  {paymentMethodsOptions.map((method) => (
-                    <option key={method} value={method}>{method}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label>Status:</label>
-                <select
-                  name="status"
-                  value={transactionFilters.status}
-                  onChange={(e) => handleFilterChange('transactions', 'status', e.target.value)}
-                >
-                  <option value="">-- Select Status --</option>
-                  {statusOptions.map((status) => (
-                    <option key={status} value={status}>{status}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label>Order Type:</label>
-                <select
-                  name="orderType"
-                  value={transactionFilters.orderType}
-                  onChange={(e) => handleFilterChange('transactions', 'orderType', e.target.value)}
-                >
-                  <option value="">-- Select Order Type --</option>
-                  {orderTypeOptions.map((type) => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-              {/* Add more transaction filters */}
+    <div className="admin-section">
+      <header className="section-header">
+        <h1>Items Sales Reports</h1>
+        <button className="t-back-btn" onClick={handleBackToDashboard}>Back to Dashboard</button>
+      </header>
+      
+      <div className="filters-container">
+        {/* Transaction Filters */}
+        <div className="filter-card">
+          <h4 className="filter-title">Transactions</h4>
+          <div className="filter-fields">
+            <div className="filter-field">
+              <label>Start Date:</label>
+              <input type="date" name="startDate" value={startDate} onChange={handleDateChange} />
             </div>
-
-            <div className="filter-group">
-              <h4>Items</h4>
-              <div className="autocomplete-container">
-                <label>Item Name:</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={itemNameInput}
-                  onChange={handleItemNameInputChange}
-                  placeholder="e.g., Nuage au Caramel"
-                  onFocus={() => setShowItemSuggestions(itemSuggestions.length > 0 && itemNameInput.length > 0)}
-                  onBlur={() => setTimeout(() => setShowItemSuggestions(false), 200)}
-                />
-                {showItemSuggestions && (
-                  <ul className="suggestions-list">
-                    {itemSuggestions.map((suggestion) => (
-                      <li key={suggestion} onClick={() => handleAddItem(suggestion)}>
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              {selectedItems.length > 0 && (
-                <div className="selected-items-container">
-                  {selectedItems.map((item) => (
-                    <span key={item} className="selected-item-pill">
-                      {item}
-                      <button type="button" className="item-select-remove-item-btn" onClick={() => handleRemoveItem(item)}>
-                        &times;
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
+            <div className="filter-field">
+              <label>End Date:</label>
+              <input type="date" name="endDate" value={endDate} onChange={handleDateChange} />
             </div>
-
-            <div className="filter-group">
-              <h4>Customers</h4>
-              <div>
-                <label>Customer Name:</label>
-                <input type="text" name="customerName" value={customerFilters.customerName} onChange={(e) => handleFilterChange('customers', 'customerName', e.target.value)} placeholder="e.g., John Doe" />
-              </div>
-              {/* Add more customer filters */}
+            <div className="filter-field">
+              <label>Min Amount:</label>
+              <input 
+                type="number" 
+                name="minAmount" 
+                value={transactionFilters.minAmount} 
+                onChange={(e) => handleFilterChange('transactions', 'minAmount', e.target.value)} 
+                placeholder="Min" 
+              />
             </div>
-
-            <div className="filter-group">
-              <h4>Discounts</h4>
-              <div>
-                <label>Discount Code:</label>
-                <input type="text" name="discountName" value={discountFilters.discountName} onChange={(e) => handleFilterChange('discounts', 'discountName', e.target.value)} placeholder="e.g., Summer Sale" />
-              </div>
-              {/* Add more discount filters */}
+            <div className="filter-field">
+              <label>Max Amount:</label>
+              <input 
+                type="number" 
+                name="maxAmount" 
+                value={transactionFilters.maxAmount} 
+                onChange={(e) => handleFilterChange('transactions', 'maxAmount', e.target.value)} 
+                placeholder="Max" 
+              />
+            </div>
+            <div className="filter-field">
+              <label>Payment Method:</label>
+              <select
+                name="paymentMethod"
+                value={transactionFilters.paymentMethod}
+                onChange={(e) => handleFilterChange('transactions', 'paymentMethod', e.target.value)}
+              >
+                <option value="">--Select Payment Method--</option>
+                {paymentMethodsOptions.map((method) => (
+                  <option key={method} value={method}>{method}</option>
+                ))}
+              </select>
+            </div>
+            <div className="filter-field">
+              <label>Status:</label>
+              <select
+                name="status"
+                value={transactionFilters.status}
+                onChange={(e) => handleFilterChange('transactions', 'status', e.target.value)}
+              >
+                <option value="">-- Select Status --</option>
+                {statusOptions.map((status) => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
+            <div className="filter-field">
+              <label>Order Type:</label>
+              <select
+                name="orderType"
+                value={transactionFilters.orderType}
+                onChange={(e) => handleFilterChange('transactions', 'orderType', e.target.value)}
+              >
+                <option value="">-- Select Order Type --</option>
+                {orderTypeOptions.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
             </div>
           </div>
-
-          <button onClick={generateReport} className="generate-report-btn">Generate Report</button>
-
-          <div className="view-mode-buttons">
-            <button onClick={() => switchViewMode('list')} className={viewMode === 'list' ? 'active' : ''}>List View</button>
-            <button onClick={() => switchViewMode('chart')} className={viewMode === 'chart' ? 'active' : ''}>Chart View</button>
-          </div>
-
-          {viewMode === 'list' && (
-            <>
-              <div className="report-view">
-                <h3>Report Data (List View)</h3>
-                {filteredReportData.length > 0 ? (
-                  <div className="table-container">
-                    <table>
-                      <thead>
-                        <tr>
-                          {filteredReportData[0] && Object.keys(filteredReportData[0]).map((key) => (
-                            <th key={key}>
-                              {headerMapping[key] || key }
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredReportData.map((row, index) => (
-                          <tr key={index}>
-                            {Object.keys(row).map((key, innerIndex) => (
-                              <td key={innerIndex}>
-                                {key === 'item_names' ? row[key] : row[key]} {/* should display multiple item names separated */}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No data available for the selected criteria.</p>
-                )}
-              </div>
-              <div className="report-view">
-                <h3>Detailed List View</h3>
-                {detailedListReportData.length > 0 ? (
-                  <div className="table-container">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Transaction ID</th>
-                          <th>Item Name</th>
-                          <th>Quantity Purchased</th> {/* did headers manually no mapping here */}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {detailedListReportData.map((row, index) => (
-                          <tr key={index}>
-                            {Object.keys(row).map((key, innerIndex) => (
-                              <td key={innerIndex}>
-                                {key === 'item_names' ? row[key] : row[key]} {/* should display multiple item names separated */}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No data available for the detailed list.</p>
-                )}
-              </div>
-            </>
-          )}
-          {viewMode === 'chart' && (
-            <div className="report-view chart-container">
-              <h3>Report Data (Chart View)</h3>
-              {chartData ? (
-                <Bar data = {chartData} />
-              ) : (
-              <p>No data available for the chart</p>
+        </div>
+  
+        {/* Items Filters */}
+        <div className="filter-card">
+          <h4 className="filter-title">Items</h4>
+          <div className="filter-fields">
+            <div className="filter-field autocomplete-container">
+              <label>Item Name:</label>
+              <input
+                type="text"
+                name="name"
+                value={itemNameInput}
+                onChange={handleItemNameInputChange}
+                placeholder="e.g., Nuage au Caramel"
+                onFocus={() => setShowItemSuggestions(itemSuggestions.length > 0 && itemNameInput.length > 0)}
+                onBlur={() => setTimeout(() => setShowItemSuggestions(false), 200)}
+                className="input-full-width"
+              />
+              {showItemSuggestions && (
+                <ul className="suggestions-list">
+                  {itemSuggestions.map((suggestion) => (
+                    <li key={suggestion} onClick={() => handleAddItem(suggestion)}>
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
-          )}
+            {selectedItems.length > 0 && (
+              <div className="selected-items-container">
+                {selectedItems.map((item) => (
+                  <span key={item} className="selected-item-pill">
+                    {item}
+                    <button type="button" className="item-select-remove-item-btn" onClick={() => handleRemoveItem(item)}>
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+  
+        {/* Customers Filters */}
+        <div className="filter-card">
+          <h4 className="filter-title">Customers</h4>
+          <div className="filter-fields">
+            <div className="filter-field">
+              <label>Customer Name:</label>
+              <input 
+                type="text" 
+                name="customerName" 
+                value={customerFilters.customerName} 
+                onChange={(e) => handleFilterChange('customers', 'customerName', e.target.value)} 
+                placeholder="e.g., John Doe"
+                className="input-full-width" 
+              />
+            </div>
+          </div>
+        </div>
+  
+        {/* Discounts Filters */}
+        <div className="filter-card">
+          <h4 className="filter-title">Discounts</h4>
+          <div className="filter-fields">
+            <div className="filter-field">
+              <label>Discount Code:</label>
+              <input 
+                type="text" 
+                name="discountName" 
+                value={discountFilters.discountName} 
+                onChange={(e) => handleFilterChange('discounts', 'discountName', e.target.value)} 
+                placeholder="e.g., Summer Sale" 
+                className='input-full-width'
+              />
+            </div>
+          </div>
         </div>
       </div>
+
+      <div className="report-controls">
+      <button onClick={generateReport} className="generate-report-btn">Generate Report</button>
+      
+      <div className="view-mode-buttons">
+        <button onClick={() => switchViewMode('list')} className={viewMode === 'list' ? 'active' : ''}>List View</button>
+        <button onClick={() => switchViewMode('chart')} className={viewMode === 'chart' ? 'active' : ''}>Chart View</button>
+      </div>
+    </div>
+    
+    {viewMode === 'list' && (
+      <>
+        <div className="report-view">
+          <h3>Detailed Items Sold Report (List View)</h3>
+          {detailedListReportData.length > 0 ? (
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Transaction ID</th>
+                    <th>Item Name</th>
+                    <th>Quantity Purchased</th> {/* did headers manually no mapping here */}
+                    <th>Subtotal</th>
+                    <th>Date & Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detailedListReportData.map((row, index) => (
+                    <tr key={index}>
+                      {Object.keys(row).map((key, innerIndex) => (
+                        <td key={innerIndex}>
+                          {key === 'item_names' ? row[key] : row[key]} {/* should display multiple item names separated */}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p>No data available for the detailed list.</p>
+          )}
+        </div>
+      </>
+    )}
+    {viewMode === 'chart' && (
+      <div className="report-view chart-container">
+        <h3>Total Sales per Item (Chart View)</h3>
+        {chartData ? (
+          <Bar data={chartData} />
+        ) : (
+          <p>No data available for the chart</p>
+        )}
+      </div>
+    )}
     </div>
   );
 };
