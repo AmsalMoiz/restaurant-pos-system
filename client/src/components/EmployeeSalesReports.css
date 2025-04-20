@@ -96,7 +96,7 @@
 .employee-reports-table td {
   border: 1px solid #e1e1e1 !important;
   padding: 12px 15px !important;
-  text-align: left !important;
+  text-align: center !important;
 }
 
 .employee-reports-table th {
@@ -118,7 +118,7 @@
 .employee-reports-table td:last-child,
 .employee-reports-table td:nth-last-child(2),
 .employee-reports-table td:nth-last-child(3) {
-  text-align: right !important;
+  text-align: center !important;
 }
 
 /* Custom Report Form */
@@ -441,23 +441,47 @@
 .performance-poor {
     background-color: #ffcccb; /* Light red */
     color: #d32f2f;
+    
+    text-align: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
     font-weight: bold;
+    display: inline-block;
 }
 
 .performance-average {
     background-color: #fff9c4; /* Light yellow */
     color: #f57f17;
+    
+    text-align: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
     font-weight: bold;
+    display: inline-block;
 }
 
 .performance-good {
     background-color: #c8e6c9; /* Light green */
     color: #2e7d32;
+    
+    text-align: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
     font-weight: bold;
+    display: inline-block;
 }
 
 .performance-excellent {
     background-color: #e1bee7; /* Light purple h3*/
     color: #6a1b9a;
+    
+    text-align: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
     font-weight: bold;
+    display: inline-block;
 }

@@ -460,38 +460,68 @@ function EmployeeSalesReports() {
         fetchOverallDailyReport();
     }, []);
     // FETCH OVERALL SALES REPORT CUSTOM
-    const fetchOverallCustomReport = async () => {
-        
-        setError("");
-        const start_date = document.getElementById('start_date').value;
-        const end_date = document.getElementById('end_date').value;
+    // Modified fetchOverallCustomReport to accept parameters and handle missing parameters
+    const fetchOverallCustomReport = async (start_date, end_date) => {
+        // Only proceed if both dates are provided
         if (!start_date || !end_date) {
-            setError("Please use both start and end dates.");
+            // Don't set an error here, just return silently
+            // console.log("Start date and end date are required for custom report");
             return;
         }
+        
         try {
             const response = await fetch(`${API_BASE}/dashboard/custom/overall`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ start_date, end_date }),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ start_date, end_date }),
             });
-            const data = await response.json();
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            
+            const data = await response.json();
             setOverallCustomReport(data);
-        } catch(err){
+        } catch(err) {
             console.error("Error fetching overall custom sales report:", err);
             setError("Failed to load overall custom sales report. Please try again later.");
         }
     };
-    useEffect(() => {
-        fetchOverallCustomReport();
-    }, []);
     
+    //#region Color Coded Avg Sales
+    
+    // Function to determine performance class based on individual vs overall average
+    const getPerformanceClass = (individualAvg, overallAvg) => {
+        if (!individualAvg || !overallAvg || overallAvg === 0) return 'performance-poor';
+        
+        const ratio = individualAvg / overallAvg;
+        
+        if (ratio <= 0.69) return 'performance-poor';
+        if (ratio <= 0.84) return 'performance-average';
+        if (ratio <= 1.00) return 'performance-good';
+        return 'performance-excellent';
+    };
 
+    // Function to get current overall average based on report type
+    const getCurrentOverallAvgSales = () => {
+        switch (activeReportType) {
+            case 'monthly':
+                return overallMonthlyReport.length > 0 ? overallMonthlyReport[0].avg_overall_sales : 0;
+            case 'weekly':
+                return overallWeeklyReport.length > 0 ? overallWeeklyReport[0].avg_overall_sales : 0;
+            case 'daily':
+                return overallDailyReport.length > 0 ? overallDailyReport[0].avg_overall_sales : 0;
+            case 'custom':
+                return overallCustomReport.length > 0 ? overallCustomReport[0].avg_overall_sales : 0;
+            default:
+                return 0;
+        }
+    };
+    // Add this right before the return statement in your component
+    const overallAvgSales = getCurrentOverallAvgSales();
+    
 
     // #region Login
     //Login additional features, returns to login page if not properly logged in
@@ -635,7 +665,9 @@ function EmployeeSalesReports() {
                                         <td>${report.total_tips.toFixed(2)}</td>
                                         <td>{report.tip_percentage}%</td>
                                         <td >
-                                        ${report.avg_sale_amount.toFixed(2)}
+                                            <span className={getPerformanceClass(report.avg_sale_amount, overallAvgSales)}>
+                                            ${report.avg_sale_amount.toFixed(2)}
+                                            </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
                                     </tr>
@@ -701,7 +733,11 @@ function EmployeeSalesReports() {
                                         <td>{report.transactions_processed}</td>
                                         <td>${report.total_tips.toFixed(2)}</td>
                                         <td>{report.tip_percentage}%</td>
-                                        <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                        <td >
+                                            <span className={getPerformanceClass(report.avg_sale_amount, overallAvgSales)}>
+                                            ${report.avg_sale_amount.toFixed(2)}
+                                            </span>
+                                        </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
                                     </tr>
                                 ))}
@@ -766,7 +802,11 @@ function EmployeeSalesReports() {
                                         <td>{report.transactions_processed}</td>
                                         <td>${report.total_tips.toFixed(2)}</td>
                                         <td>{report.tip_percentage}%</td>
-                                        <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                        <td >
+                                            <span className={getPerformanceClass(report.avg_sale_amount, overallAvgSales)}>
+                                            ${report.avg_sale_amount.toFixed(2)}
+                                            </span>
+                                        </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
                                     </tr>
                                 ))}
@@ -857,7 +897,11 @@ function EmployeeSalesReports() {
                                         <td>{report.transactions_processed}</td>
                                         <td>${report.total_tips.toFixed(2)}</td>
                                         <td>{report.tip_percentage}%</td>
-                                        <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                        <td >
+                                            <span className={getPerformanceClass(report.avg_sale_amount, overallAvgSales)}>
+                                            ${report.avg_sale_amount.toFixed(2)}
+                                            </span>
+                                        </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
                                     </tr>
                                 ))}
