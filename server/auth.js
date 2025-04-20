@@ -40,6 +40,7 @@ router.post("/login", async (req, res) => { // POST /api/auth/login
     
     res.json({
       user: {
+        customer_id: customer.customer_id,
         name: user.name,
         email: user.email,
         phone: user.phone_number

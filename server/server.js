@@ -52,8 +52,9 @@ app.get('/', (req, res) => {
 app.get('/api/menu', async (req, res) => {
   try {
     // Connection is now available as req.dbConnection
-    const [results] = await req.dbConnection.query('SELECT name, description, image_data, price FROM items');
+    const [results] = await req.dbConnection.query('SELECT item_id, name, description, image_data, price FROM items');
     const menuItems = results.map(item => ({
+      item_id: item.item_id,
       name: item.name,
       description: item.description,
       price: parseFloat(item.price),
@@ -614,5 +615,79 @@ app.get("/api/reservations", async (req, res) => {
   } catch (error) {
     console.error("Fetch reservations error:", error);
     res.status(500).json({ error: "Database fetch error" });
+  }
+});
+
+
+//customer transactions
+app.post('/api/customer/transaction', async (req, res) => {
+  const { customer_id, subtotal, tax, total, payment_method, tip, items } = req.body;
+
+  if (!customer_id || !subtotal || !tax || !total || !payment_method || !items || !Array.isArray(items)) {
+    return res.status(400).json({ error: 'Missing required fields or items format is invalid.' });
+  }
+
+  const connection = await req.dbConnection.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [transactionResult] = await connection.execute(
+      `INSERT INTO transactions (customer_id, subtotal, sales_tax, total_amount, payment_method, status, order_type, tip_amount)
+      VALUES (?, ?, ?, ?, ?, 'Completed', 'Takeout', ?)`,
+      [customer_id, subtotal, tax, total, payment_method, tip]
+    );
+
+    const transactionId = transactionResult.insertId;
+
+    for (const item of items) {
+      await connection.execute(
+        `INSERT INTO transaction_items (transaction_id, item_id, quantity_purchased, subtotal)
+         VALUES (?, ?, ?, ?)`,
+        [transactionId, item.item_id, item.quantity, item.quantity * item.price]
+      );      
+    }
+
+    const [loyaltyStatus] = await connection.execute(
+      `SELECT loyalty FROM customers WHERE customer_id = ?`,
+      [customer_id]
+    );
+
+    await connection.commit();
+    res.status(200).json({
+      success: true, 
+      message: 'Transaction completed.', 
+    });
+
+    
+
+  } catch (error) {
+    await connection.rollback();
+    console.error('Transaction processing error:', error);
+    res.status(500).json({ error: 'Transaction processing failed.' });
+  } finally {
+    connection.release();
+  }
+});
+
+//discount trigger
+
+app.patch('/api/customer/loyalty-used', async (req, res) => {
+  const { customer_id } = req.body;
+
+  if (!customer_id) {
+    return res.status(400).json({ error: 'Missing customer ID' });
+  }
+
+  try {
+    await req.dbConnection.query(
+      `UPDATE customers SET loyalty = 2 WHERE customer_id = ? AND loyalty = 1`,
+      [customer_id]
+    );
+
+    res.status(200).json({ success: true, message: 'Loyalty code marked as used' });
+  } catch (err) {
+    console.error('Loyalty update error:', err);
+    res.status(500).json({ error: 'Failed to update loyalty status' });
   }
 });
