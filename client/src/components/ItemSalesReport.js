@@ -454,6 +454,7 @@ const ItemSalesReport = () => {
                     <th>Item Name</th>
                     <th>Quantity Purchased</th> {/* did headers manually no mapping here */}
                     <th>Subtotal</th>
+                    <th>Discount Code</th>
                     <th>Date & Time</th>
                   </tr>
                 </thead>

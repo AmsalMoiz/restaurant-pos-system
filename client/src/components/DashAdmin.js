@@ -117,7 +117,7 @@ function DashAdmin() {
                                 </div>
                                 <div className="admin-card">
                                     <h3>Items Sales Report</h3>
-                                    <p>View daily, weekly, and monthly sales</p>
+                                    <p>View daily, weekly, and monthly Items Sales</p>
                                     <button onClick={() => navigate('/reports/items-sales')}>View Reports</button>
                                 </div>
                                 

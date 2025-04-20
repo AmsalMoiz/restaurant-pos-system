@@ -202,12 +202,14 @@ router.post('/api/generate-sales-report/list', async (req, res) => {
             SELECT
                 t.transaction_id,
                 t.created_at,
+                d.code AS discount_code,
                 i.name AS item_name,
                 ti.quantity_purchased,
                 i.price AS item_price
             FROM transactions t
             JOIN transaction_items ti ON t.transaction_id = ti.transaction_id
             JOIN items i ON ti.item_id = i.item_id
+            LEFT JOIN discounts d ON t.discount_id = d.discount_id
             WHERE t.transaction_id IN (${placeholders})
         `;
 
@@ -236,6 +238,7 @@ router.post('/api/generate-sales-report/list', async (req, res) => {
                 item_name: row.item_name,
                 quantity_purchased: row.quantity_purchased,
                 subtotal: parseFloat(row.quantity_purchased) * parseFloat(row.item_price),
+                discount_code: row.discount_code || null,
                 created_at: localTime,  // Include the formatted date
             };
         });
