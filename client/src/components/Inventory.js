@@ -88,7 +88,7 @@ function InventoryPage() {
   };
 
   const handleAddItem = () => {
-    if (!newItem.dessert || !newItem.price || !newItem.quantity || !newItem.limit || !newItem.supplier, !newItem.description ) {
+    if (!newItem.dessert || !newItem.price || !newItem.quantity || !newItem.limit || !newItem.supplier || !newItem.description ) {
       alert("All fields must be filled out.");
       return;
     }
@@ -255,12 +255,12 @@ function InventoryPage() {
                     <tr key={item.item_id}>
                       {editingItemId === item.item_id ? (
                         <>
-                          <td><input value={editedItemData.dessert || ''} onChange={(e) => setEditedItemData({ ...editedItemData, dessert: e.target.value })} /></td>
+                          <td><input type="text" value={editedItemData.dessert || ''} onChange={(e) => setEditedItemData({ ...editedItemData, dessert: e.target.value })} /></td>
                           <td><input type="number" value={editedItemData.price || ''} onChange={(e) => setEditedItemData({ ...editedItemData, price: e.target.value })} /></td>
                           <td><input type="number" value={editedItemData.supplier_price || ''} onChange={(e) => setEditedItemData({ ...editedItemData, supplier_price: e.target.value })} /></td>
                           <td><input type="number" value={editedItemData.quantity || ''} onChange={(e) => setEditedItemData({ ...editedItemData, quantity: e.target.value })} /></td>
                           <td><input type="number" value={editedItemData.limit || ''} onChange={(e) => setEditedItemData({ ...editedItemData, limit: e.target.value })} /></td>
-                          <td><input value={editedItemData.supplier || ''} onChange={(e) => setEditedItemData({ ...editedItemData, supplier: e.target.value })} /></td>
+                          <td><input type="text" value={editedItemData.supplier || ''} onChange={(e) => setEditedItemData({ ...editedItemData, supplier: e.target.value })} /></td>
                           <td><textarea value={editedItemData.description || ''} onChange={(e) => setEditedItemData({ ...editedItemData, description: e.target.value })} /></td>
                           <td><input type="file" accept="image/*" onChange={handleImageChange} /></td> 
                           <td>
