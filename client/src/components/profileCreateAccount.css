@@ -1,0 +1,97 @@
+.profile-create-account {
+    background-color: #1a1a1a;
+    min-height: calc(100vh - 70px);
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: #f5f5f5;
+  }
+  
+  .profile-container {
+    background-color: #222;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    text-align: center;
+  }
+  
+  .profile-header {
+    margin-bottom: 40px;
+  }
+  
+  .profile-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #E7CD78;
+  }
+  
+  .profile-subtitle {
+    font-size: 1.1rem;
+    color: #aaa;
+  }
+  
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  
+  .profile-icon {
+    margin-bottom: 30px;
+  }
+  
+  .icon-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #333;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #E7CD78;
+  }
+  
+  .user-icon {
+    font-size: 50px;
+    color: #E7CD78;
+    font-weight: bold;
+  }
+  
+  .profile-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+  
+  .profile-content p {
+    font-size: 1.1rem;
+    color: #ccc;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+  
+  .profile-footer {
+    color: #aaa;
+    font-size: 1rem;
+  }
+  
+  .login-link {
+    color: #E7CD78;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .login-link:hover {
+    color: #f0d992;
+  }
+  
+  .create-account-btn:hover {
+    background: #f0d992 !important;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+  
