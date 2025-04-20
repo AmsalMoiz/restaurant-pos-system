@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "./EmployeeSalesReports.css";
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
@@ -25,6 +25,34 @@ function EmployeeSalesReports() {
     const [groupedTransactions, setGroupedTransactions] = useState({});
     // Track if transactions are loading
     const [transactionsLoading, setTransactionsLoading] = useState(false);
+    // Role filter
+    const [roleFilter, setRoleFilter] = useState('All');
+
+    //Ovearll Sales Report
+    const [overallMonthlyReport, setOverallMonthlyReport] = useState([]);
+    const [overallWeeklyReport, setOverallWeeklyReport] = useState([]);
+    const [overallDailyReport, setOverallDailyReport] = useState([]);
+    const [overallCustomReport, setOverallCustomReport] = useState([]);
+    
+    // Get available roles from the reports
+    const availableRoles = useMemo(() => {
+        const roles = new Set();
+        
+        // Add roles from all report types
+        [...employeeMonthlyReport, ...employeeWeeklyReport, ...employeeDailyReport, ...employeeCustomReport]
+            .forEach(report => {
+                if (report.role) {
+                    roles.add(report.role);
+                }
+            });
+        
+        return ['All', ...Array.from(roles)].sort();
+    }, [employeeMonthlyReport, employeeWeeklyReport, employeeDailyReport, employeeCustomReport]);
+
+    // Reset role filter when changing report types
+    useEffect(() => {
+        setRoleFilter('All');
+    }, [activeReportType]);
 
     // Reset selected employee when changing report type
     useEffect(() => {
@@ -146,7 +174,8 @@ function EmployeeSalesReports() {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            
+            // Also fetch the overall report when generating custom report
+            fetchOverallCustomReport(start_date, end_date);
             setEmployeeCustomReport(data);
         } catch(err){
             console.error("Error fetching employee custom sales report:", err);
@@ -378,7 +407,92 @@ function EmployeeSalesReports() {
             fetchEmployeeCustomTransactions(employeeId, employeeName);
         }
     };
+    //#region Overall Sales Report
+    // FETCH OVERALL SALES REPORT MONTHLY
+    const fetchOverallMonthlyReport = async () => {
+        try {
+            const response = await fetch(`${API_BASE}/dashboard/monthly/overall`);
+            if (!response.ok) { 
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setOverallMonthlyReport(data);
+        } catch(err){
+            console.error("Error fetching overall monthly sales report:", err);
+            setError("Failed to load overall monthly sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchOverallMonthlyReport();
+    }, []);
+    // FETCH OVERALL SALES REPORT WEEKLY
+    const fetchOverallWeeklyReport = async () => {
+        try {
+            const response = await fetch(`${API_BASE}/dashboard/weekly/overall`);
+            if (!response.ok) { 
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setOverallWeeklyReport(data);
+        } catch(err){
+            console.error("Error fetching overall weekly sales report:", err);
+            setError("Failed to load overall weekly sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchOverallWeeklyReport();
+    }, []);
+    // FETCH OVERALL SALES REPORT DAILY
+    const fetchOverallDailyReport = async () => {
+        try {
+            const response = await fetch(`${API_BASE}/dashboard/daily/overall`);
+            if (!response.ok) { 
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setOverallDailyReport(data);
+        } catch(err){
+            console.error("Error fetching overall daily sales report:", err);
+            setError("Failed to load overall daily sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchOverallDailyReport();
+    }, []);
+    // FETCH OVERALL SALES REPORT CUSTOM
+    const fetchOverallCustomReport = async () => {
+        
+        setError("");
+        const start_date = document.getElementById('start_date').value;
+        const end_date = document.getElementById('end_date').value;
+        if (!start_date || !end_date) {
+            setError("Please use both start and end dates.");
+            return;
+        }
+        try {
+            const response = await fetch(`${API_BASE}/dashboard/custom/overall`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ start_date, end_date }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            setOverallCustomReport(data);
+        } catch(err){
+            console.error("Error fetching overall custom sales report:", err);
+            setError("Failed to load overall custom sales report. Please try again later.");
+        }
+    };
+    useEffect(() => {
+        fetchOverallCustomReport();
+    }, []);
     
+
+
     // #region Login
     //Login additional features, returns to login page if not properly logged in
     useEffect(() => {
@@ -409,7 +523,14 @@ function EmployeeSalesReports() {
         }
     }, [navigate]);
 
-    
+    // Filter employee data based on role filter
+    const getFilteredReportData = (reportData) => {
+        if (roleFilter === 'All') {
+            return reportData;
+        }
+        return reportData.filter(report => report.role === roleFilter);
+    };
+
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -417,7 +538,7 @@ function EmployeeSalesReports() {
     if (error) {
         return <div className="error-container">{error}</div>;
     }
-
+    
     return (
     <div className="admin-section">
         <header className="section-header">
@@ -426,25 +547,66 @@ function EmployeeSalesReports() {
         </header>
         
         <div className="report-controls">
-            <label htmlFor="report-type">Select Report Type:</label>
-            <select 
-                value={activeReportType} 
-                onChange={(e) => setActiveReportType(e.target.value)}
-                className="report-type-selector"
-            >
-                <option value="monthly">Monthly Report</option>
-                <option value="weekly">Weekly Report</option>
-                <option value="daily">Daily Report</option>
-                <option value="custom">Choose a Date</option>
-            </select>
+            <div className="filter-group">
+                <label htmlFor="report-type">Select Report Type:</label>
+                <select 
+                    value={activeReportType} 
+                    onChange={(e) => setActiveReportType(e.target.value)}
+                    className="report-type-selector"
+                >
+                    <option value="monthly">Monthly Report</option>
+                    <option value="weekly">Weekly Report</option>
+                    <option value="daily">Daily Report</option>
+                    <option value="custom">Choose a Date</option>
+                </select>
+            </div>
+            
+            <div className="filter-group">
+                <label htmlFor="role-filter">Filter by Role:</label>
+                <select 
+                    id="role-filter"
+                    value={roleFilter} 
+                    onChange={(e) => setRoleFilter(e.target.value)}
+                    className="role-filter-selector"
+                >
+                    {availableRoles.map(role => (
+                        <option key={role} value={role}>{role}</option>
+                    ))}
+                </select>
+            </div>
         </div>
         
         <div className="employee-reports-container">
             {activeReportType === 'monthly' && (
                 <>
-                    <h3>Monthly Sales Report</h3>
+                    <h2>Overall Sales</h2>
+                    {overallMonthlyReport.length === 0 ? (
+                        <p>Loading overall monthly report data...</p>
+                    ) : ( 
+                        <table className="esr-overall-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Total Sales</th>
+                                    <th>Average Sales Per Transaction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                   
+                                {overallMonthlyReport.map((report, index) => (
+                                    <tr key={index}>
+                                        <td>${report.total_overall_sales.toFixed(2)}</td>
+                                        <td>${report.avg_overall_sales.toFixed(2)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+
+                    <h3>Monthly Sales Report {roleFilter !== 'All' ? `(${roleFilter} Only)` : ''}</h3>
                     {employeeMonthlyReport.length === 0 ? (
                         <p>Loading monthly report data...</p>
+                    ) : getFilteredReportData(employeeMonthlyReport).length === 0 ? (
+                        <p>No data available for the selected role.</p>
                     ) : (
                         <table className="employee-reports-table">
                             <thead>
@@ -460,7 +622,7 @@ function EmployeeSalesReports() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {employeeMonthlyReport.map((report, index) => (
+                                {getFilteredReportData(employeeMonthlyReport).map((report, index) => (
                                     <tr 
                                         key={index} 
                                         onClick={() => handleEmployeeRowClickMonthly(report.employee_id, report.employee_name)}
@@ -472,7 +634,9 @@ function EmployeeSalesReports() {
                                         <td>{report.transactions_processed}</td>
                                         <td>${report.total_tips.toFixed(2)}</td>
                                         <td>{report.tip_percentage}%</td>
-                                        <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                        <td >
+                                        ${report.avg_sale_amount.toFixed(2)}
+                                        </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
                                     </tr>
                                 ))}
@@ -484,9 +648,32 @@ function EmployeeSalesReports() {
             
             {activeReportType === 'weekly' && (
                 <>
-                    <h3>Weekly Sales Report</h3>
+                    <h2>Overall Sales</h2>
+                    {overallWeeklyReport.length === 0 ? (
+                        <p>Loading overall weekly report data...</p>
+                    ) : ( 
+                        <table className="esr-overall-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Total Sales</th>
+                                    <th>Average Sales Per Transaction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {overallWeeklyReport.map((report, index) => (
+                                    <tr key={index}>
+                                        <td>${report.total_overall_sales.toFixed(2)}</td>
+                                        <td>${report.avg_overall_sales.toFixed(2)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                    <h3>Weekly Sales Report {roleFilter !== 'All' ? `(${roleFilter} Only)` : ''}</h3>
                     {employeeWeeklyReport.length === 0 ? (
                         <p>Loading weekly report data...</p>
+                    ) : getFilteredReportData(employeeWeeklyReport).length === 0 ? (
+                        <p>No data available for the selected role.</p>
                     ) : (
                         <table className="employee-reports-table">
                             <thead>
@@ -502,7 +689,7 @@ function EmployeeSalesReports() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {employeeWeeklyReport.map((report, index) => (
+                                {getFilteredReportData(employeeWeeklyReport).map((report, index) => (
                                     <tr 
                                         key={index} 
                                         onClick={() => handleEmployeeRowClickWeekly(report.employee_id, report.employee_name)}
@@ -526,9 +713,32 @@ function EmployeeSalesReports() {
             
             {activeReportType === 'daily' && (
                 <>
-                    <h3>Daily Sales Report</h3>
+                    <h2>Overall Sales</h2>
+                    {overallDailyReport.length === 0 ? (
+                        <p>Loading overall daily report data...</p>
+                    ) : ( 
+                        <table className="esr-overall-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Total Sales</th>
+                                    <th>Average Sales Per Transaction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {overallDailyReport.map((report, index) => (
+                                    <tr key={index}>
+                                        <td>${report.total_overall_sales.toFixed(2)}</td>
+                                        <td>${report.avg_overall_sales.toFixed(2)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                    <h3>Daily Sales Report {roleFilter !== 'All' ? `(${roleFilter} Only)` : ''}</h3>
                     {employeeDailyReport.length === 0 ? (
                         <p>Loading daily report data...</p>
+                    ) : getFilteredReportData(employeeDailyReport).length === 0 ? (
+                        <p>No data available for the selected role.</p>
                     ) : (
                         <table className="employee-reports-table">
                             <thead>
@@ -544,7 +754,7 @@ function EmployeeSalesReports() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {employeeDailyReport.map((report, index) => (
+                                {getFilteredReportData(employeeDailyReport).map((report, index) => (
                                     <tr 
                                         key={index} 
                                         onClick={() => handleEmployeeRowClickDaily(report.employee_id, report.employee_name)}
@@ -567,7 +777,7 @@ function EmployeeSalesReports() {
             )}
             {activeReportType === 'custom' && (
             <> 
-                <h3>Custom Date Range Report</h3>
+                <h3>Custom Date Range Report {roleFilter !== 'All' ? `(${roleFilter} Only)` : ''}</h3>
                 <div className="custom-report-form">
                     <form onSubmit={fetchEmployeeCustomReport}>
                         <div className="form-row">
@@ -598,38 +808,63 @@ function EmployeeSalesReports() {
                 {error && <div className="report-error">{error}</div>}
                 
                 {employeeCustomReport.length > 0 && (
-                    <table className="employee-reports-table">
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Employee Name</th>
-                                <th>Role</th>
-                                <th>Transactions Processed</th>
-                                <th>Total Tips</th>
-                                <th>Tip Percentage</th>
-                                <th>Average Sale Amount</th>
-                                <th>Total Sales</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {employeeCustomReport.map((report, index) => (
-                                <tr 
-                                    key={index} 
-                                    onClick={() => handleEmployeeRowClickCustom(report.employee_id, report.employee_name)}
-                                    className={selectedEmployee && selectedEmployee.id === report.employee_id ? "selected-row" : "clickable-row"}
-                                >
-                                    <td>{report.sales_rank}</td>
-                                    <td>{report.employee_name}</td>
-                                    <td>{report.role}</td>
-                                    <td>{report.transactions_processed}</td>
-                                    <td>${report.total_tips.toFixed(2)}</td>
-                                    <td>{report.tip_percentage}%</td>
-                                    <td>${report.avg_sale_amount.toFixed(2)}</td>
-                                    <td>${report.total_sales.toFixed(2)}</td>
+                    getFilteredReportData(employeeCustomReport).length === 0 ? (
+                        <p>No data available for the selected role in this date range.</p>
+                    ) : (
+                        <>
+                        <h2>Overall Sales</h2>
+                    
+                        <table className="esr-overall-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Total Sales</th>
+                                    <th>Average Sales Per Transaction</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {overallCustomReport.map((report, index) => (
+                                    <tr key={index}>
+                                        <td>${report.total_overall_sales.toFixed(2)}</td>
+                                        <td>${report.avg_overall_sales.toFixed(2)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <h4>Custom Report</h4>
+                        <table className="employee-reports-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Employee Name</th>
+                                    <th>Role</th>
+                                    <th>Transactions Processed</th>
+                                    <th>Total Tips</th>
+                                    <th>Tip Percentage</th>
+                                    <th>Average Sale Amount</th>
+                                    <th>Total Sales</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {getFilteredReportData(employeeCustomReport).map((report, index) => (
+                                    <tr 
+                                        key={index} 
+                                        onClick={() => handleEmployeeRowClickCustom(report.employee_id, report.employee_name)}
+                                        className={selectedEmployee && selectedEmployee.id === report.employee_id ? "selected-row" : "clickable-row"}
+                                    >
+                                        <td>{report.sales_rank}</td>
+                                        <td>{report.employee_name}</td>
+                                        <td>{report.role}</td>
+                                        <td>{report.transactions_processed}</td>
+                                        <td>${report.total_tips.toFixed(2)}</td>
+                                        <td>{report.tip_percentage}%</td>
+                                        <td>${report.avg_sale_amount.toFixed(2)}</td>
+                                        <td>${report.total_sales.toFixed(2)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        </>
+                    )
                 )}
             </>
         )}
