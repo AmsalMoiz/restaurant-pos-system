@@ -52,13 +52,14 @@ const UserSignupModal = ({ onClose, onSignup, showSignupModal, errorMessage, set
   const handleSubmit = (e) => {
     e.preventDefault();
     const { street, city, state, zip, ...rest } = formData;
+    
     const fullAddress = `${street}, ${city}, ${state} ${zip}`.trim();
     const payload = {
       ...rest,
       address: fullAddress,
-      phone: '+1' + formData.phone // send full E.164 format
+      phone: '+1' + formData.phone 
     };
-    onSignup(payload);
+    onSignup(payload); 
   };
 
   // Optional: Format for display as (123) 456-7890

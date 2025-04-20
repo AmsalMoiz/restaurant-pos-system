@@ -24,13 +24,19 @@ import CustomerReport from './components/CustomerReport';
 import Suppliers from './components/Suppliers';
 import EmployeeSalesReports from './components/EmployeeSalesReports';
 import ReorderAlerts from './components/ReorderAlerts';
-import Profile from './components/Profile'; 
+import Profile from './components/Profile';
+import ProfileCreateAccount from './components/ProfileCreateAccount'; // Added this import
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
+  const [showSignupModal, setShowSignupModal] = useState(false);
 
   const handleUserLogin = (userData) => {
     console.log('User logged in:', userData);
+  };
+
+  const handleOpenSignupModal = () => {
+    setShowSignupModal(true);
   };
 
   return (
@@ -70,9 +76,6 @@ function App() {
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
         <Route path="/profile" element={<Profile />} /> 
-
-        {/* catch all get and redirect to login, do not put routes below this */}
-        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );

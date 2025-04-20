@@ -4,7 +4,6 @@ import './navbarCustomer.css';
 
 const NavbarCustomer = ({ customerName }) => {
   let storedName = customerName || "Customer";
-
   try {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -28,8 +27,9 @@ const NavbarCustomer = ({ customerName }) => {
       </div>
       <div className="navbar-right">
         <Link to="/menu">Menu</Link>
-        <Link to="/book-table">Reservations</Link> 
+        <Link to="/book-table">Reservations</Link>
         <Link to="/cart">Bag</Link>
+        {/* IMPORTANT: Profile link for signed-in users */}
         <Link to="/profile">Profile</Link>
       </div>
     </nav>
