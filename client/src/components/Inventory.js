@@ -20,6 +20,8 @@ function InventoryPage() {
   const addRowRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const imageInputRef = useRef(null);
+  const [orderConfirmation, setOrderConfirmation] = useState(null);
+
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -160,19 +162,28 @@ function InventoryPage() {
       }
 
       const result = await response.json();
-      alert(`Order placed successfully! Order ID: ${result.order_id}`);
-
-      setOrderMode(false);
-      setSelectedOrderItem(null);
-      setOrderQuantity(1);
+      setOrderConfirmation({
+        orderId: result.order_id,
+        itemName: selectedItem.dessert,
+        quantity: orderQuantity,
+        date: new Date().toLocaleDateString()
+      });
 
       const refreshed = await fetch(`${API_BASE}/dashboard/inventory`);
       const data = await refreshed.json();
       setInventory(data);
+
+      setSelectedOrderItem(null);
+      setOrderQuantity(1);
     } catch (err) {
       console.error("Error placing order:", err);
       alert("Failed to place order.");
     }
+  };
+
+  const closeOrderConfirmation = () => {
+    setOrderMode(false);
+    setOrderConfirmation(null);
   };
 
   const handleEditClick = (item) => {
@@ -372,7 +383,22 @@ function InventoryPage() {
           </>
         )}
 
-            
+        {orderConfirmation && (
+                  <>
+                    <div className="modal-overlay" onClick={closeOrderConfirmation} />
+                    <div className="confirmation-box">
+                      <h3>Order Placed!</h3>
+                      <p><strong>Order ID:</strong> {orderConfirmation.orderId}</p>
+                      <p><strong>Item:</strong> {orderConfirmation.itemName}</p>
+                      <p><strong>Quantity:</strong> {orderConfirmation.quantity}</p>
+                      <p><strong>Date:</strong> {orderConfirmation.date}</p>
+                      <div className="confirm-buttons">
+                        <button onClick={closeOrderConfirmation}>OK</button>
+                      </div>
+                    </div>
+                  </>
+                )}
+
           </div>
         </main>
       </div>
