@@ -95,19 +95,18 @@ function DashManager() {
                                     <p>Analyze customer behavior and trends</p>
                                     <button onClick={() => navigate('/customer-report')}>View Reports</button>
                                 </div>
+
+                                 {/* Log hours */}
+                                 <div className="admin-card">
+                                    <h3>Log Hours</h3>
+                                    <p>Log hours worked and their date</p>
+                                    <button onClick={() => navigate('/log-hours')}>Log</button>
+                                </div>
+                                
                             </div>
                         </div>
                     )}
 
-                    {activeSection === 'reports' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Sales Reports</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            <p>Sales reports would go here</p>
-                        </div>
-                    )}
                 </main>
             </div>
         </div>

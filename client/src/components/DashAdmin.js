@@ -83,15 +83,15 @@ function DashAdmin() {
                                 {/* Process Transaction */}
                                 <div className="admin-card">
                                     <h3>Process Transactions</h3>
-                                    
+                                    <p>Create and Complete Transactions</p>
                                     <button onClick={() => navigate('/transactions')}>Checkout</button>
                                 </div>
                                 
                                 {/* Reorder Alerts side */}
                                 <div className="admin-card">
                                     <h3>Reorder Alerts</h3>
-                                    
-                                    <button onClick={() => navigate('/reorder_alerts')}>View Reorder Alerts</button>
+                                    <p>View all reorder alerts</p>
+                                    <button onClick={() => navigate('/reorder_alerts')}>View</button>
                                 </div>
 
                                 {/* Inventory side */}
@@ -144,6 +144,8 @@ function DashAdmin() {
                             </div>
                         </div>
                     )}
+
+                    
 
     
                     
