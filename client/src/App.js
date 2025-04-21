@@ -25,7 +25,7 @@ import Suppliers from './components/Suppliers';
 import EmployeeSalesReports from './components/EmployeeSalesReports';
 import ReorderAlerts from './components/ReorderAlerts';
 import Profile from './components/Profile';
-import ProfileCreateAccount from './components/ProfileCreateAccount'; // Added this import
+import ProfileCreateAccount from './components/ProfileCreateAccount';
 import SupplierReportPage from './components/SupplierReport';
 import Discounts from './components/Discounts';
 
