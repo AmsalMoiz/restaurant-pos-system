@@ -17,7 +17,8 @@ const ViewDiscountsRoutes = require("./ViewDiscountsRoutes");
 
 const PORT = process.env.PORT || 80;
 
-const app = express();
+const app = express(); 
+app.use(express.static(path.join(__dirname, 'build'))); //was removed during merge
 
 app.use(cors());
 app.use(express.json({limit: '5mb' })); // Middleware for JSON body parsing, with a limit of 5mb
@@ -827,4 +828,4 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
-// v4.4.47
+// v4.4.49
