@@ -674,7 +674,9 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
-                                        <td>{report.total_hours.toFixed(2)}</td>
+                                        <td>
+                                            {report.role !== 'Admin' ? report.total_hours.toFixed(2) : 'Salaried'}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -745,7 +747,9 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
-                                        <td>{report.total_hours.toFixed(2)}</td>
+                                        <td>
+                                            {report.role !== 'Admin' ? report.total_hours.toFixed(2) : 'Salaried'}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -816,7 +820,9 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
-                                        <td>{report.total_hours.toFixed(2)}</td>
+                                        <td>
+                                            {report.role !== 'Admin' ? report.total_hours.toFixed(2) : 'Salaried'}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -913,7 +919,9 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
-                                        <td>{report.total_hours.toFixed(2)}</td>
+                                        <td>
+                                            {report.role !== 'Admin' ? report.total_hours.toFixed(2) : 'Salaried'}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

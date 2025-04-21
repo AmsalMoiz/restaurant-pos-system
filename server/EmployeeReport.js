@@ -4,7 +4,7 @@ const router = express.Router();
 const monthlyQuery = 
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
@@ -40,7 +40,7 @@ ORDER BY
 const weeklyQuery =
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
@@ -76,7 +76,7 @@ ORDER BY
 const dailyQuery =
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
@@ -112,7 +112,7 @@ ORDER BY
 const customQuery =
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
