@@ -1,0 +1,157 @@
+.admin-dashboard-body {
+    background-color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .admin-dashboard {
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .admin-header h1 {
+    font-size: 2rem;
+  }
+  
+  .admin-info button {
+    margin-left: 10px;
+  }
+  
+  .admin-content {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .add-employee-button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .add-employee-btn {
+    background-color: #28a745;
+    color: #fff;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .add-employee-btn:hover {
+    background-color: #218838;
+  }
+  
+  .employees-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .employees-table th,
+  .employees-table td {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .employees-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+  }
+  
+  .edit-btn, .update-btn, .delete-btn {
+    padding: 6px 12px;
+    margin: 2px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .update-btn {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .update-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .delete-btn {
+    background-color: red;
+    color: white;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .minus-line {
+    display: inline-block;
+    width: 10px;
+    height: 2px;
+    background-color: white;
+  }
+  
+  .confirmation-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 25px;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+  }
+  
+  .confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 10px;
+  }
+  
+  .confirm-buttons button {
+    padding: 6px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .confirm-buttons button:first-child {
+    background-color: #ccc;
+  }
+  
+  .confirm-buttons button:last-child {
+    background-color: #dc3545;
+    color: white;
+  }
+  

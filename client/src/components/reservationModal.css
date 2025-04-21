@@ -1,0 +1,112 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: #111;
+    color: #fff8dc;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+    width: 400px;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffd700;
+  }
+  
+  .guest-options {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  
+  .guest-options button {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .guest-options button:hover {
+    border-color: #ffd700;
+    color: #ffd700;
+  }
+  
+  .guest-options button.active {
+    background-color: white;
+    color: #111;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  }
+  
+  
+  .date-time-section p {
+    margin: 10px 0 5px;
+  }
+  
+  select {
+    width: 100%;
+    padding: 10px;
+    background-color: #1a1a1a;
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+  
+  select option {
+    background-color: #111;
+    color: #fff;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .modal-buttons .close-btn,
+  .modal-buttons .reserve-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .modal-buttons .close-btn {
+    background-color: #444;
+    color: white;
+  }
+  
+  .modal-buttons .close-btn:hover {
+    background-color: #666;
+  }
+  
+  .modal-buttons .reserve-btn {
+    background-color: #ffd700;
+    color: #000;
+  }
+  
+  .modal-buttons .reserve-btn:hover {
+    background-color: #ffcc00;
+  }
+  /* removed global input class, moved to booktable, reservation looks unchanged  */

@@ -1,0 +1,232 @@
+.order-history {
+    width: 100%;
+    color: var(--text-light);
+  }
+  
+  .order-history h2 {
+    color: var(--soft-gold);
+    font-size: 2em;
+    margin-bottom: 25px;
+  }
+  
+  .loading, .no-orders {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-muted);
+  }
+  
+  .order-card {
+    background: rgba(40, 40, 40, 0.7);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+  
+  .order-card:hover {
+    background: rgba(50, 50, 50, 0.8);
+  }
+  
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .order-number {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  
+  .order-date {
+    color: var(--text-muted);
+    font-size: 0.9em;
+  }
+  
+  .status-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    text-transform: capitalize;
+  }
+  
+  .status-badge.completed {
+    background: #4caf50;
+    color: white;
+  }
+  
+  .status-badge.processing {
+    background: #2196f3;
+    color: white;
+  }
+  
+  .status-badge.cancelled {
+    background: #f44336;
+    color: white;
+  }
+  
+  .order-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .items-count {
+    color: var(--text-muted);
+  }
+  
+  .order-total {
+    font-weight: bold;
+    color: var(--soft-gold);
+  }
+  
+  .order-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .view-details-btn, .download-receipt-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .view-details-btn {
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+  }
+  
+  .download-receipt-btn {
+    background: var(--soft-gold);
+    color: #222;
+  }
+  
+  .view-details-btn:hover {
+    background: #444;
+  }
+  
+  .download-receipt-btn:hover {
+    background: #f1e3a4;
+  }
+  
+  /* Order details modal */
+  .order-details-modal {
+    background: #222;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 700px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .order-details-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .order-details-header h3 {
+    color: var(--soft-gold);
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .order-details-header .order-date {
+    margin-bottom: 10px;
+  }
+  
+  .order-details-header .status-badge {
+    display: inline-block;
+  }
+  
+  .order-items h4 {
+    margin-bottom: 15px;
+    color: var(--text-light);
+  }
+  
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+  }
+  
+  .items-table th {
+    text-align: left;
+    padding: 10px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .items-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .item-name {
+    width: 40%;
+  }
+  
+  .item-quantity, .item-price, .item-total {
+    width: 20%;
+    text-align: right;
+  }
+  
+  .total-label {
+    text-align: right;
+    font-weight: bold;
+  }
+  
+  .order-grand-total {
+    font-weight: bold;
+    color: var(--soft-gold);
+    text-align: right;
+  }
+  
+  .order-details-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+  }
+  
+  .delivery-address, .payment-method {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 15px;
+  }
+  
+  .order-details-footer h4 {
+    color: var(--text-light);
+    margin-bottom: 5px;
+  }
+  
+  .order-details-footer p {
+    color: var(--text-muted);
+  }
+  
+  .download-receipt-btn-large {
+    background: var(--soft-gold);
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-weight: bold;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .download-receipt-btn-large:hover {
+    background: #f1e3a4;
+  }
+  
