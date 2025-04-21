@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SupplierReport.css";
 
+const API_BASE = process.env.REACT_APP_API_BASE || '';
+
 function SupplierReportPage() {
     const [view, setView] = useState("all_suppliers");
     const [supplierData, setSupplierData] = useState([]);
