@@ -44,21 +44,27 @@ const UserSignupModal = ({ onClose, onSignup, showSignupModal, errorMessage, set
       // Only allow digits, max 10
       let digits = value.replace(/\D/g, '').slice(0, 10);
       setFormData(prev => ({ ...prev, phone: digits }));
+    } else if (name === 'zip') {
+      // Only allow digits, max 5
+      let digits = value.replace(/\D/g, '').slice(0, 5);
+      setFormData(prev => ({ ...prev, zip: digits }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const { street, city, state, zip, ...rest } = formData;
+    
     const fullAddress = `${street}, ${city}, ${state} ${zip}`.trim();
     const payload = {
       ...rest,
       address: fullAddress,
-      phone: '+1' + formData.phone // send full E.164 format
+      phone: '+1' + formData.phone 
     };
-    onSignup(payload);
+    onSignup(payload); 
   };
 
   // Optional: Format for display as (123) 456-7890
@@ -131,7 +137,9 @@ const UserSignupModal = ({ onClose, onSignup, showSignupModal, errorMessage, set
             placeholder="ZIP Code"
             onChange={handleChange}
             value={formData.zip}
+            maxLength={5}
           />
+
           <input
             type="email"
             name="email"

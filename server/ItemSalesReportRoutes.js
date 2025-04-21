@@ -105,7 +105,7 @@ router.post('/api/generate-sales-report', async (req, res) => {
         }
         if (endDate) {
             conditions.push('t.created_at <= ?');
-            values.push(endDate + '23:59:59');
+            values.push(endDate + ' 23:59:59');
         }
 
         //transaction filters
@@ -187,7 +187,7 @@ router.post('/api/generate-sales-report', async (req, res) => {
 
 router.post('/api/generate-sales-report/list', async (req, res) => {
     try {   
-        const { transactionIds } = req.body;
+        const { transactionIds, selectedItems } = req.body;
         const pool = await connect();
         if (!pool) {
             return res.status(500).json({ error: 'Database connection error' });
@@ -201,25 +201,47 @@ router.post('/api/generate-sales-report/list', async (req, res) => {
         let query = `
             SELECT
                 t.transaction_id,
+                t.created_at,
+                d.code AS discount_code,
                 i.name AS item_name,
-                ti.quantity_purchased
+                ti.quantity_purchased,
+                i.price AS item_price
             FROM transactions t
             JOIN transaction_items ti ON t.transaction_id = ti.transaction_id
             JOIN items i ON ti.item_id = i.item_id
+            LEFT JOIN discounts d ON t.discount_id = d.discount_id
             WHERE t.transaction_id IN (${placeholders})
-            ORDER BY t.transaction_id DESC, i.name ASC
+        `;
+
+        const queryValues = [...transactionIds];
+
+        if (selectedItems && selectedItems.length > 0) {
+            const itemPlaceholders = selectedItems.map(() => '?').join(',');
+            query += ` AND i.name IN (${itemPlaceholders})`;
+            queryValues.push(...selectedItems);
+        }
+
+        query += `
+            ORDER BY i.name ASC, t.transaction_id DESC
         `;
         console.log('Generated SQL Query:', query);
         console.log('Transaction IDs:', transactionIds);
+        console.log('Selected Items:', selectedItems);
 
-        const [rows] = await pool.execute(query, transactionIds);
+        const [rows] = await pool.execute(query, queryValues);
         console.log('Query executed successfully:', rows);
-        const reportData = rows.map(row => ({
-            transaction_id: row.transaction_id,
-            item_name: row.item_name,
-            quantity_purchased: row.quantity_purchased,
-        }));
-
+        const reportData = rows.map(row => {
+            const utcTime = moment.utc(row.created_at);
+            const localTime = utcTime.subtract(10, 'hours').format('YYYY-MM-DD HH:mm:ss'); // Timezone Conversion
+            return {
+                transaction_id: row.transaction_id,
+                item_name: row.item_name,
+                quantity_purchased: row.quantity_purchased,
+                subtotal: parseFloat(row.quantity_purchased) * parseFloat(row.item_price),
+                discount_code: row.discount_code || null,
+                created_at: localTime,  // Include the formatted date
+            };
+        });
         res.json(reportData);
     } catch (error) {
         console.error('Error generating 2nd sales report:', error);
@@ -229,7 +251,7 @@ router.post('/api/generate-sales-report/list', async (req, res) => {
 
 router.post('/api/generate-sales-report/chart', async (req, res) => {
     try {   
-        const { transactionIds } = req.body;
+        const { transactionIds, selectedItems } = req.body;
         const pool = await connect();
         if (!pool) {
             return res.status(500).json({ error: 'Database connection error' });
@@ -240,6 +262,7 @@ router.post('/api/generate-sales-report/chart', async (req, res) => {
         }
 
         const placeholders = transactionIds.map(() => '?').join(',');
+
         let query = `
             SELECT
                 i.name AS item_name,
@@ -248,11 +271,22 @@ router.post('/api/generate-sales-report/chart', async (req, res) => {
             JOIN transaction_items ti ON t.transaction_id = ti.transaction_id
             JOIN items i ON ti.item_id = i.item_id
             WHERE t.transaction_id IN (${placeholders})
+        `;
+
+        const queryValues = [...transactionIds];
+
+        if (selectedItems && selectedItems.length > 0) {
+            const itemPlaceholders = selectedItems.map(() => '?').join(',');
+            query += ` AND i.name IN (${itemPlaceholders})`;
+            queryValues.push(...selectedItems);
+        }
+
+        query += `
             GROUP BY i.name
             ORDER BY total_sales DESC;
         `;
 
-        const [rows] = await pool.execute(query, transactionIds);
+        const [rows] = await pool.execute(query, queryValues);
 
         const reportData = rows.map(row => ({
             item_name: row.item_name,

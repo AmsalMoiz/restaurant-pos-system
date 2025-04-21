@@ -240,7 +240,7 @@ function Suppliers() {
         
                                 <div className="suppliers-management-container">
                                 <div className="suppliers-controls">
-                                    <h3>Suppliers</h3>
+                                    
                                     <button 
                                     className={`add-supplier-btn ${showAddSupplierForm ? 'cancel-mode' : ''}`}
                                     onClick={() => {

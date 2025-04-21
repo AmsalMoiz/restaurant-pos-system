@@ -32,12 +32,6 @@ function LogHoursPage() {
         try {
             const user = JSON.parse(userData);
 
-            if (!["Cook", "Waiter"].includes(user.role)) {
-                setError("Unauthorized access");
-                navigate("/users/login");
-                return;
-            }
-
             setUserData(user);
         } catch (err) {
             console.error("Error loading user data:", err);

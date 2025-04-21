@@ -67,7 +67,7 @@ function DashAdmin() {
         <div className="admin-dashboard-body">
             <div className="admin-dashboard">
                 <header className="admin-header">
-                    <h1>Dashboard</h1>
+                    <h1>Admin Dashboard</h1>
                     <div className="admin-info">
                         <p>Welcome, <span className="admin-name">{adminData.name}</span></p>
                         <p className="admin-role">Role: {adminData.role}</p>
@@ -84,15 +84,15 @@ function DashAdmin() {
                                 {/* Process Transaction */}
                                 <div className="admin-card">
                                     <h3>Process Transactions</h3>
-                                    
+                                    <p>Create and Complete Transactions</p>
                                     <button onClick={() => navigate('/transactions')}>Checkout</button>
                                 </div>
                                 
                                 {/* Reorder Alerts side */}
                                 <div className="admin-card">
                                     <h3>Reorder Alerts</h3>
-                                    
-                                    <button onClick={() => navigate('/reorder_alerts')}>View Reorder Alerts</button>
+                                    <p>View all reorder alerts</p>
+                                    <button onClick={() => navigate('/reorder_alerts')}>View</button>
                                 </div>
 
                                 {/* Inventory side */}
@@ -116,9 +116,19 @@ function DashAdmin() {
                                     <p>Manage restaurant suppliers</p>
                                     <button onClick={() => navigate('/suppliers')}>View Suppliers</button>
                                 </div>
+
+                                <div className="admin-card">
+                                    <h3>Discounts</h3>
+                                    <p>Manage restaurant discounts</p>
+                                    
+                                    <button onClick={() => navigate('/dashboard/discount-management')}>Manage Discounts</button>
+                                </div>
+
+
+
                                 <div className="admin-card">
                                     <h3>Items Sales Report</h3>
-                                    <p>View daily, weekly, and monthly sales</p>
+                                    <p>View daily, weekly, and monthly Items Sales</p>
                                     <button onClick={() => navigate('/reports/items-sales')}>View Reports</button>
                                 </div>
                                 
@@ -135,9 +145,19 @@ function DashAdmin() {
                                     <p>Analyze customer behavior and trends</p>
                                     <button onClick={() => navigate('/customer-report')}>View Reports</button>
                                 </div>
+                                {/* Supplier Reports */}
+                                <div className="admin-card">
+                                    <h3>Supplier Reports</h3>
+                                    <p>Analyze supplier orders and spending</p>
+                                    <button onClick={() => navigate('/supplier-report')}>View Reports</button>
+                                </div>
+                                
+
                             </div>
                         </div>
                     )}
+
+                    
 
     
                     

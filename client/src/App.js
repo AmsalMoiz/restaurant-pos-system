@@ -24,14 +24,21 @@ import CustomerReport from './components/CustomerReport';
 import Suppliers from './components/Suppliers';
 import EmployeeSalesReports from './components/EmployeeSalesReports';
 import ReorderAlerts from './components/ReorderAlerts';
-import Profile from './components/Profile'; 
+import Profile from './components/Profile';
+import SupplierReportPage from './components/SupplierReport';
+import Discounts from './components/Discounts';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
+  //const [showSignupModal, setShowSignupModal] = useState(false);
 
   const handleUserLogin = (userData) => {
     console.log('User logged in:', userData);
   };
+
+  // const handleOpenSignupModal = () => {
+  //   setShowSignupModal(true);
+  // };
 
   return (
     <Router>
@@ -70,6 +77,8 @@ function App() {
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
         <Route path="/profile" element={<Profile />} /> 
+        <Route path="/supplier-report" element={<SupplierReportPage />} />
+        <Route path="/dashboard/discount-management" element={<Discounts />} /> 
 
         {/* catch all get and redirect to login, do not put routes below this */}
         <Route path="*" element={<Navigate to="/login" />} />

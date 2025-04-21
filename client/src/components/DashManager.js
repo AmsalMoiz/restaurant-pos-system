@@ -7,27 +7,27 @@ function DashManager() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const [activeSection, setActiveSection] = useState(null);
+    //const [activeSection, setActiveSection] = useState(null);
 
     useEffect(() => {
         const userData = localStorage.getItem('user');
-        
+
         if (!userData) {
             console.log("Redirecting because role is not Manager:", userData.role);
             setError("Not logged in");
-            navigate('/users/login'); 
+            navigate('/users/login');
             return;
         }
 
         try {
             const user = JSON.parse(userData);
-            
+
             if (user.role !== 'Manager') {
                 setError("Unauthorized access");
                 navigate('/users/login');
                 return;
             }
-            
+
             setManagerData(user);
             setLoading(false);
         } catch (err) {
@@ -58,56 +58,57 @@ function DashManager() {
                 </header>
 
                 <main className="admin-content">
-                    {!activeSection && (
-                        <div className="admin-section">
-                            <h2>Restaurant Management</h2>
-                            <div className="admin-cards">
-                                <div className="admin-card">
-                                    <h3>Process Transactions</h3>
-                                    <button onClick={() => navigate('/transactions')}>Checkout</button>
-                                </div>
-                                
-                                <div className="admin-card">
-                                    <h3>Reorder Alerts</h3>
-                                    <button onClick={() => navigate('/reorder_alerts')}>View Reorder Alerts</button>
-                                </div>
 
-                                <div className="admin-card">
-                                    <h3>Inventory</h3>
-                                    <p>Manage restaurant inventory</p>
-                                    <button onClick={() => navigate('/inventory')}>View Inventory</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Employee Management</h3>
-                                    <p>Manage restaurant staff</p>
-                                    <button onClick={() => navigate('/employees')}>View Employees</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Employee Sales Report</h3>
-                                    <p>View daily, weekly, and monthly employee sales</p>
-                                    <button onClick={() => navigate('/reports/employee-sales')}>View Reports</button>
-                                </div>
-
-                                <div className="admin-card">
-                                    <h3>Customer Reports</h3>
-                                    <p>Analyze customer behavior and trends</p>
-                                    <button onClick={() => navigate('/customer-report')}>View Reports</button>
-                                </div>
+                    <div className="admin-section">
+                        <h2>Restaurant Management</h2>
+                        <div className="admin-cards">
+                            {/* Process Transaction */}
+                            <div className="admin-card">
+                                <h3>Process Transactions</h3>
+                                <p>Create and Complete Transactions</p>
+                                <button onClick={() => navigate('/transactions')}>Checkout</button>
                             </div>
-                        </div>
-                    )}
 
-                    {activeSection === 'reports' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Sales Reports</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
+                            {/* Reorder Alerts side */}
+                            <div className="admin-card">
+                                <h3>Reorder Alerts</h3>
+                                <p>View all reorder alerts</p>
+                                <button onClick={() => navigate('/reorder_alerts')}>View</button>
                             </div>
-                            <p>Sales reports would go here</p>
+
+                            <div className="admin-card">
+                                <h3>Inventory</h3>
+                                <p>Manage restaurant inventory</p>
+                                <button onClick={() => navigate('/inventory')}>View Inventory</button>
+                            </div>
+
+                            <div className="admin-card">
+                                <h3>Employee Management</h3>
+                                <p>Manage restaurant staff</p>
+                                <button onClick={() => navigate('/employees')}>View Employees</button>
+                            </div>
+
+                            <div className="admin-card">
+                                <h3>Employee Sales Report</h3>
+                                <p>View daily, weekly, and monthly employee sales</p>
+                                <button onClick={() => navigate('/reports/employee-sales')}>View Reports</button>
+                            </div>
+
+                            <div className="admin-card">
+                                <h3>Customer Reports</h3>
+                                <p>Analyze customer behavior and trends</p>
+                                <button onClick={() => navigate('/customer-report')}>View Reports</button>
+                            </div>
+
+                            {/* Log hours */}
+                            <div className="admin-card">
+                                <h3>Log Hours</h3>
+                                <p>Log hours worked and their date</p>
+                                <button onClick={() => navigate('/log-hours')}>Log</button>
+                            </div>
+
                         </div>
-                    )}
+                    </div>
                 </main>
             </div>
         </div>
