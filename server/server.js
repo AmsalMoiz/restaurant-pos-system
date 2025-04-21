@@ -794,3 +794,21 @@ app.get('/api/customer/loyalty-status/:id', async (req, res) => {
   }
 });
 
+
+app.get('/api/customer/reservations/:customerId', async (req, res) => {
+  const { customerId } = req.params;
+
+  try {
+    const [results] = await req.dbConnection.query(
+      `SELECT date, time, table_name, num_guests, special_requests
+       FROM reservations
+       WHERE email = (SELECT email FROM customers WHERE customer_id = ?)`,
+      [customerId]
+    );
+
+    res.json({ reservations: results });
+  } catch (err) {
+    console.error('Error fetching reservations:', err);
+    res.status(500).json({ error: 'Failed to fetch reservations' });
+  }
+});
