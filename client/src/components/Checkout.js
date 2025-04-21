@@ -91,14 +91,9 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     const loyalty = user?.loyalty;
   
     if (discountCode.trim().toUpperCase() === 'LOYAL15') {
-      if (user?.loyalty === 1) {
-        setDiscountPercent(15);
-        setDiscountMessage('✅ LOYAL15 applied: 15% off!');
-      } else if (user?.loyalty === 2) {
-        setDiscountMessage('❌ LOYAL15 has already been used.');
-      } else {
-        setDiscountMessage('❌ You are not eligible for this code.');
-      }
+      setDiscountPercent(15);
+      setDiscountMessage('✅ LOYAL15 applied: 15% off!');
+    
     } else if (discountCode.trim().toUpperCase() === 'SWEET10') {
       setDiscountPercent(10);
       setDiscountMessage('✅ Code SWEET10 applied: 10% off!');
@@ -119,8 +114,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-
-    // Calculate values, rounding each to 2 decimals before summing
+  
     const subtotal = Number(calculateSubtotal().toFixed(2));
     const discount = Number((subtotal * (discountPercent / 100)).toFixed(2));
     const taxedSubtotal = subtotal - discount;
@@ -128,7 +122,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
     const tip = Number((taxedSubtotal * getTipRate()).toFixed(2));
     const total = Number((taxedSubtotal + tax + tip).toFixed(2));
     const newOrderNum = generateOrderNumber();
-
+  
     const orders = JSON.parse(localStorage.getItem('orders') || '[]');
     orders.push({
       orderNumber: newOrderNum,
@@ -139,7 +133,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       holder: form.holder,
     });
     localStorage.setItem('orders', JSON.stringify(orders));
-
+  
     setReceipt({
       orderNumber: newOrderNum,
       holder: form.holder,
@@ -153,10 +147,10 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       tip: tip.toFixed(2),
       total: total.toFixed(2)
     });
-
+  
     const user = JSON.parse(localStorage.getItem('user'));
     const customer_id = user?.customer_id;
-    
+  
     const transactionPayload = {
       customer_id,
       subtotal: subtotal.toFixed(2),
@@ -169,9 +163,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
         quantity: item.quantity
       }))
     };
-    
-    console.log("📦 Transaction Payload:", transactionPayload);
-    
+  
     fetch('http://localhost:3001/api/customer/transaction', {
       method: 'POST',
       headers: {
@@ -179,50 +171,39 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       },
       body: JSON.stringify(transactionPayload)
     })
-    .then(res => res.json())
-    .then(data => {
-      if (!data.success) {
-        console.error('❌ Transaction API error:', data);
-      } else {
-        if (user?.loyalty === 1) {
-          alert('🎉 You’ve earned the LOYAL15 code! Use it on your next purchase for 15% off.');
-        }
-
-        if (discountCode.trim().toUpperCase() === 'LOYAL15' && user?.loyalty === 1) {
-          fetch('http://localhost:3001/api/customer/loyalty-used', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ customer_id })
-          })          
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          console.error('❌ Transaction API error:', data);
+        } else {
+          fetch(`http://localhost:3001/api/customer/loyalty-status/${customer_id}`)
             .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                localStorage.setItem('user', JSON.stringify({
-                  ...user,
-                  loyalty: 2
-                }));
+            .then(loyaltyData => {
+              const updatedUser = { ...user, loyalty: loyaltyData.loyalty };
+              localStorage.setItem('user', JSON.stringify(updatedUser));
+              if (loyaltyData.loyalty === 1) {
+                alert('🎉 You’ve earned the LOYAL15 code! Use it on your next purchase for 15% off.');
               }
             });
         }
-      }
-    })
-    .catch(err => {
-      console.error('❌ Transaction request failed:', err);
-    });
-    
-    
-
+      })
+      
+      .catch(err => {
+        console.error('❌ Transaction request failed:', err);
+      });
+  
     setItemsPurchased([...cartItems]);
     setSuccess(true);
     setCartItems([]);
     setDiscountCode('');
     setDiscountMessage('');
     setDiscountPercent(0);
-
+  
     setTimeout(() => {
       navigate('/menu');
     }, 6000);
   };
+  
 
   // Receipt download
   const handleDownloadReceipt = () => {

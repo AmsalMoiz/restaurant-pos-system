@@ -12,14 +12,14 @@
 
 /* Centered thick black glassy box */
 .checkout-glass {
-  background: rgba(0, 0, 0, 0.97);
+  background: rgba(0, 0, 0, 0.97) !important;
   backdrop-filter: blur(10px);
   padding: 55px 44px 48px 44px;
   border-radius: 28px;
   width: 100%;
   max-width: 600px;
   color: #e6d7be;
-  box-shadow: 0 0 70px rgba(255, 215, 0, 0.19);
+  box-shadow: 0 0 70px rgba(255, 215, 0, 0.19) !important;
   margin: 60px 0;
   font-family: 'Poppins', sans-serif;
 }
@@ -53,14 +53,18 @@
   margin-bottom: 16px;
   border-radius: 12px;
   border: none;
-  background: #151515;        
-  color: #fff;
+  background: #151515 !important;        
+  color: #fff !important;
   font-size: 16px;
   box-sizing: border-box;
 }
 
-.checkout-form {
-  background: transparent !important; 
+/* Fix for checkout form - make sure this has higher specificity */
+.checkout-glass .checkout-form {
+  background-color: #444 !important; 
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 .checkout-glass input::placeholder {
@@ -139,8 +143,8 @@
 
 /* Receipt box: black, not white! */
 .receipt-box {
-  background: #fff !important;  
-  color: #111;                  
+  background: #000 !important;  /* Changed from white to black */
+  color: #e6d7be;                  
   border-radius: 14px;
   padding: 28px 20px;
   text-align: left;
@@ -155,8 +159,8 @@
 }
 
 .success-popup {
-  background: #fff;          
-  color: #111;               
+  background: #000;          /* Changed from white to black */
+  color: #e6d7be;               
   padding: 45px 35px;
   text-align: center;
   border-radius: 22px;
@@ -165,6 +169,24 @@
   width: 100%;
 }
 
+.download-btn {
+  background-color: #ffd700;
+  color: #1b1b1b;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.22);
+  transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #ffcc00;
+  box-shadow: 0 0 36px rgba(255, 215, 0, 0.33);
+}
 
 @media (max-width: 700px) {
   .checkout-glass, .success-popup {
@@ -172,4 +194,3 @@
     padding: 16px 2vw 16px 2vw;
   }
 }
-
