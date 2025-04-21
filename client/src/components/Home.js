@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import './home.css';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar'; 
@@ -113,7 +113,6 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="menu-image">
-                  {itemImage && <img src={itemImage} alt={itemName} />} 
                   {itemImage && <img src={itemImage} alt={itemName} />}
                   {!itemImage && error && <p className="error-message">{error}</p>}
                   {!itemImage && !error && loading && <p>Loading image...</p>}
