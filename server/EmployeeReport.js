@@ -17,7 +17,13 @@ const monthlyQuery =
     END AS tip_percentage,
     -- Calculate average sale amount (handle NULL case)
     COALESCE(ROUND(AVG(t.total_amount), 2), 0) AS avg_sale_amount,
-    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales
+    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales,
+        -- Get hours worked directly from user_id
+    (SELECT COALESCE(SUM(tl2.hours_worked), 0) 
+     FROM time_logs tl2 
+     WHERE tl2.user_id = u.user_id 
+     AND tl2.date_worked BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()) AS total_hours
+
     
 FROM 
     users u
@@ -47,7 +53,13 @@ const weeklyQuery =
     END AS tip_percentage,
     -- Calculate average sale amount (handle NULL case)
     COALESCE(ROUND(AVG(t.total_amount), 2), 0) AS avg_sale_amount,
-    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales
+    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales,
+        -- Get hours worked directly from user_id
+    (SELECT COALESCE(SUM(tl2.hours_worked), 0) 
+     FROM time_logs tl2 
+     WHERE tl2.user_id = u.user_id 
+     AND tl2.date_worked BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()) AS total_hours
+
     
 FROM 
     users u
@@ -77,7 +89,13 @@ const dailyQuery =
     END AS tip_percentage,
     -- Calculate average sale amount (handle NULL case)
     COALESCE(ROUND(AVG(t.total_amount), 2), 0) AS avg_sale_amount,
-    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales
+    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales,
+        -- Get hours worked directly from user_id
+    (SELECT COALESCE(SUM(tl2.hours_worked), 0) 
+     FROM time_logs tl2 
+     WHERE tl2.user_id = u.user_id 
+     AND tl2.date_worked BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) AND NOW()) AS total_hours
+
     
 FROM 
     users u
@@ -107,7 +125,13 @@ const customQuery =
     END AS tip_percentage,
     -- Calculate average sale amount (handle NULL case)
     COALESCE(ROUND(AVG(t.total_amount), 2), 0) AS avg_sale_amount,
-    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales
+    COALESCE(SUM(t.total_amount-t.tip_amount), 0) AS total_sales,
+        -- Get hours worked directly from user_id
+    (SELECT COALESCE(SUM(tl2.hours_worked), 0) 
+     FROM time_logs tl2 
+     WHERE tl2.user_id = u.user_id 
+     AND tl2.date_worked BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()) AS total_hours
+
     
 FROM 
     users u
@@ -229,7 +253,8 @@ router.get('/monthly', async (req, res) => {
             total_tips: parseFloat(row.total_tips),
             tip_percentage: row.tip_percentage,
             avg_sale_amount: parseFloat(row.avg_sale_amount),
-            total_sales: parseFloat(row.total_sales)
+            total_sales: parseFloat(row.total_sales),
+            total_hours: parseFloat(row.total_hours)
         }));
         res.json(reports);
     } catch (err) {
@@ -262,7 +287,8 @@ router.get('/weekly', async (req, res) => {
             total_tips: parseFloat(row.total_tips),
             tip_percentage: row.tip_percentage,
             avg_sale_amount: parseFloat(row.avg_sale_amount),
-            total_sales: parseFloat(row.total_sales)
+            total_sales: parseFloat(row.total_sales),
+            total_hours: parseFloat(row.total_hours)
         }));
         res.json(reports);
     } catch (err) {
@@ -295,7 +321,8 @@ router.get('/daily', async (req, res) => {
             total_tips: parseFloat(row.total_tips),
             tip_percentage: row.tip_percentage,
             avg_sale_amount: parseFloat(row.avg_sale_amount),
-            total_sales: parseFloat(row.total_sales)
+            total_sales: parseFloat(row.total_sales),
+            total_hours: parseFloat(row.total_hours)
         }));
         res.json(reports);
     } catch (err) {
@@ -332,7 +359,8 @@ router.post('/custom', async (req, res) => {
             total_tips: parseFloat(row.total_tips),
             tip_percentage: row.tip_percentage,
             avg_sale_amount: parseFloat(row.avg_sale_amount),
-            total_sales: parseFloat(row.total_sales)
+            total_sales: parseFloat(row.total_sales),
+            total_hours: parseFloat(row.total_hours)
         }));
         res.json(reports);
     } catch (err) {

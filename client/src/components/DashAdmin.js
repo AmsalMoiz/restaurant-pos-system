@@ -140,6 +140,12 @@ function DashAdmin() {
                                     <p>Analyze supplier orders and spending</p>
                                     <button onClick={() => navigate('/supplier-report')}>View Reports</button>
                                 </div>
+                                {/* Log hours */}
+                                <div className="admin-card">
+                                    <h3>Log Hours</h3>
+                                    <p>Log hours worked and their date</p>
+                                    <button onClick={() => navigate('/log-hours')}>Log</button>
+                                </div>
 
                             </div>
                         </div>

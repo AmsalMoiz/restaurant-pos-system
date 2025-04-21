@@ -652,6 +652,7 @@ function EmployeeSalesReports() {
                                     <th>Tip Percentage</th>
                                     <th>Average Sale Amount</th>
                                     <th>Total Sales</th>
+                                    <th>Hours Worked</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -673,6 +674,7 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
+                                        <td>{report.total_hours.toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -721,6 +723,7 @@ function EmployeeSalesReports() {
                                     <th>Tip Percentage</th>
                                     <th>Average Sale Amount</th>
                                     <th>Total Sales</th>
+                                    <th>Hours Worked</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -742,6 +745,7 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
+                                        <td>{report.total_hours.toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -790,6 +794,7 @@ function EmployeeSalesReports() {
                                     <th>Tip Percentage</th>
                                     <th>Average Sale Amount</th>
                                     <th>Total Sales</th>
+                                    <th>Hours Worked</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -811,6 +816,7 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
+                                        <td>{report.total_hours.toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -885,6 +891,7 @@ function EmployeeSalesReports() {
                                     <th>Tip Percentage</th>
                                     <th>Average Sale Amount</th>
                                     <th>Total Sales</th>
+                                    <th>Hours Worked</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -906,6 +913,7 @@ function EmployeeSalesReports() {
                                             </span>
                                         </td>
                                         <td>${report.total_sales.toFixed(2)}</td>
+                                        <td>{report.total_hours.toFixed(2)}</td>
                                     </tr>
                                 ))}
                             </tbody>
