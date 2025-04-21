@@ -130,7 +130,7 @@ const customQuery =
     (SELECT COALESCE(SUM(tl2.hours_worked), 0) 
      FROM time_logs tl2 
      WHERE tl2.user_id = u.user_id 
-     AND tl2.date_worked BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()) AS total_hours
+     AND tl2.date_worked BETWEEN ? AND ?) AS total_hours
 
     
 FROM 
@@ -344,7 +344,7 @@ router.post('/custom', async (req, res) => {
         connection = await req.dbConnection.getConnection();
         
         // Query to get custom report
-        const [rows] = await connection.query(customQuery, [start_date, end_date]);
+        const [rows] = await connection.query(customQuery, [start_date, end_date, start_date, end_date]);
         // Check if rows are empty
         if (rows.length === 0) {
             return res.status(404).json({ error: 'No data found for the custom report.' });
