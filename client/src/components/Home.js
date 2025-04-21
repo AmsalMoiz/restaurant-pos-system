@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState , useEffect} from 'react';
 import './home.css';
 import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navbar from './Navbar'; 
 import UserSignupModal from './UserSignupModal';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
@@ -103,7 +103,7 @@ const Home = () => {
                   <p className="menu-subtitle">Taste the mood</p>
                   <h2 className="menu-heading">Our Menu</h2>
                   <p className="menu-description">
-                    Reserve now at Sweet Heaven — an indulgent dessert and cocktail experience
+                    Reserve now at Sweet Heaven — an indulgent dessert experience
                     inspired by timeless international flavors. Delight in artisanal sweets,
                     signature libations, and impeccable service in a setting of understated elegance.
                   </p>
@@ -113,7 +113,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="menu-image">
-                  {itemImage && <img src={itemImage} alt={itemName} />} {/* conflicted because this is a DB project, but for one image on a page that just sits there, it almost makes sense to statically get it, i will do db approach tho as db will have under 100 item images and img is in KBs */}
+                  {itemImage && <img src={itemImage} alt={itemName} />}
                   {!itemImage && error && <p className="error-message">{error}</p>}
                   {!itemImage && !error && loading && <p>Loading image...</p>}
                   {!itemImage && !error && !loading && <p>Image could not be loaded</p>}

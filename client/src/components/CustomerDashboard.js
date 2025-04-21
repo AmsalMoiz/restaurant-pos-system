@@ -98,7 +98,7 @@ const CustomerDashboard = ({ customerName }) => {
                   <p className="menu-subtitle">Taste the mood</p>
                   <h2 className="menu-heading">Our Menu</h2>
                   <p className="menu-description">
-                    Reserve now at Sweet Heaven — an indulgent dessert and cocktail experience
+                    Reserve now at Sweet Heaven — an indulgent dessert experience
                     inspired by timeless international flavors. Delight in artisanal sweets,
                     signature libations, and impeccable service in a setting of understated elegance.
                   </p>

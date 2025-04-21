@@ -4,7 +4,7 @@ const router = express.Router();
 const monthlyQuery = 
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
@@ -40,7 +40,7 @@ ORDER BY
 const weeklyQuery =
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
@@ -76,7 +76,7 @@ ORDER BY
 const dailyQuery =
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
@@ -112,7 +112,7 @@ ORDER BY
 const customQuery =
 `SELECT
     -- Rank employees by total sales
-    RANK() OVER (ORDER BY COALESCE(SUM(t.total_amount), 0) DESC,  u.role ASC) AS sales_rank,
+    RANK() OVER (ORDER BY COALESCE(ROUND(AVG(t.total_amount), 2), 0) DESC, u.role ASC) AS sales_rank,
     u.user_id AS employee_id,
     u.name AS employee_name,
     u.role AS employee_role,
@@ -130,7 +130,7 @@ const customQuery =
     (SELECT COALESCE(SUM(tl2.hours_worked), 0) 
      FROM time_logs tl2 
      WHERE tl2.user_id = u.user_id 
-     AND tl2.date_worked BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()) AS total_hours
+     AND tl2.date_worked BETWEEN ? AND ?) AS total_hours
 
     
 FROM 
@@ -344,7 +344,7 @@ router.post('/custom', async (req, res) => {
         connection = await req.dbConnection.getConnection();
         
         // Query to get custom report
-        const [rows] = await connection.query(customQuery, [start_date, end_date]);
+        const [rows] = await connection.query(customQuery, [start_date, end_date, start_date, end_date]);
         // Check if rows are empty
         if (rows.length === 0) {
             return res.status(404).json({ error: 'No data found for the custom report.' });

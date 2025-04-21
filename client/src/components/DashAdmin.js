@@ -115,6 +115,16 @@ function DashAdmin() {
                                     <p>Manage restaurant suppliers</p>
                                     <button onClick={() => navigate('/suppliers')}>View Suppliers</button>
                                 </div>
+
+                                <div className="admin-card">
+                                    <h3>Discounts</h3>
+                                    <p>Manage restaurant discounts</p>
+                                    
+                                    <button onClick={() => navigate('/dashboard/discount-management')}>Manage Discounts</button>
+                                </div>
+
+
+
                                 <div className="admin-card">
                                     <h3>Items Sales Report</h3>
                                     <p>View daily, weekly, and monthly Items Sales</p>
@@ -140,12 +150,7 @@ function DashAdmin() {
                                     <p>Analyze supplier orders and spending</p>
                                     <button onClick={() => navigate('/supplier-report')}>View Reports</button>
                                 </div>
-                                {/* Log hours */}
-                                <div className="admin-card">
-                                    <h3>Log Hours</h3>
-                                    <p>Log hours worked and their date</p>
-                                    <button onClick={() => navigate('/log-hours')}>Log</button>
-                                </div>
+                                
 
                             </div>
                         </div>

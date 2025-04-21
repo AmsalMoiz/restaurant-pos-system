@@ -27,6 +27,7 @@ import ReorderAlerts from './components/ReorderAlerts';
 import Profile from './components/Profile';
 import ProfileCreateAccount from './components/ProfileCreateAccount'; // Added this import
 import SupplierReportPage from './components/SupplierReport';
+import Discounts from './components/Discounts';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -78,6 +79,10 @@ function App() {
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/supplier-report" element={<SupplierReportPage />} />
+        <Route path="/dashboard/discount-management" element={<Discounts />} /> 
+
+        {/* catch all get and redirect to login, do not put routes below this */}
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );

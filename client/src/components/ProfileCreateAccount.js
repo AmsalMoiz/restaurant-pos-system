@@ -1,63 +1,128 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './profileCreateAccount.css'; // You'll need to create this CSS file
+import './profile.css';
+import Navbar from './Navbar';
+import UserSignupModal from './UserSignupModal';
 
-const ProfileCreateAccount = ({ onOpenSignupModal }) => {
+const ProfileCreateAccount = () => {
   const navigate = useNavigate();
-  
-  // Check if user is logged in
-  const user = localStorage.getItem("user");
-  
-  // If user is logged in, redirect to the regular profile page
-  useEffect(() => {
-    if (user) {
-      navigate("/profile");
-    }
-  }, [user, navigate]);
+  const [activeTab, setActiveTab] = useState('profile');
+
+  // Modal state
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // Handle successful signup
+  const handleSignup = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setShowSignupModal(false);
+    setErrorMessage('');
+    navigate('/customer-dashboard');
+  };
 
   return (
-    <div className="profile-create-account">
-      <div className="profile-container">
-        <div className="profile-header">
-          <h1>My Profile</h1>
-          <p className="profile-subtitle">Create an account to manage your profile and reservations</p>
-        </div>
-        
+    <>
+      <Navbar onOpenSignupModal={() => setShowSignupModal(true)} />
+      <div className="profile-wrapper">
         <div className="profile-content">
-          <div className="profile-icon">
-            <div className="icon-circle">
-              <span className="user-icon">?</span>
-            </div>
+          {/* Tabs navigation */}
+          <div className="profile-tabs">
+            <button 
+              className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
+              onClick={() => setActiveTab('profile')}
+            >
+              Profile
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'reservations' ? 'active' : ''}`}
+              onClick={() => setActiveTab('reservations')}
+            >
+              Reservations
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'orders' ? 'active' : ''}`}
+              onClick={() => setActiveTab('orders')}
+            >
+              Order History
+            </button>
           </div>
-          
-          <h2>You don't have an account yet</h2>
-          <p>Create an account to access your profile, view your reservation history, and save your preferences at Sweet Heaven.</p>
-          
-          <button 
-            className="create-account-btn"
-            onClick={onOpenSignupModal}
-            style={{
-              marginTop: "25px",
-              background: "#E7CD78",
-              color: "#222",
-              border: "none",
-              borderRadius: "10px",
-              fontWeight: "bold",
-              fontSize: "1.1em",
-              padding: "12px 24px",
-              cursor: "pointer",
-              boxShadow: "0 0 12px rgba(231,205,120,0.16)",
-            }}
-          >
-            Create Account Now!
-          </button>
+
+          {/* Profile tab content */}
+          {activeTab === 'profile' && (
+            <div className="profile-info-tab">
+              <div className="profile-header">
+                <div className="profile-initials-circle">?</div>
+                <h2 className="profile-title">My Profile</h2>
+              </div>
+              <div className="profile-details-list">
+                <div><span>Name:</span> — </div>
+                <div><span>Email:</span> — </div>
+                <div><span>Phone:</span> — </div>
+                <div><span>Address:</span> — </div>
+              </div>
+              <div className="profile-empty-cta">
+                <p style={{ color: "#888", margin: "1.5em 0 0.5em" }}>
+                  Create an account to personalize your profile and view your reservations.
+                </p>
+                <button
+                  onClick={() => setShowSignupModal(true)}
+                  style={{
+                    background: "#E7CD78",
+                    color: "#222",
+                    border: "none",
+                    borderRadius: "10px",
+                    fontWeight: "bold",
+                    fontSize: "1.08em",
+                    padding: "12px 24px",
+                    cursor: "pointer",
+                    marginTop: "12px",
+                    boxShadow: "0 0 12px rgba(231,205,120,0.16)",
+                  }}
+                >
+                  Create Account now!
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Reservations tab content */}
+          {activeTab === 'reservations' && (
+            <div style={{ marginTop: "2rem", textAlign: "center", color: "#aaa" }}>
+              <p>No reservations to display.</p>
+              <p>Create an account to manage your reservations!</p>
+            </div>
+          )}
+
+          {/* Order history tab content */}
+          {activeTab === 'orders' && (
+            <div style={{ marginTop: "2rem", textAlign: "center", color: "#aaa" }}>
+              <p>No order history to display.</p>
+              <p>Create an account to view your orders!</p>
+            </div>
+          )}
         </div>
-        
-        <div className="profile-footer">
-          <p>Already have an account? <span className="login-link" onClick={onOpenSignupModal}>Log in</span></p>
+
+        {/* Background image on the right */}
+        <div className="profile-right">
+          <img
+            src={`${process.env.PUBLIC_URL}/images/profilesidepic.jpg`}
+            alt="Profile background"
+            className="profile-side-img"
+          />
         </div>
       </div>
-    </div>
+
+      {/* Signup Modal */}
+      {showSignupModal && (
+        <UserSignupModal
+          onSignup={handleSignup}
+          onClose={() => setShowSignupModal(false)}
+          showSignupModal={showSignupModal}
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
+        />
+      )}
+    </>
   );
 };
 
