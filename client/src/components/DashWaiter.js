@@ -10,7 +10,7 @@ function DashWaiter() {
     const navigate = useNavigate();
     //const [inventory, setInventory] = useState([]);
     //const [showInventory, setShowInventory] = useState(false);
-    const [activeSection, setActiveSection] = useState(null);
+    //const [activeSection, setActiveSection] = useState(null);
     //const [users, setUsers] = useState([]);
     //const [showUsers, setShowUsers] = useState(false);
     // Add these state variables at the top of your component with the other state declarations
@@ -76,7 +76,6 @@ function DashWaiter() {
 
                 <main className="admin-content">
                     {/* Admin menu cards */}
-                    {!activeSection && (
                         <div className="admin-section">
                             <h2>Restaurant Management</h2>
                             <div className="admin-cards">      
@@ -96,7 +95,6 @@ function DashWaiter() {
 
                             </div>
                         </div>
-                    )}
 
                     {/* Add other sections for the remaining functionality */}
                     {/* Employee Sales Reports */}

@@ -25,21 +25,20 @@ import Suppliers from './components/Suppliers';
 import EmployeeSalesReports from './components/EmployeeSalesReports';
 import ReorderAlerts from './components/ReorderAlerts';
 import Profile from './components/Profile';
-import ProfileCreateAccount from './components/ProfileCreateAccount';
 import SupplierReportPage from './components/SupplierReport';
 import Discounts from './components/Discounts';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
-  const [showSignupModal, setShowSignupModal] = useState(false);
+  //const [showSignupModal, setShowSignupModal] = useState(false);
 
   const handleUserLogin = (userData) => {
     console.log('User logged in:', userData);
   };
 
-  const handleOpenSignupModal = () => {
-    setShowSignupModal(true);
-  };
+  // const handleOpenSignupModal = () => {
+  //   setShowSignupModal(true);
+  // };
 
   return (
     <Router>

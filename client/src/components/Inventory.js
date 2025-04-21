@@ -188,17 +188,17 @@ function InventoryPage() {
     setOrderConfirmation(null);
   };
 
-  const handleEditClick = (item) => {
-    setEditingItemId(item.item_id);
-    setEditedItemData({
-      dessert: item.dessert,
-      price: item.price,
-      supplier_price: item.supplier_price,
-      quantity: item.quantity,
-      limit: item.limit,
-      supplier: item.supplier,
-    });
-  };
+  // const handleEditClick = (item) => {
+  //   setEditingItemId(item.item_id);
+  //   setEditedItemData({
+  //     dessert: item.dessert,
+  //     price: item.price,
+  //     supplier_price: item.supplier_price,
+  //     quantity: item.quantity,
+  //     limit: item.limit,
+  //     supplier: item.supplier,
+  //   });
+  // };
 
   return (
     <div className="i-admin-dashboard-body">

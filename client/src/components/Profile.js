@@ -6,7 +6,7 @@ const ProfileCreateAccount = ({ onOpenSignupModal }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const [reservations, setReservations] = useState([]);
   const [reservationFilter, setReservationFilter] = useState('upcoming');
-  const [user, setUser] = useState(() => {
+  const [user] = useState(() => {
     const stored = localStorage.getItem('user');
     return stored ? JSON.parse(stored) : null;
   });

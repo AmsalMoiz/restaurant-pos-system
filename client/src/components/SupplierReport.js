@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./SupplierReport.css";
 
 function SupplierReportPage() {
@@ -16,30 +16,31 @@ function SupplierReportPage() {
         const userData = localStorage.getItem("user");
         if (userData) setUser(JSON.parse(userData));
 
+
+
+        const fetchData = async () => {
+            try {
+                const params = new URLSearchParams({
+                    view,
+                    startDate,
+                    endDate,
+                    sortField,
+                    sortOrder
+                });
+                const response = await fetch(`http://localhost:3001/api/supplier-report?${params.toString()}`);
+                const data = await response.json();
+                setSupplierData(data);
+            } catch (err) {
+                console.error("Error fetching supplier report:", err);
+            }
+        };
         fetchData();
     }, [view, startDate, endDate, sortField, sortOrder]);
 
-    const fetchData = async () => {
-        try {
-            const params = new URLSearchParams({
-                view,
-                startDate,
-                endDate,
-                sortField,
-                sortOrder
-            });
-            const response = await fetch(`http://localhost:3001/api/supplier-report?${params.toString()}`);
-            const data = await response.json();
-            setSupplierData(data);
-        } catch (err) {
-            console.error("Error fetching supplier report:", err); 
-        }
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem("user");
-        window.location.href = "/users/login";
-    };
+    // const handleLogout = () => {
+    //     localStorage.removeItem("user");
+    //     window.location.href = "/users/login";
+    // };
 
     const getSortOptions = () => {
         return view === "all_suppliers"
@@ -64,63 +65,63 @@ function SupplierReportPage() {
                 </header>
 
                 <main className="admin-content">
-                <div className="filter-sort-bar">
-                    <div className="date-range" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <label>Start Date:</label>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            style={{ width: '480px' }}
-                        />
-                        <label>End Date:</label>
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            style={{ width: '480px' }}
-                        />
+                    <div className="filter-sort-bar">
+                        <div className="date-range" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <label>Start Date:</label>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                style={{ width: '480px' }}
+                            />
+                            <label>End Date:</label>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                style={{ width: '480px' }}
+                            />
+                        </div>
+
+                        <div className="view-sort-wrapper" style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
+                            <label htmlFor="view">View:</label>
+                            <select
+                                id="view"
+                                value={view}
+                                onChange={(e) => setView(e.target.value)}
+                                style={{ width: '320px' }}
+                            >
+                                <option value="all_suppliers">All Suppliers</option>
+                                <option value="all_orders">All Orders</option>
+                            </select>
+
+                            <label htmlFor="sortField">Sort by:</label>
+                            <select
+                                id="sortField"
+                                value={sortField}
+                                onChange={(e) => setSortField(e.target.value)}
+                                style={{ width: '320px' }}
+                            >
+                                <option value="">None</option>
+                                {getSortOptions().map((field) => (
+                                    <option key={field} value={field}>
+                                        {field.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <label htmlFor="sortOrder">Order:</label>
+                            <select
+                                id="sortOrder"
+                                value={sortOrder}
+                                onChange={(e) => setSortOrder(e.target.value)}
+                                style={{ width: '320px' }}
+                            >
+                                <option value="asc">Ascending</option>
+                                <option value="desc">Descending</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div className="view-sort-wrapper" style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}>
-                        <label htmlFor="view">View:</label>
-                        <select
-                            id="view"
-                            value={view}
-                            onChange={(e) => setView(e.target.value)}
-                            style={{ width: '320px' }}
-                        >
-                            <option value="all_suppliers">All Suppliers</option>
-                            <option value="all_orders">All Orders</option>
-                        </select>
-
-                        <label htmlFor="sortField">Sort by:</label>
-                        <select
-                            id="sortField"
-                            value={sortField}
-                            onChange={(e) => setSortField(e.target.value)}
-                            style={{ width: '320px' }}
-                        >
-                            <option value="">None</option>
-                            {getSortOptions().map((field) => (
-                                <option key={field} value={field}>
-                                    {field.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
-                                </option>
-                            ))}
-                        </select>
-
-                        <label htmlFor="sortOrder">Order:</label>
-                        <select
-                            id="sortOrder"
-                            value={sortOrder}
-                            onChange={(e) => setSortOrder(e.target.value)}
-                            style={{ width: '320px' }}
-                        >
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
-                        </select>
-                    </div>
-                </div>
 
 
                     {view === "all_suppliers" ? (

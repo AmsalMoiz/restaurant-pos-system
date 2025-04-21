@@ -87,8 +87,8 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
 
   // Discount
   const handleDiscountApply = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const loyalty = user?.loyalty;
+    //const user = JSON.parse(localStorage.getItem('user'));
+    //const loyalty = user?.loyalty;
   
     if (discountCode.trim().toUpperCase() === 'LOYAL15') {
       setDiscountPercent(15);
