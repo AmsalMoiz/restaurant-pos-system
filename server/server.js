@@ -13,16 +13,17 @@ const multer = require('multer');
 const customerReportRoutes = require("./CustomerReport");
 const OrderInventoryRoute = require("./OrderInventory");
 const SupplierReports = require("./SupplierReports");
+const ViewDiscountsRoutes = require("./ViewDiscountsRoutes");
 
 app.use(cors());
 app.use(express.json({limit: '5mb' })); // Middleware for JSON body parsing, with a limit of 5mb
 app.use("/api/auth", authRoutes); // Include auth routes
 app.use("/api", logHoursRoute); // Include log hours routes
 app.use("/api/sales-report", ItemSalesReportRoutes); 
-app.use("/api", customerReportRoutes); // Add this line to include customer report routes
+app.use("/api", customerReportRoutes); // Include customer report routes
 app.use("/api", OrderInventoryRoute); // Add this line to include supplier orders routes
 app.use("/api", SupplierReports); // Add this line to include supplier reports routes
-
+app.use("/api", ViewDiscountsRoutes);
 
 
 const PORT = process.env.PORT || 3001;
