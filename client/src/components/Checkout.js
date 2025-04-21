@@ -87,7 +87,19 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
 
   // Discount
   const handleDiscountApply = () => {
-    if (discountCode.trim().toUpperCase() === 'SWEET10') {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const loyalty = user?.loyalty;
+  
+    if (discountCode.trim().toUpperCase() === 'LOYAL15') {
+      if (user?.loyalty === 1) {
+        setDiscountPercent(15);
+        setDiscountMessage('✅ LOYAL15 applied: 15% off!');
+      } else if (user?.loyalty === 2) {
+        setDiscountMessage('❌ LOYAL15 has already been used.');
+      } else {
+        setDiscountMessage('❌ You are not eligible for this code.');
+      }
+    } else if (discountCode.trim().toUpperCase() === 'SWEET10') {
       setDiscountPercent(10);
       setDiscountMessage('✅ Code SWEET10 applied: 10% off!');
     } else {
@@ -95,6 +107,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       setDiscountMessage('❌ Invalid discount code.');
     }
   };
+  
 
   // Order number
   const generateOrderNumber = () => {
@@ -140,6 +153,65 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       tip: tip.toFixed(2),
       total: total.toFixed(2)
     });
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    const customer_id = user?.customer_id;
+    
+    const transactionPayload = {
+      customer_id,
+      subtotal: subtotal.toFixed(2),
+      tax: tax.toFixed(2),
+      total: total.toFixed(2),
+      tip: tip.toFixed(2),
+      payment_method: paymentMethod,
+      items: cartItems.map(item => ({
+        item_id: item.item_id,
+        quantity: item.quantity
+      }))
+    };
+    
+    console.log("📦 Transaction Payload:", transactionPayload);
+    
+    fetch('http://localhost:3001/api/customer/transaction', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(transactionPayload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        console.error('❌ Transaction API error:', data);
+      } else {
+        if (user?.loyalty === 1) {
+          alert('🎉 You’ve earned the LOYAL15 code! Use it on your next purchase for 15% off.');
+        }
+
+        if (discountCode.trim().toUpperCase() === 'LOYAL15' && user?.loyalty === 1) {
+          fetch('http://localhost:3001/api/customer/loyalty-used', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ customer_id })
+          })          
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                localStorage.setItem('user', JSON.stringify({
+                  ...user,
+                  loyalty: 2
+                }));
+              }
+            });
+        }
+      }
+    })
+    .catch(err => {
+      console.error('❌ Transaction request failed:', err);
+    });
+    
+    
+
     setItemsPurchased([...cartItems]);
     setSuccess(true);
     setCartItems([]);

@@ -26,6 +26,7 @@ import EmployeeSalesReports from './components/EmployeeSalesReports';
 import ReorderAlerts from './components/ReorderAlerts';
 import Profile from './components/Profile';
 import ProfileCreateAccount from './components/ProfileCreateAccount'; // Added this import
+import SupplierReportPage from './components/SupplierReport';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -76,6 +77,7 @@ function App() {
         <Route path="/reports/employee-sales" element={<EmployeeSalesReports />} />
         <Route path="/reorder_alerts" element={<ReorderAlerts />} />
         <Route path="/profile" element={<Profile />} /> 
+        <Route path="/supplier-report" element={<SupplierReportPage />} />
       </Routes>
     </Router>
   );

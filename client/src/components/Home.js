@@ -4,23 +4,47 @@ import { Link } from 'react-router-dom';
 import Navbar from './Navbar'; 
 import UserSignupModal from './UserSignupModal';
 
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
+
 const Home = () => {
+  const [itemName, setItemName] = useState('');
+  const [itemImage, setItemImage] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  
-  // Add these if you need them for image preview
-  const [itemImage] = useState('/images/tiramisuNoir.jpg');
-  const [itemName] = useState('Tiramisu Noir');
-  const [error] = useState(null);
-  const [loading] = useState(false);
+
+
+  useEffect(() => {
+    const fetchSingleItemImage = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE}/api/customer/image`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setItemName(data.name);
+        setItemImage(data.image);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching single item name and image:", err);
+        setError("Failed to load item image. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSingleItemImage();
+  }, []);
 
   const handleSignup = (user) => {
     localStorage.setItem('user', JSON.stringify(user));
     setShowSignupModal(false);
     setErrorMessage('');
-    window.location.href = '/customer-dashboard';
+    window.location.reload();
   };
-
   return (
     <>
       <Navbar onOpenSignupModal={() => setShowSignupModal(true)} />

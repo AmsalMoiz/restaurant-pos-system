@@ -46,13 +46,9 @@ const Login = () => {
       const data = await response.json();
   
       if (response.ok) {
-        const { name, email, phone } = data.user;
-  
-        localStorage.setItem("user", JSON.stringify({
-          name,
-          email,
-          phone
-        }));
+        const { customer_id, name, email, phone } = data.user;
+        localStorage.setItem("user", JSON.stringify({ customer_id, name, email, phone }));
+        console.log("🧠 Saved user:", JSON.parse(localStorage.getItem("user")));
   
         navigate("/customer-dashboard"); 
       } else {

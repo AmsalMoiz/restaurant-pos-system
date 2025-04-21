@@ -62,14 +62,18 @@ function DashManager() {
                         <div className="admin-section">
                             <h2>Restaurant Management</h2>
                             <div className="admin-cards">
+                                {/* Process Transaction */}
                                 <div className="admin-card">
                                     <h3>Process Transactions</h3>
+                                    <p>Create and Complete Transactions</p>
                                     <button onClick={() => navigate('/transactions')}>Checkout</button>
                                 </div>
                                 
+                                {/* Reorder Alerts side */}
                                 <div className="admin-card">
                                     <h3>Reorder Alerts</h3>
-                                    <button onClick={() => navigate('/reorder_alerts')}>View Reorder Alerts</button>
+                                    <p>View all reorder alerts</p>
+                                    <button onClick={() => navigate('/reorder_alerts')}>View</button>
                                 </div>
 
                                 <div className="admin-card">
@@ -95,19 +99,18 @@ function DashManager() {
                                     <p>Analyze customer behavior and trends</p>
                                     <button onClick={() => navigate('/customer-report')}>View Reports</button>
                                 </div>
+
+                                 {/* Log hours */}
+                                 <div className="admin-card">
+                                    <h3>Log Hours</h3>
+                                    <p>Log hours worked and their date</p>
+                                    <button onClick={() => navigate('/log-hours')}>Log</button>
+                                </div>
+                                
                             </div>
                         </div>
                     )}
 
-                    {activeSection === 'reports' && (
-                        <div className="admin-section">
-                            <div className="section-header">
-                                <h2>Sales Reports</h2>
-                                <button className="back-btn" onClick={() => setActiveSection(null)}>Back to Dashboard</button>
-                            </div>
-                            <p>Sales reports would go here</p>
-                        </div>
-                    )}
                 </main>
             </div>
         </div>
