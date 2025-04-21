@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
+const API_BASE = process.env.REACT_APP_API_BASE || '';
+
 const US_STATES = [
   'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
   'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
@@ -164,7 +166,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
       }))
     };
   
-    fetch('http://localhost:3001/api/customer/transaction', {
+    fetch(`${API_BASE}/api/customer/transaction`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -176,7 +178,7 @@ const Checkout = ({ cartItems = [], setCartItems }) => {
         if (!data.success) {
           console.error('❌ Transaction API error:', data);
         } else {
-          fetch(`http://localhost:3001/api/customer/loyalty-status/${customer_id}`)
+          fetch(`${API_BASE}/api/customer/loyalty-status/${customer_id}`)
             .then(res => res.json())
             .then(loyaltyData => {
               const updatedUser = { ...user, loyalty: loyaltyData.loyalty };

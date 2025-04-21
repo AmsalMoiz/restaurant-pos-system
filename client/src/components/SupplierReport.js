@@ -27,7 +27,7 @@ function SupplierReportPage() {
                     sortField,
                     sortOrder
                 });
-                const response = await fetch(`http://localhost:3001/api/supplier-report?${params.toString()}`);
+                const response = await fetch(`${API_BASE}/api/supplier-report?${params.toString()}`);
                 const data = await response.json();
                 setSupplierData(data);
             } catch (err) {

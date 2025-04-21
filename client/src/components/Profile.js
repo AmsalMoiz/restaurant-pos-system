@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './profile.css';
 import Navbar from './Navbar';
+
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 const ProfileCreateAccount = ({ onOpenSignupModal }) => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -13,7 +15,7 @@ const ProfileCreateAccount = ({ onOpenSignupModal }) => {
 
   useEffect(() => {
     if (activeTab === 'reservations' && user?.customer_id) {
-      fetch(`http://localhost:3001/api/customer/reservations/${user.customer_id}`)
+      fetch(`${API_BASE}/api/customer/reservations/${user.customer_id}`)
         .then(res => res.json())
         .then(data => setReservations(data.reservations || []))
         .catch(err => console.error('Failed to load reservations:', err));
