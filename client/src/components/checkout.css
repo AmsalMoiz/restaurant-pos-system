@@ -61,7 +61,7 @@
 
 /* Fix for checkout form - make sure this has higher specificity */
 .checkout-glass .checkout-form {
-  background-color: #444 !important; 
+  background-color: black !important; 
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
