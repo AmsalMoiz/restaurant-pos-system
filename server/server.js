@@ -772,3 +772,24 @@ app.patch('/api/customer/loyalty-used', async (req, res) => {
     res.status(500).json({ error: 'Failed to update loyalty status' });
   }
 });
+
+app.get('/api/customer/loyalty-status/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [results] = await req.dbConnection.query(
+      'SELECT loyalty FROM customers WHERE customer_id = ?',
+      [id]
+    );
+
+    if (results.length > 0) {
+      res.json({ loyalty: results[0].loyalty });
+    } else {
+      res.status(404).json({ error: 'Customer not found' });
+    }
+  } catch (err) {
+    console.error('Fetch loyalty error:', err);
+    res.status(500).json({ error: 'Failed to fetch loyalty status' });
+  }
+});
+
