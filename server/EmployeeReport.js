@@ -30,7 +30,7 @@ WHERE
 GROUP BY 
     u.user_id, u.name, u.role
 ORDER BY 
-    total_sales DESC, u.role ASC`;
+    avg_sale_amount DESC, total_sales DESC, u.role ASC`;
 const weeklyQuery =
 `SELECT
     -- Rank employees by total sales
@@ -60,7 +60,7 @@ WHERE
 GROUP BY 
     u.user_id, u.name, u.role
 ORDER BY 
-    total_sales DESC, u.role ASC`;
+    avg_sale_amount DESC, total_sales DESC, u.role ASC`;
 const dailyQuery =
 `SELECT
     -- Rank employees by total sales
@@ -90,7 +90,7 @@ WHERE
 GROUP BY 
     u.user_id, u.name, u.role
 ORDER BY 
-    total_sales DESC, u.role ASC`;
+    avg_sale_amount DESC, total_sales DESC, u.role ASC`;
 const customQuery =
 `SELECT
     -- Rank employees by total sales
@@ -120,7 +120,7 @@ WHERE
 GROUP BY 
     u.user_id, u.name, u.role
 ORDER BY 
-    total_sales DESC, u.role ASC`;
+    avg_sale_amount DESC, total_sales DESC, u.role ASC`;
 
 const indidivudalTransactionsMonthlyQuery =
 `select 
@@ -132,7 +132,8 @@ left join transactions t ON u.user_id = t.user_id
 AND t.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()-- '2025-04-13 23:59:59' AND '2025-04-14 16:30:00'-- DATE_FORMAT(NOW(), '%-%-01') A
 left join transaction_items ti on t.transaction_id = ti.transaction_id
 left join items i on ti.item_id = i.item_id
-where u.user_id = ?;`;
+where u.user_id = ?
+order by t.transaction_id DESC;`;
 const indidivudalTransactionsWeeklyQuery =
 `select 
 t.transaction_id, i.name as item_name, ti.quantity_purchased as quantity_purchased, i.price as price, 
@@ -143,7 +144,8 @@ left join transactions t ON u.user_id = t.user_id
 AND t.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()-- '2025-04-13 23:59:59' AND '2025-04-14 16:30:00'-- DATE_FORMAT(NOW(), '%-%-01') A
 left join transaction_items ti on t.transaction_id = ti.transaction_id
 left join items i on ti.item_id = i.item_id
-where u.user_id = ?;`;
+where u.user_id = ?
+order by t.transaction_id DESC;`;
 const indidivudalTransactionsDailyQuery =
 `select 
 t.transaction_id, i.name as item_name, ti.quantity_purchased as quantity_purchased, i.price as price, 
@@ -154,7 +156,8 @@ left join transactions t ON u.user_id = t.user_id
 AND t.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 1 DAY) AND NOW()-- '2025-04-13 23:59:59' AND '2025-04-14 16:30:00'-- DATE_FORMAT(NOW(), '%-%-01') A
 left join transaction_items ti on t.transaction_id = ti.transaction_id
 left join items i on ti.item_id = i.item_id
-where u.user_id = ?;`;
+where u.user_id = ?
+order by t.transaction_id DESC;`;
 const indidivudalTransactionsCustomQuery =
 `select 
 t.transaction_id, i.name as item_name, ti.quantity_purchased as quantity_purchased, i.price as price, 
@@ -165,7 +168,8 @@ left join transactions t ON u.user_id = t.user_id
 AND t.created_at BETWEEN ? AND ? 
 left join transaction_items ti on t.transaction_id = ti.transaction_id
 left join items i on ti.item_id = i.item_id
-where u.user_id = ?;`;
+where u.user_id = ?
+order by t.transaction_id DESC;`;
 
 
 //Toal & AVG Sales Made by Employee Monthly

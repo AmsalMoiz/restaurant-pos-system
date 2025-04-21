@@ -92,8 +92,11 @@ function EmployeeSalesReports() {
                     });
                 }
             });
-            
-            setGroupedTransactions(grouped);
+            // After grouping, convert to array and sort
+            const groupedArray = Object.values(grouped).sort((a, b) => 
+                b.transaction_id - a.transaction_id  // Sort descending (newest first)
+            );
+            setGroupedTransactions(groupedArray);
         }
     }, [employeeTransactions]);
 
