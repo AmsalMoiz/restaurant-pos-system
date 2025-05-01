@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DashAdmin.css";
-
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3001';
 
 function DashAdmin() {
     const [adminData, setAdminData] = useState(null);
@@ -14,7 +14,26 @@ function DashAdmin() {
     //const [users, setUsers] = useState([]);
     //const [showUsers, setShowUsers] = useState(false);
     // Add these state variables at the top of your component with the other state declarations
+    const [unresolvedAlerts, setUnresolvedAlerts] = useState([]);
+
     
+    // FETCH UNRESOLVED ALERTS
+    const fetchUnresolvedAlerts = async () => {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/unresolved_alerts_count`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                setUnresolvedAlerts(data);
+            } catch(err){
+                console.error("Error fetching reorder alerts:", err);
+                setError("Failed to load reorder alerts. Please try again later.");
+            }
+        };
+        useEffect(() => {
+            fetchUnresolvedAlerts();
+        }, []);
     
 
     // #region Login
@@ -88,7 +107,10 @@ function DashAdmin() {
                                 </div>
                                 
                                 {/* Reorder Alerts side */}
-                                <div className="admin-card">
+                                <div className={`admin-card ${unresolvedAlerts.count > 0 ? "alert-card" : ""}`}>
+                                    {unresolvedAlerts.count > 0 && (
+                                        <div className="unresolvedNotification">{unresolvedAlerts.count}</div>
+                                    )}
                                     <h3>Reorder Alerts</h3>
                                     <p>View all reorder alerts</p>
                                     <button onClick={() => navigate('/reorder_alerts')}>View</button>
