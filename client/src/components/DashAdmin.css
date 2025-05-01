@@ -90,6 +90,7 @@
 }
 
 .admin-card {
+    position: relative; /* Make sure the card is positioned relative */
     background-color: #f8f9fa;
     border-radius: 8px;
     padding: 20px;
@@ -279,4 +280,53 @@
 }
 
 
+/*admin-card*/
+.unresolvedNotification {
+    position: absolute; /* Position absolutely relative to the admin-card */
+    top: -10px; /* Position slightly above the card */
+    right: -10px; /* Position to the right of the card */
+    background-color: #e74c3c; /* Red color */
+    color: white; /* White text */
+    border-radius: 50%; /* Make it circular */
+    width: 24px; /* Fixed width */
+    height: 24px; /* Fixed height */
+    display: flex; /* Use flex for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    font-size: 14px; /* Adjust font size */
+    font-weight: bold; /* Make text bold */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a shadow */
+    border: 2px solid white; /* Add a white border */
+    z-index: 1; /* Ensure it appears above other elements */
+}
 
+/* Optional: Add a pulse animation to draw attention */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+    }
+}
+
+.unresolvedNotification {
+    animation: pulse 2s infinite;
+}
+
+/* Style for the alert card when there are unresolved alerts */
+.alert-card {
+    border: 2px solid #e74c3c;
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+}
+
+.alert-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}

@@ -445,6 +445,22 @@ app.get('/dashboard/reorder_alerts', async (req, res) => {
   }
 });
 
+app.get('/dashboard/unresolved_alerts_count', async (req, res) => {
+  try {
+    const [results] = await req.dbConnection.query(
+      'SELECT COUNT(*) as unresolvedCount FROM reorder_alerts WHERE resolved = 0'
+    );
+    
+    res.json({ count: results[0].unresolvedCount });
+  } catch (err) {
+    console.error('Error fetching unresolved alerts count:', err);
+    return res.status(500).json({
+      error: 'Database query error',
+      message: 'Failed to fetch unresolved alerts count.'
+    });
+  }
+});
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
